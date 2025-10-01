@@ -1,0 +1,240 @@
+<div class="register-container">
+    <div class="register-wrapper">
+        <!-- Header -->
+        <div class="register-header">
+            <div class="logo-section">
+                <div class="logo-placeholder">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="university-info">
+                    <h1 class="university-name">TRƯỜNG ĐẠI HỌC CÔNG NGHIỆP TP.HCM</h1>
+                    <h2 class="system-name">HỆ THỐNG THƯ VIỆN ĐIỆN TỬ</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div class="register-form-container">
+            <div class="form-card">
+                <div class="form-header">
+                    <h3 class="form-title">Đăng ký tài khoản</h3>
+                    <p class="form-subtitle">Vui lòng điền đầy đủ thông tin để tạo tài khoản mới</p>
+                </div>
+
+                <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+                    <!-- Error Message -->
+                    @if (errorMessage()) {
+                    <div class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ errorMessage() }}
+                    </div>
+                    }
+
+                    <div class="form-row">
+                        <!-- Họ tên -->
+                        <div class="form-group">
+                            <label for="hoTen" class="form-label">
+                                <i class="fas fa-user"></i>
+                                Họ và tên
+                            </label>
+                            <input type="text" id="hoTen" formControlName="hoTen" class="form-input"
+                                [class.error]="isFieldInvalid('hoTen')" placeholder="Nhập họ và tên đầy đủ"
+                                autocomplete="name" />
+                            @if (isFieldInvalid('hoTen')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('hoTen') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </label>
+                            <input type="email" id="email" formControlName="email" class="form-input"
+                                [class.error]="isFieldInvalid('email')" placeholder="Nhập địa chỉ email"
+                                autocomplete="email" />
+                            @if (isFieldInvalid('email')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('email') }}
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- Mật khẩu -->
+                        <div class="form-group">
+                            <label for="matKhau" class="form-label">
+                                <i class="fas fa-lock"></i>
+                                Mật khẩu
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input [type]="showPassword() ? 'text' : 'password'" id="matKhau"
+                                    formControlName="matKhau" class="form-input"
+                                    [class.error]="isFieldInvalid('matKhau')" placeholder="Nhập mật khẩu"
+                                    autocomplete="new-password" />
+                                <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+                                    <i [class]="showPassword() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                                </button>
+                            </div>
+                            @if (isFieldInvalid('matKhau')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('matKhau') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Xác nhận mật khẩu -->
+                        <div class="form-group">
+                            <label for="xacNhanMatKhau" class="form-label">
+                                <i class="fas fa-lock"></i>
+                                Xác nhận mật khẩu
+                            </label>
+                            <div class="password-input-wrapper">
+                                <input [type]="showConfirmPassword() ? 'text' : 'password'" id="xacNhanMatKhau"
+                                    formControlName="xacNhanMatKhau" class="form-input"
+                                    [class.error]="isFieldInvalid('xacNhanMatKhau')" placeholder="Nhập lại mật khẩu"
+                                    autocomplete="new-password" />
+                                <button type="button" class="password-toggle"
+                                    (click)="toggleConfirmPasswordVisibility()">
+                                    <i [class]="showConfirmPassword() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                                </button>
+                            </div>
+                            @if (isFieldInvalid('xacNhanMatKhau')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('xacNhanMatKhau') }}
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- Số điện thoại -->
+                        <div class="form-group">
+                            <label for="soDienThoai" class="form-label">
+                                <i class="fas fa-phone"></i>
+                                Số điện thoại
+                            </label>
+                            <input type="tel" id="soDienThoai" formControlName="soDienThoai" class="form-input"
+                                [class.error]="isFieldInvalid('soDienThoai')" placeholder="Nhập số điện thoại"
+                                autocomplete="tel" />
+                            @if (isFieldInvalid('soDienThoai')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('soDienThoai') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Vai trò -->
+                        <div class="form-group">
+                            <label for="vaiTro" class="form-label">
+                                <i class="fas fa-users"></i>
+                                Vai trò
+                            </label>
+                            <select id="vaiTro" formControlName="vaiTro" class="form-select"
+                                [class.error]="isFieldInvalid('vaiTro')">
+                                @for (option of vaiTroOptions; track option.value) {
+                                <option [value]="option.value">{{ option.label }}</option>
+                                }
+                            </select>
+                            @if (isFieldInvalid('vaiTro')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('vaiTro') }}
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <!-- Mã sinh viên -->
+                        <div class="form-group">
+                            <label for="maSinhVien" class="form-label">
+                                <i class="fas fa-id-card"></i>
+                                Mã sinh viên
+                            </label>
+                            <input type="text" id="maSinhVien" formControlName="maSinhVien" class="form-input"
+                                [class.error]="isFieldInvalid('maSinhVien')" placeholder="Nhập mã sinh viên" />
+                            @if (isFieldInvalid('maSinhVien')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('maSinhVien') }}
+                            </div>
+                            }
+                        </div>
+
+                        <!-- Lớp -->
+                        <div class="form-group">
+                            <label for="lop" class="form-label">
+                                <i class="fas fa-graduation-cap"></i>
+                                Lớp
+                            </label>
+                            <input type="text" id="lop" formControlName="lop" class="form-input"
+                                [class.error]="isFieldInvalid('lop')" placeholder="Nhập tên lớp (vd: CNTT01)" />
+                            @if (isFieldInvalid('lop')) {
+                            <div class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ getFieldError('lop') }}
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Khóa học -->
+                    <div class="form-group">
+                        <label for="khoaHoc" class="form-label">
+                            <i class="fas fa-calendar-alt"></i>
+                            Khóa học
+                        </label>
+                        <select id="khoaHoc" formControlName="khoaHoc" class="form-select"
+                            [class.error]="isFieldInvalid('khoaHoc')">
+                            @for (year of khoaHocOptions; track year) {
+                            <option [value]="year">Khóa {{ year }}</option>
+                            }
+                        </select>
+                        @if (isFieldInvalid('khoaHoc')) {
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ getFieldError('khoaHoc') }}
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn"
+                        [disabled]="registerForm.invalid || authService.isLoading()">
+                        @if (authService.isLoading()) {
+                        <i class="fas fa-spinner fa-spin"></i>
+                        Đang đăng ký...
+                        } @else {
+                        <i class="fas fa-user-plus"></i>
+                        Đăng ký tài khoản
+                        }
+                    </button>
+
+                    <!-- Links -->
+                    <div class="form-links">
+                        <span>Đã có tài khoản?</span>
+                        <button type="button" class="link-btn" (click)="goToLogin()">
+                            Đăng nhập ngay
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="register-footer">
+            <p>&copy; 2024 Trường Đại học Công nghiệp TP.HCM - Thư viện điện tử</p>
+            <p>Hỗ trợ kỹ thuật: support@huit.edu.vn | Hotline: (028) 3857 4647</p>
+        </div>
+    </div>
+</div>

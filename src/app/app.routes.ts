@@ -26,6 +26,11 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'profile',
+    loadComponent: () =>
+      import('./components/profile/profile.component').then((m) => m.ProfileComponent),
+  },
+  {
     path: 'change-password',
     loadComponent: () =>
       import('./components/change-password/change-password.component').then(

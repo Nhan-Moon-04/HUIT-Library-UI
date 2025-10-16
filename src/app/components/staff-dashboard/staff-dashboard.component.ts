@@ -21,7 +21,7 @@ import { AuthService } from '../../services/auth.service';
             </div>
           </div>
           <div class="user-section">
-            <div class="user-info">
+            <div class="user-info" (click)="router.navigate(['/profile'])" style="cursor:pointer;">
               <i class="fas fa-user-tie"></i>
               <div>
                 <p class="user-name">{{ authService.currentUser()?.hoTen }}</p>
@@ -259,7 +259,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class StaffDashboardComponent {
   authService = inject(AuthService);
-  private router = inject(Router);
+  router = inject(Router);
 
   logout(): void {
     this.authService.logout();

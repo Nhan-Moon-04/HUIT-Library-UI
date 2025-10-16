@@ -40,7 +40,7 @@ export class AuthService {
   login(loginData: LoginRequest): Observable<AuthResponse> {
     this.isLoading.set(true);
 
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/api/Auth/login`, loginData).pipe(
+    return this.http.post<AuthResponse>(`${environment.appUrl}/api/Auth/login`, loginData).pipe(
       tap((response) => {
         this.isLoading.set(false);
         if (response.success) {
@@ -54,7 +54,7 @@ export class AuthService {
     this.isLoading.set(true);
 
     return this.http
-      .post<AuthResponse>(`${environment.apiUrl}/api/Auth/register`, registerData)
+      .post<AuthResponse>(`${environment.appUrl}/api/Auth/register`, registerData)
       .pipe(
         tap((response) => {
           this.isLoading.set(false);
@@ -69,7 +69,7 @@ export class AuthService {
   forgotPassword(email: string): Observable<any> {
     this.isLoading.set(true);
     return this.http
-      .post<any>(`${environment.apiUrl}/api/Auth/forgot-password`, { email })
+      .post<any>(`${environment.appUrl}/api/Auth/forgot-password`, { email })
       .pipe(tap(() => this.isLoading.set(false)));
   }
 
@@ -78,7 +78,15 @@ export class AuthService {
     this.isLoading.set(true);
     // Bạn sẽ gán endpoint thực tế sau; hiện tại gọi tới placeholder API
     return this.http
-      .post<any>(`${environment.apiUrl}/api/Auth/change-password`, payload)
+      .post<any>(`${environment.appUrl}/api/Auth/change-password`, payload)
+      .pipe(tap(() => this.isLoading.set(false)));
+  }
+
+  // Reset password using token from forgot-password email
+  resetPassword(payload: { token: string; newPassword: string }): Observable<any> {
+    this.isLoading.set(true);
+    return this.http
+      .post<any>(`${environment.appUrl}/api/Auth/reset-password`, payload)
       .pipe(tap(() => this.isLoading.set(false)));
   }
 

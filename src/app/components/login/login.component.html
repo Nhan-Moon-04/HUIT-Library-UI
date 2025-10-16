@@ -1,14 +1,14 @@
 <div class="login-container">
+    <div class="overlay"></div>
     <div class="login-wrapper">
         <!-- Header -->
         <div class="login-header">
             <div class="logo-section">
-                <div class="logo-placeholder">
-                    <i class="fas fa-university"></i>
-                </div>
+
                 <div class="university-info">
-                    <h1 class="university-name">TRƯỜNG ĐẠI HỌC CÔNG NGHIỆP TP.HCM</h1>
-                    <h2 class="system-name">HỆ THỐNG THƯ VIỆN ĐIỆN TỬ</h2>
+                    <h1 class="university-name">TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h1>
+                    <h2>TRUNG TÂM QUẢN LÝ THƯ VIỆN</h2>
+                    <h2 class="system-name">HỆ THỐNG QUẢN LÝ TÀI NGUYÊN PHÒNG HỌP</h2>
                 </div>
             </div>
         </div>
@@ -23,12 +23,10 @@
 
                 <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
                     <!-- Error Message -->
-                    @if (errorMessage()) {
-                    <div class="alert alert-error">
+                    <div *ngIf="errorMessage()" class="alert alert-error">
                         <i class="fas fa-exclamation-circle"></i>
                         {{ errorMessage() }}
                     </div>
-                    }
 
                     <!-- Mã đăng nhập -->
                     <div class="form-group">
@@ -39,12 +37,10 @@
                         <input type="text" id="maDangNhap" formControlName="maDangNhap" class="form-input"
                             [class.error]="isFieldInvalid('maDangNhap')"
                             placeholder="Nhập mã sinh viên hoặc mã nhân viên" autocomplete="username" />
-                        @if (isFieldInvalid('maDangNhap')) {
-                        <div class="error-message">
+                        <div *ngIf="isFieldInvalid('maDangNhap')" class="error-message">
                             <i class="fas fa-exclamation-triangle"></i>
                             {{ getFieldError('maDangNhap') }}
                         </div>
-                        }
                     </div>
 
                     <!-- Mật khẩu -->
@@ -62,39 +58,35 @@
                                 <i [class]="showPassword() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                             </button>
                         </div>
-                        @if (isFieldInvalid('matKhau')) {
-                        <div class="error-message">
+                        <div *ngIf="isFieldInvalid('matKhau')" class="error-message">
                             <i class="fas fa-exclamation-triangle"></i>
                             {{ getFieldError('matKhau') }}
                         </div>
-                        }
                     </div>
 
                     <!-- Submit Button -->
                     <button type="submit" class="submit-btn" [disabled]="loginForm.invalid || authService.isLoading()">
-                        @if (authService.isLoading()) {
-                        <i class="fas fa-spinner fa-spin"></i>
-                        Đang đăng nhập...
-                        } @else {
-                        <i class="fas fa-sign-in-alt"></i>
-                        Đăng nhập
-                        }
+                        <ng-container *ngIf="authService.isLoading(); else loginLabel">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Đang đăng nhập...
+                        </ng-container>
+                        <ng-template #loginLabel>
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </ng-template>
                     </button>
 
                     <!-- Links -->
                     <div class="form-links">
-                        <a href="/forgot-password" class="link">Quên mật khẩu?</a>
+                        <a routerLink="/forgot-password" class="link">Quên mật khẩu?</a>
                         <span class="separator">|</span>
-                        <a href="/register" class="link">Đăng ký tài khoản mới</a>
+                        <a routerLink="/register" class="link">Đăng ký tài khoản mới</a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="login-footer">
-            <p>&copy; 2024 Trường Đại học Công nghiệp TP.HCM - Thư viện điện tử</p>
-            <p>Hỗ trợ kỹ thuật: support@huit.edu.vn | Hotline: (028) 3857 4647</p>
-        </div>
+
+
     </div>
 </div>

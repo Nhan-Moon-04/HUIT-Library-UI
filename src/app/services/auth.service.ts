@@ -65,6 +65,23 @@ export class AuthService {
       );
   }
 
+  // Gửi yêu cầu lấy lại mật khẩu
+  forgotPassword(email: string): Observable<any> {
+    this.isLoading.set(true);
+    return this.http
+      .post<any>(`${environment.apiUrl}/api/Auth/forgot-password`, { email })
+      .pipe(tap(() => this.isLoading.set(false)));
+  }
+
+  // Thay đổi mật khẩu (placeholder) - payload: { currentPassword, newPassword }
+  changePassword(payload: { currentPassword: string; newPassword: string }): Observable<any> {
+    this.isLoading.set(true);
+    // Bạn sẽ gán endpoint thực tế sau; hiện tại gọi tới placeholder API
+    return this.http
+      .post<any>(`${environment.apiUrl}/api/Auth/change-password`, payload)
+      .pipe(tap(() => this.isLoading.set(false)));
+  }
+
   private handleAuthSuccess(response: AuthResponse): void {
     localStorage.setItem('auth_token', response.token);
     localStorage.setItem('current_user', JSON.stringify(response.user));

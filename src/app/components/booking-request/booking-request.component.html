@@ -1,0 +1,33 @@
+<div class="booking-page">
+    <h2>Yêu cầu mượn phòng</h2>
+
+    <div *ngIf="loading()" class="loading">Đang gửi...</div>
+    <div *ngIf="success()" class="success">{{ success() }}</div>
+    <div *ngIf="error()" class="error">{{ error() }}</div>
+
+    <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
+        <div class="form-row">
+            <label>Mã loại phòng</label>
+            <input formControlName="maLoaiPhong" type="number" />
+        </div>
+
+        <div class="form-row">
+            <label>Thời gian bắt đầu</label>
+            <input formControlName="thoiGianBatDau" type="datetime-local" />
+        </div>
+
+        <div class="form-row">
+            <label>Thời gian kết thúc</label>
+            <input formControlName="thoiGianKetThuc" type="datetime-local" />
+        </div>
+
+        <div class="form-row">
+            <label>Lý do</label>
+            <textarea formControlName="lyDo"></textarea>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn primary">Gửi yêu cầu</button>
+        </div>
+    </form>
+</div>

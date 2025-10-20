@@ -63,6 +63,15 @@ import { AuthService } from '../../services/auth.service';
             <h3>Yêu thích</h3>
             <p>Danh sách sách yêu thích</p>
           </div>
+          <div
+            class="feature-card"
+            (click)="router.navigate(['/booking/create'])"
+            style="cursor:pointer;"
+          >
+            <i class="fas fa-door-open"></i>
+            <h3>Đặt phòng</h3>
+            <p>Yêu cầu mượn phòng học/nhóm</p>
+          </div>
         </div>
       </main>
     </div>

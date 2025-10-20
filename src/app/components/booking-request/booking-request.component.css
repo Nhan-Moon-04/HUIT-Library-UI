@@ -1,0 +1,38 @@
+.booking-page {
+  max-width: 700px;
+  margin: 24px auto;
+  padding: 18px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.booking-page h2 {
+  margin-bottom: 12px;
+}
+.form-row {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.form-row label {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.form-row input,
+.form-row textarea {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.actions {
+  margin-top: 12px;
+}
+.loading {
+  color: #0a58ca;
+}
+.success {
+  color: #0a8f3a;
+}
+.error {
+  color: #c82333;
+}

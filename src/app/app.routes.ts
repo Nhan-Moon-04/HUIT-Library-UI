@@ -38,6 +38,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'booking/create',
+    loadComponent: () =>
+      import('./components/booking-request/booking-request.component').then(
+        (m) => m.BookingRequestComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'register',
     loadComponent: () =>
       import('./components/register/register.component').then((m) => m.RegisterComponent),

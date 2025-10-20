@@ -42,6 +42,7 @@ export class LoginComponent {
       this.errorMessage.set('');
       const loginData: LoginRequest = this.loginForm.value;
 
+      // Rely on authService.isLoading() (managed with finalize()) to control UI disabled state.
       this.authService.login(loginData).subscribe({
         next: (response) => {
           if (response.success) {
@@ -49,7 +50,8 @@ export class LoginComponent {
           }
         },
         error: (error) => {
-          this.errorMessage.set(error.error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+          // Show server-provided message when available
+          this.errorMessage.set(error?.error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
         },
       });
     } else {

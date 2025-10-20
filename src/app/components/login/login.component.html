@@ -36,7 +36,8 @@
                         </label>
                         <input type="text" id="maDangNhap" formControlName="maDangNhap" class="form-input"
                             [class.error]="isFieldInvalid('maDangNhap')"
-                            placeholder="Nhập mã sinh viên hoặc mã nhân viên" autocomplete="username" />
+                            placeholder="Nhập mã sinh viên hoặc mã nhân viên" autocomplete="username"
+                            [disabled]="authService.isLoading()" />
                         <div *ngIf="isFieldInvalid('maDangNhap')" class="error-message">
                             <i class="fas fa-exclamation-triangle"></i>
                             {{ getFieldError('maDangNhap') }}
@@ -52,9 +53,10 @@
                         <div class="password-input-wrapper">
                             <input [type]="showPassword() ? 'text' : 'password'" id="matKhau" formControlName="matKhau"
                                 class="form-input" [class.error]="isFieldInvalid('matKhau')" placeholder="Nhập mật khẩu"
-                                autocomplete="current-password" />
+                                autocomplete="current-password" [disabled]="authService.isLoading()" />
                             <button type="button" class="password-toggle" (click)="togglePasswordVisibility()"
-                                [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
+                                [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+                                [disabled]="authService.isLoading()">
                                 <i [class]="showPassword() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                             </button>
                         </div>

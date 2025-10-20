@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { LoginRequest, RegisterRequest, AuthResponse, User } from '../models/auth.model';
@@ -42,11 +42,11 @@ export class AuthService {
 
     return this.http.post<AuthResponse>(`${environment.appUrl}/api/Auth/login`, loginData).pipe(
       tap((response) => {
-        this.isLoading.set(false);
         if (response.success) {
           this.handleAuthSuccess(response);
         }
-      })
+      }),
+      finalize(() => this.isLoading.set(false))
     );
   }
 
@@ -57,11 +57,11 @@ export class AuthService {
       .post<AuthResponse>(`${environment.appUrl}/api/Auth/register`, registerData)
       .pipe(
         tap((response) => {
-          this.isLoading.set(false);
           if (response.success) {
             this.handleAuthSuccess(response);
           }
-        })
+        }),
+        finalize(() => this.isLoading.set(false))
       );
   }
 
@@ -70,7 +70,7 @@ export class AuthService {
     this.isLoading.set(true);
     return this.http
       .post<any>(`${environment.appUrl}/api/Auth/forgot-password`, { email })
-      .pipe(tap(() => this.isLoading.set(false)));
+      .pipe(finalize(() => this.isLoading.set(false)));
   }
 
   // Thay đổi mật khẩu (placeholder) - payload: { currentPassword, newPassword }
@@ -79,7 +79,7 @@ export class AuthService {
     // Bạn sẽ gán endpoint thực tế sau; hiện tại gọi tới placeholder API
     return this.http
       .post<any>(`${environment.appUrl}/api/Auth/change-password`, payload)
-      .pipe(tap(() => this.isLoading.set(false)));
+      .pipe(finalize(() => this.isLoading.set(false)));
   }
 
   // Reset password using token from forgot-password email
@@ -87,7 +87,7 @@ export class AuthService {
     this.isLoading.set(true);
     return this.http
       .post<any>(`${environment.appUrl}/api/Auth/reset-password`, payload)
-      .pipe(tap(() => this.isLoading.set(false)));
+      .pipe(finalize(() => this.isLoading.set(false)));
   }
 
   private handleAuthSuccess(response: AuthResponse): void {

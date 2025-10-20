@@ -45,23 +45,23 @@ import { AuthService } from '../../services/auth.service';
         <div class="features-grid">
           <div class="feature-card">
             <i class="fas fa-search"></i>
-            <h3>Tìm kiếm sách</h3>
-            <p>Tìm kiếm tài liệu, sách trong thư viện</p>
+            <h3>Tìm kiếm</h3>
+            <p>Tìm kiếm</p>
           </div>
           <div class="feature-card">
             <i class="fas fa-bookmark"></i>
-            <h3>Sách đã mượn</h3>
+            <h3>Phòng Nhân</h3>
             <p>Xem danh sách sách đang mượn</p>
           </div>
           <div class="feature-card">
             <i class="fas fa-history"></i>
             <h3>Lịch sử mượn</h3>
-            <p>Xem lịch sử mượn trả sách</p>
+            <p>Xem lịch sử mượn</p>
           </div>
           <div class="feature-card">
             <i class="fas fa-heart"></i>
             <h3>Yêu thích</h3>
-            <p>Danh sách sách yêu thích</p>
+            <p>Yêu thích</p>
           </div>
           <div
             class="feature-card"

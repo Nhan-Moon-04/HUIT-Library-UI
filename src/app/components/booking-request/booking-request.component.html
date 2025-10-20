@@ -1,14 +1,39 @@
 <div class="booking-page">
     <h2>Yêu cầu mượn phòng</h2>
 
-    <div *ngIf="loading()" class="loading">Đang gửi...</div>
-    <div *ngIf="success()" class="success">{{ success() }}</div>
-    <div *ngIf="error()" class="error">{{ error() }}</div>
+    @if (loading()) {
+    <div class="loading">Đang gửi...</div>
+    }
+    @if (success()) {
+    <div class="success">{{ success() }}</div>
+    }
+    @if (error()) {
+    <div class="error">{{ error() }}</div>
+    }
 
     <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
         <div class="form-row">
-            <label>Mã loại phòng</label>
-            <input formControlName="maLoaiPhong" type="number" />
+            <label>Loại phòng</label>
+            <select formControlName="maLoaiPhong">
+                <option value="">-- Chọn loại phòng --</option>
+                @for (roomType of roomTypes(); track roomType.maLoaiPhong) {
+                <option [value]="roomType.maLoaiPhong">
+                    {{ roomType.tenLoaiPhong }} - {{ roomType.viTri }}
+                </option>
+                }
+            </select>
+            @if (form.get('maLoaiPhong')?.value) {
+            <div class="room-info">
+                @if (getSelectedRoomType(); as selectedRoom) {
+                <div class="selected-room-details">
+                    <p><strong>Mô tả:</strong> {{ selectedRoom.moTa }}</p>
+                    <p><strong>Trang thiết bị:</strong> {{ selectedRoom.trangThietBi }}</p>
+                    <p><strong>Số lượng chỗ ngồi:</strong> {{ selectedRoom.soLuongChoNgoi }}</p>
+                    <p><strong>Thời gian sử dụng:</strong> {{ selectedRoom.thoiGianSuDung }}</p>
+                </div>
+                }
+            </div>
+            }
         </div>
 
         <div class="form-row">
@@ -22,7 +47,7 @@
         </div>
 
         <div class="form-row">
-            <label>Lý do</label>
+            <label>Mục đích sử dụng</label>
             <textarea formControlName="lyDo"></textarea>
         </div>
 

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { BookingService } from '../../services/booking.service';
+import { BookingService, LoaiPhong } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -26,8 +26,27 @@ export class BookingRequestComponent implements OnInit {
   loading = signal(false);
   success = signal<string | null>(null);
   error = signal<string | null>(null);
+  roomTypes = signal<LoaiPhong[]>([]);
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadRoomTypes();
+  }
+
+  loadRoomTypes(): void {
+    this.bookingService.getRoomTypes().subscribe({
+      next: (types) => {
+        this.roomTypes.set(types);
+      },
+      error: (err) => {
+        this.error.set('Không thể tải danh sách loại phòng.');
+      },
+    });
+  }
+
+  getSelectedRoomType(): LoaiPhong | undefined {
+    const selectedId = Number(this.form.get('maLoaiPhong')?.value);
+    return this.roomTypes().find((rt) => rt.maLoaiPhong === selectedId);
+  }
 
   submit() {
     if (this.form.invalid) {

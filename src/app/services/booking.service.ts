@@ -10,11 +10,27 @@ export interface CreateBookingPayload {
   lyDo?: string;
 }
 
+export interface LoaiPhong {
+  maLoaiPhong: number;
+  tenLoaiPhong: string;
+  viTri: string;
+  moTa: string;
+  trangThietBi: string;
+  soLuongChoNgoi: string;
+  thoiGianSuDung: string;
+  thoiLuongToiDa: number | null;
+  phongs: any[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private http = inject(HttpClient);
 
   createBooking(payload: CreateBookingPayload): Observable<any> {
     return this.http.post<any>(`${environment.appUrl}/api/Booking/create`, payload);
+  }
+
+  getRoomTypes(): Observable<LoaiPhong[]> {
+    return this.http.get<LoaiPhong[]>(`${environment.appUrl}/api/LoaiPhong/getall`);
   }
 }

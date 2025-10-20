@@ -19,7 +19,8 @@
   margin-bottom: 6px;
 }
 .form-row input,
-.form-row textarea {
+.form-row textarea,
+.form-row select {
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -35,4 +36,17 @@
 }
 .error {
   color: #c82333;
+}
+.room-info {
+  margin-top: 8px;
+}
+.selected-room-details {
+  background: #f8f9fa;
+  padding: 12px;
+  border-radius: 4px;
+  border-left: 4px solid #0a58ca;
+}
+.selected-room-details p {
+  margin: 4px 0;
+  font-size: 14px;
 }

@@ -72,6 +72,15 @@ import { AuthService } from '../../services/auth.service';
             <h3>Đặt phòng</h3>
             <p>Yêu cầu mượn phòng học/nhóm</p>
           </div>
+          <div
+            class="feature-card"
+            (click)="router.navigate(['/notifications'])"
+            style="cursor:pointer;"
+          >
+            <i class="fas fa-bell"></i>
+            <h3>Thông báo</h3>
+            <p>Xem thông báo và cập nhật từ thư viện</p>
+          </div>
         </div>
       </main>
     </div>

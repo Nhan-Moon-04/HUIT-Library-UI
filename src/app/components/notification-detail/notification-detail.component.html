@@ -1,0 +1,62 @@
+<div class="notification-detail-page">
+    <div class="header">
+        <button class="back-btn" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i>
+            Quay lại
+        </button>
+        <h2>Chi tiết thông báo</h2>
+    </div>
+
+    @if (loading()) {
+    <div class="loading">Đang tải thông báo...</div>
+    }
+
+    @if (error()) {
+    <div class="error">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{ error() }}
+    </div>
+    }
+
+    @if (!loading() && notification()) {
+    <div class="notification-detail">
+        <div class="notification-status">
+            @if (!notification()!.daDoc) {
+            <span class="unread-badge">Chưa đọc</span>
+            } @else {
+            <span class="read-badge">Đã đọc</span>
+            }
+        </div>
+
+        <div class="notification-header">
+            <h1>{{ notification()!.tieuDe }}</h1>
+            <div class="notification-meta">
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ formatDate(notification()!.thoiGian) }}</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-hashtag"></i>
+                    <span>ID: {{ notification()!.maThongBao }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="notification-content">
+            <h3>Nội dung</h3>
+            <div class="content-text">
+                {{ notification()!.noiDung }}
+            </div>
+        </div>
+
+        @if (notification()!.ghiChu) {
+        <div class="notification-note">
+            <h3>Ghi chú</h3>
+            <div class="note-text">
+                {{ notification()!.ghiChu }}
+            </div>
+        </div>
+        }
+    </div>
+    }
+</div>

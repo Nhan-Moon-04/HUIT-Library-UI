@@ -66,6 +66,27 @@
                         </div>
                     </div>
 
+                    <!-- Captcha -->
+                    <div class="form-row captcha-row">
+                        <div class="form-group captcha-input-group">
+                            <label for="captcha" class="form-label">Nhập mã</label>
+                            <input id="captcha" type="text" formControlName="captcha" class="form-input"
+                                placeholder="Nhập mã captcha" autocomplete="off" [disabled]="authService.isLoading()" />
+                            <div *ngIf="isFieldInvalid('captcha')" class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Vui lòng nhập mã captcha
+                            </div>
+                        </div>
+
+                        <div class="captcha-box" title="Nhấn refresh để thay mã">
+                            <div class="captcha-text">{{ captchaText() }}</div>
+                            <button type="button" class="captcha-refresh" (click)="refreshCaptcha()"
+                                aria-label="Làm mới mã">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Submit Button -->
                     <button type="submit" class="submit-btn" [disabled]="loginForm.invalid || authService.isLoading()">
                         <ng-container *ngIf="authService.isLoading(); else loginLabel">
@@ -81,8 +102,6 @@
                     <!-- Links -->
                     <div class="form-links">
                         <a routerLink="/forgot-password" class="link">Quên mật khẩu?</a>
-                        <span class="separator">|</span>
-                        <a routerLink="/register" class="link">Đăng ký tài khoản mới</a>
                     </div>
                 </form>
             </div>

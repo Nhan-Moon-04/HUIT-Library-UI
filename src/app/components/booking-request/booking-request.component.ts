@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BookingService, LoaiPhong } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-booking-request',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgIf],
   templateUrl: './booking-request.component.html',
   styleUrls: ['./booking-request.component.css'],
 })
@@ -30,6 +30,16 @@ export class BookingRequestComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRoomTypes();
+  }
+
+  goBack(): void {
+    // navigate back to main dashboard
+    // using router via window.location fallback to keep this component standalone-friendly
+    try {
+      window.history.back();
+    } catch (e) {
+      window.location.href = '/';
+    }
   }
 
   loadRoomTypes(): void {
@@ -81,9 +91,47 @@ export class BookingRequestComponent implements OnInit {
         this.form.reset();
       },
       error: (err) => {
-        this.error.set(err?.error?.message || 'Lỗi khi gửi yêu cầu.');
+        // Try to extract detailed error information from API
+        let msg = 'Lỗi khi gửi yêu cầu.';
+        const body = err?.error;
+        if (!body) {
+          msg = err?.message || msg;
+        } else if (typeof body === 'string') {
+          msg = body;
+        } else if (body.message) {
+          msg = body.message;
+        } else if (body.errors && typeof body.errors === 'object') {
+          // model validation object: collect messages
+          const parts: string[] = [];
+          for (const k of Object.keys(body.errors)) {
+            const v = body.errors[k];
+            if (Array.isArray(v)) parts.push(...v.map((s) => `${k}: ${s}`));
+            else parts.push(`${k}: ${v}`);
+          }
+          msg = parts.join(' \n ');
+        } else {
+          // fallback to JSON stringify for developer-friendly info
+          try {
+            msg = JSON.stringify(body);
+          } catch (e) {
+            msg = String(body);
+          }
+        }
+        this.error.set(msg);
         this.loading.set(false);
       },
     });
+  }
+
+  // helper to validate times client-side
+  isTimeRangeValid(): boolean {
+    const s = this.form.get('thoiGianBatDau')?.value;
+    const e = this.form.get('thoiGianKetThuc')?.value;
+    if (!s || !e) return true;
+    try {
+      return new Date(s) < new Date(e);
+    } catch (err) {
+      return false;
+    }
   }
 }

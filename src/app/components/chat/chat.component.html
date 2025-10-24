@@ -6,7 +6,7 @@
 
     <div class="chat-panel" *ngIf="isOpen()">
         <div class="chat-header">Trợ lý thư viện</div>
-        <div class="chat-body">
+        <div class="chat-body" #chatBody>
             <div *ngFor="let m of messages()" class="message" [class.bot]="m.laBot">
                 <div class="content">{{ m.noiDung }}</div>
             </div>

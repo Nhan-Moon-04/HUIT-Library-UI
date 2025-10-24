@@ -39,47 +39,74 @@ import { AuthService } from '../../services/auth.service';
       <main class="dashboard-main">
         <div class="welcome-section">
           <h2>Chào mừng, {{ authService.currentUser()?.hoTen }}!</h2>
-          <p>Bạn đang truy cập với quyền sinh viên</p>
+          <p>Bạn đang truy cập với quyền sinh viên — Trung tâm Thông tin Thư viện</p>
         </div>
 
         <div class="features-grid">
-          <div class="feature-card">
-            <i class="fas fa-search"></i>
-            <h3>Tìm kiếm</h3>
-            <p>Tìm kiếm</p>
-          </div>
-          <div class="feature-card">
-            <i class="fas fa-bookmark"></i>
-            <h3>Phòng Nhân</h3>
-            <p>Xem danh sách sách đang mượn</p>
-          </div>
-          <div class="feature-card">
-            <i class="fas fa-history"></i>
-            <h3>Lịch sử mượn</h3>
-            <p>Xem lịch sử mượn</p>
-          </div>
-          <div class="feature-card">
-            <i class="fas fa-heart"></i>
-            <h3>Yêu thích</h3>
-            <p>Yêu thích</p>
-          </div>
+          <!-- Row 1 -->
           <div
-            class="feature-card"
+            class="feature-card feature-search"
+            (click)="router.navigate(['/search'])"
+            style="cursor:pointer;"
+          >
+            <div class="icon-circle cold">
+              <i class="fas fa-search"></i>
+            </div>
+            <h3>Tìm kiếm</h3>
+            <p>Tìm sách, tài liệu và nguồn học</p>
+          </div>
+
+          <div
+            class="feature-card feature-room"
             (click)="router.navigate(['/booking/create'])"
             style="cursor:pointer;"
           >
-            <i class="fas fa-door-open"></i>
+            <div class="icon-circle warm">
+              <i class="fas fa-door-open"></i>
+            </div>
             <h3>Đặt phòng</h3>
-            <p>Yêu cầu mượn phòng học/nhóm</p>
+            <p>Yêu cầu phòng học/nhóm</p>
           </div>
+
           <div
-            class="feature-card"
+            class="feature-card feature-loans"
+            (click)="router.navigate(['/loans'])"
+            style="cursor:pointer;"
+          >
+            <div class="icon-circle cold">
+              <i class="fas fa-book-reader"></i>
+            </div>
+            <h3>Phòng Nhận / Mượn</h3>
+            <p>Danh sách sách đang mượn & quản lý</p>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="feature-card feature-history">
+            <div class="icon-circle warm">
+              <i class="fas fa-history"></i>
+            </div>
+            <h3>Lịch sử mượn</h3>
+            <p>Xem lịch sử mượn tài liệu</p>
+          </div>
+
+          <div class="feature-card feature-fav">
+            <div class="icon-circle cold">
+              <i class="fas fa-heart"></i>
+            </div>
+            <h3>Yêu thích</h3>
+            <p>Danh sách sách bạn đã đánh dấu</p>
+          </div>
+
+          <div
+            class="feature-card feature-notify"
             (click)="router.navigate(['/notifications'])"
             style="cursor:pointer;"
           >
-            <i class="fas fa-bell"></i>
+            <div class="icon-circle warm">
+              <i class="fas fa-bell"></i>
+            </div>
             <h3>Thông báo</h3>
-            <p>Xem thông báo và cập nhật từ thư viện</p>
+            <p>Cập nhật từ thư viện</p>
           </div>
         </div>
       </main>
@@ -197,14 +224,15 @@ import { AuthService } from '../../services/auth.service';
       }
 
       .welcome-section h2 {
-        color: #2c3e50;
-        font-size: 32px;
-        margin: 0 0 10px 0;
+        color: #213547;
+        font-size: 34px;
+        margin: 0 0 8px 0;
+        font-weight: 700;
       }
 
       .welcome-section p {
-        color: #7f8c8d;
-        font-size: 16px;
+        color: #66788a;
+        font-size: 15px;
         margin: 0;
       }
 
@@ -215,36 +243,56 @@ import { AuthService } from '../../services/auth.service';
       }
 
       .feature-card {
-        background: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(180deg, #ffffff, #fffdf9);
+        padding: 22px 20px;
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(13, 38, 63, 0.06);
         text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition: transform 0.22s ease, box-shadow 0.22s ease;
         cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        min-height: 160px;
       }
 
       .feature-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transform: translateY(-6px);
+        box-shadow: 0 14px 40px rgba(13, 38, 63, 0.12);
       }
 
-      .feature-card i {
-        font-size: 48px;
-        color: #3498db;
-        margin-bottom: 20px;
+      .icon-circle {
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 28px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      }
+
+      .icon-circle.cold {
+        background: linear-gradient(135deg, #2aa4f4, #1e78d7);
+      }
+      .icon-circle.warm {
+        background: linear-gradient(135deg, #ff7a18, #ff4e00);
       }
 
       .feature-card h3 {
-        color: #2c3e50;
-        margin: 0 0 12px 0;
-        font-size: 20px;
+        color: #223443;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
       }
 
       .feature-card p {
-        color: #7f8c8d;
+        color: #6b7b86;
         margin: 0;
-        line-height: 1.5;
+        font-size: 13px;
+        line-height: 1.45;
       }
 
       @media (max-width: 768px) {

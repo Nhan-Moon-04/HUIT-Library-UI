@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, effect, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from './chat.service';
@@ -29,6 +29,7 @@ export class ChatComponent {
   messages = signal<Message[]>([]);
   // Use a single session id per user (or 0 for anonymous). We'll generate a small random id for demo if not logged in.
   maPhienChat = signal<number>(Math.floor(Math.random() * 100000));
+  @ViewChild('chatBody') private chatBodyRef!: ElementRef<HTMLDivElement>;
 
   toggle(): void {
     this.isOpen.set(!this.isOpen());
@@ -81,7 +82,44 @@ export class ChatComponent {
 
   // Auto-open after login
   constructor() {
-    // Load the latest session and messages for the current user (if any)
+    // Initial load (works for anonymous or already-logged-in users)
+    this.loadLatestSession();
+
+    // React to login/logout changes so chat updates immediately without page reload
+    effect(() => {
+      const loggedIn = this.auth.isLoggedIn();
+      if (loggedIn) {
+        // user just logged in -> reload latest session & messages
+        this.loadLatestSession();
+      } else {
+        // user logged out -> clear messages and reset session id
+        this.messages.set([]);
+        this.maPhienChat.set(Math.floor(Math.random() * 100000));
+        this.isOpen.set(false);
+      }
+    });
+
+    // Auto-scroll when messages change
+    effect(() => {
+      // read messages signal to track changes
+      this.messages();
+      // only scroll automatically if panel is open
+      if (this.isOpen()) {
+        // scroll to bottom after DOM updates
+        this.scrollToBottom();
+      }
+    });
+
+    // When user opens the chat panel, ensure we scroll to the latest messages
+    effect(() => {
+      if (this.isOpen()) {
+        // wait a tick so the chatBody ViewChild is available
+        setTimeout(() => this.scrollToBottom(), 0);
+      }
+    });
+  }
+
+  private loadLatestSession(): void {
     this.chatService.getLatestSessionWithMessages().subscribe({
       next: (res) => {
         const data = res?.data;
@@ -99,10 +137,18 @@ export class ChatComponent {
               thoiGianGui: m.thoiGianGui,
               laBot: !!m.laBot,
             }));
+            // Prefer sorting by timestamp when available (old -> new)
+            if (mapped.some((x: any) => x.thoiGianGui)) {
+              mapped.sort(
+                (a: any, b: any) =>
+                  new Date(a.thoiGianGui).getTime() - new Date(b.thoiGianGui).getTime()
+              );
+            } else if (mapped.every((x: any) => typeof x.maTinNhan === 'number')) {
+              // If no timestamp, try sorting by message id (ascending)
+              mapped.sort((a: any, b: any) => (a.maTinNhan || 0) - (b.maTinNhan || 0));
+            }
             this.messages.set(mapped);
           } else if (res?.isNewSession && data.messages && data.messages.length === 0) {
-            // Some servers return isNewSession true and no messages; server might also return a welcome message.
-            // If there are no messages, optionally push a default welcome message from server.message
             const serverMsg = res?.message || 'Xin chào! Tôi có thể giúp gì cho bạn?';
             this.messages.set([
               {
@@ -125,5 +171,18 @@ export class ChatComponent {
         if (this.auth.isLoggedIn()) this.isOpen.set(true);
       },
     });
+  }
+
+  private scrollToBottom(): void {
+    try {
+      const el = this.chatBodyRef?.nativeElement;
+      if (!el) return;
+      // ensure this runs after DOM update
+      setTimeout(() => {
+        el.scrollTop = el.scrollHeight;
+      }, 0);
+    } catch (e) {
+      // ignore
+    }
   }
 }

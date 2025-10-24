@@ -9,6 +9,23 @@
 .booking-page h2 {
   margin-bottom: 12px;
 }
+.booking-page .top-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.back-btn {
+  background: transparent;
+  border: none;
+  color: #1e78d7;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+.back-btn:hover {
+  background: rgba(30, 120, 215, 0.06);
+}
 .form-row {
   margin-bottom: 12px;
   display: flex;
@@ -24,6 +41,31 @@
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+.two-cols {
+  display: flex;
+  gap: 12px;
+}
+.two-cols > div {
+  flex: 1;
+}
+.req {
+  color: #d9534f;
+  font-weight: 600;
+  font-size: 12px;
+  margin-left: 6px;
+}
+.field-error {
+  color: #c82333;
+  font-size: 13px;
+  margin-top: 6px;
+}
+.prewrap {
+  white-space: pre-wrap;
+}
+.invalid {
+  border-color: #e06a6a;
+  box-shadow: 0 0 0 3px rgba(224, 106, 106, 0.06);
 }
 .actions {
   margin-top: 12px;
@@ -49,4 +91,20 @@
 .selected-room-details p {
   margin: 4px 0;
   font-size: 14px;
+}
+.btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.btn.primary {
+  background: linear-gradient(135deg, #ff7a18, #ff4e00);
+  color: white;
+  font-weight: 700;
+}
+.btn.outline {
+  background: transparent;
+  border: 1px solid #dfe6ea;
+  color: #223443;
 }

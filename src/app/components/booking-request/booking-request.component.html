@@ -1,58 +1,106 @@
-<div class="booking-page">
-    <h2>Yêu cầu mượn phòng</h2>
+<div class="booking-page modern">
+    <div class="top-row">
+        <button class="back-btn" type="button" (click)="goBack()">← Trở về</button>
+        <div class="title-area">
+            <h2>Yêu cầu mượn phòng</h2>
+            <p class="subtitle">Gửi yêu cầu đặt phòng học / nhóm tại Thư viện HUIT</p>
+        </div>
+    </div>
 
-    @if (loading()) {
-    <div class="loading">Đang gửi...</div>
-    }
-    @if (success()) {
-    <div class="success">{{ success() }}</div>
-    }
-    @if (error()) {
-    <div class="error">{{ error() }}</div>
-    }
+    <div class="messages-row">
+        <div *ngIf="loading()" class="loading">Đang gửi...</div>
+        <div *ngIf="success()" class="success">{{ success() }}</div>
+        <div *ngIf="error()" class="error prewrap">{{ error() }}</div>
+    </div>
 
     <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
-        <div class="form-row">
-            <label>Loại phòng</label>
-            <select formControlName="maLoaiPhong">
-                <option value="">-- Chọn loại phòng --</option>
-                @for (roomType of roomTypes(); track roomType.maLoaiPhong) {
-                <option [value]="roomType.maLoaiPhong">
-                    {{ roomType.tenLoaiPhong }} - {{ roomType.viTri }}
-                </option>
-                }
-            </select>
-            @if (form.get('maLoaiPhong')?.value) {
-            <div class="room-info">
-                @if (getSelectedRoomType(); as selectedRoom) {
-                <div class="selected-room-details">
-                    <p><strong>Mô tả:</strong> {{ selectedRoom.moTa }}</p>
-                    <p><strong>Trang thiết bị:</strong> {{ selectedRoom.trangThietBi }}</p>
-                    <p><strong>Số lượng chỗ ngồi:</strong> {{ selectedRoom.soLuongChoNgoi }}</p>
-                    <p><strong>Thời gian sử dụng:</strong> {{ selectedRoom.thoiGianSuDung }}</p>
+        <div class="form-grid">
+            <div class="form-col form-left">
+                <label>Loại phòng <span class="req"
+                        *ngIf="form.get('maLoaiPhong')?.hasError('required') && form.get('maLoaiPhong')?.touched">(bắt
+                        buộc)</span></label>
+                <div class="select-wrap">
+                    <select formControlName="maLoaiPhong"
+                        [class.invalid]="form.get('maLoaiPhong')?.invalid && form.get('maLoaiPhong')?.touched">
+                        <option value="">-- Chọn loại phòng --</option>
+                        @for (roomType of roomTypes(); track roomType.maLoaiPhong) {
+                        <option [value]="roomType.maLoaiPhong">{{ roomType.tenLoaiPhong }} - {{ roomType.viTri }}
+                        </option>
+                        }
+                    </select>
+                    <i class="fas fa-chevron-down select-icon"></i>
                 </div>
-                }
+                <div class="field-error" *ngIf="form.get('maLoaiPhong')?.invalid && form.get('maLoaiPhong')?.touched">
+                    Loại phòng là bắt buộc.</div>
+
+                <div class="two-cols">
+                    <div>
+                        <label>Thời gian bắt đầu <span class="req"
+                                *ngIf="form.get('thoiGianBatDau')?.hasError('required') && form.get('thoiGianBatDau')?.touched">(bắt
+                                buộc)</span></label>
+                        <input formControlName="thoiGianBatDau" type="datetime-local"
+                            [class.invalid]="form.get('thoiGianBatDau')?.invalid && form.get('thoiGianBatDau')?.touched" />
+                        <div class="field-error"
+                            *ngIf="form.get('thoiGianBatDau')?.invalid && form.get('thoiGianBatDau')?.touched">Vui lòng
+                            chọn thời gian bắt đầu.</div>
+                    </div>
+
+                    <div>
+                        <label>Thời gian kết thúc <span class="req"
+                                *ngIf="form.get('thoiGianKetThuc')?.hasError('required') && form.get('thoiGianKetThuc')?.touched">(bắt
+                                buộc)</span></label>
+                        <input formControlName="thoiGianKetThuc" type="datetime-local"
+                            [class.invalid]="form.get('thoiGianKetThuc')?.invalid && form.get('thoiGianKetThuc')?.touched" />
+                        <div class="field-error"
+                            *ngIf="form.get('thoiGianKetThuc')?.invalid && form.get('thoiGianKetThuc')?.touched">Vui
+                            lòng chọn thời gian kết thúc.</div>
+                    </div>
+                </div>
+
+                <div *ngIf="!isTimeRangeValid()" class="field-error">Thời gian kết thúc phải lớn hơn thời gian bắt đầu.
+                </div>
+
+                <div class="form-row">
+                    <label>Mục đích sử dụng</label>
+                    <textarea formControlName="lyDo" placeholder="Ví dụ: Học nhóm, làm báo cáo, ôn thi..."></textarea>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="btn primary" [disabled]="loading() || !isTimeRangeValid()">Gửi yêu
+                        cầu</button>
+                    <button type="button" class="btn outline" (click)="form.reset()">Reset</button>
+                </div>
             </div>
-            }
-        </div>
 
-        <div class="form-row">
-            <label>Thời gian bắt đầu</label>
-            <input formControlName="thoiGianBatDau" type="datetime-local" />
-        </div>
+            <aside class="form-col form-right">
+                <div class="panel">
+                    <h4>Thông tin phòng</h4>
+                    @if (form.get('maLoaiPhong')?.value) {
+                    @if (getSelectedRoomType(); as selectedRoom) {
+                    <div class="selected-room-details">
+                        <p><strong>Tên:</strong> {{ selectedRoom.tenLoaiPhong }}</p>
+                        <p><strong>Mô tả:</strong> {{ selectedRoom.moTa }}</p>
+                        <p><strong>Vị trí:</strong> {{ selectedRoom.viTri }}</p>
+                        <p><strong>Trang thiết bị:</strong> {{ selectedRoom.trangThietBi }}</p>
+                        <p><strong>Số chỗ:</strong> {{ selectedRoom.soLuongChoNgoi }}</p>
+                        <p><strong>Thời gian sử dụng:</strong> {{ selectedRoom.thoiGianSuDung }}</p>
+                    </div>
+                    }
+                    }
+                    @if (!form.get('maLoaiPhong')?.value) {
+                    <p class="muted">Chọn loại phòng để xem chi tiết và yêu cầu.</p>
+                    }
 
-        <div class="form-row">
-            <label>Thời gian kết thúc</label>
-            <input formControlName="thoiGianKetThuc" type="datetime-local" />
-        </div>
-
-        <div class="form-row">
-            <label>Mục đích sử dụng</label>
-            <textarea formControlName="lyDo"></textarea>
-        </div>
-
-        <div class="actions">
-            <button type="submit" class="btn primary">Gửi yêu cầu</button>
+                    <hr />
+                    <h5>Tóm tắt yêu cầu</h5>
+                    <div class="summary">
+                        <p><strong>Loại phòng:</strong> {{ getSelectedRoomType()?.tenLoaiPhong || '-' }}</p>
+                        <p><strong>Bắt đầu:</strong> {{ form.value.thoiGianBatDau || '-' }}</p>
+                        <p><strong>Kết thúc:</strong> {{ form.value.thoiGianKetThuc || '-' }}</p>
+                        <p><strong>Mục đích:</strong> {{ form.value.lyDo || '-' }}</p>
+                    </div>
+                </div>
+            </aside>
         </div>
     </form>
 </div>

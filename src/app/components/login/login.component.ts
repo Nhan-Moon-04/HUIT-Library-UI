@@ -50,6 +50,11 @@ export class LoginComponent {
         // đánh dấu captcha là touched để hiện lỗi
         this.loginForm.get('captcha')?.setErrors({ incorrect: true });
         this.loginForm.get('captcha')?.markAsTouched();
+        // thay đổi captcha sau khi nhập sai
+        this.generateCaptcha();
+        // xóa mật khẩu để người dùng nhập lại
+        this.loginForm.get('matKhau')?.setValue('');
+        this.loginForm.get('matKhau')?.markAsUntouched();
         return;
       }
       this.errorMessage.set('');
@@ -65,6 +70,11 @@ export class LoginComponent {
         error: (error) => {
           // Show server-provided message when available
           this.errorMessage.set(error?.error?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+          // refresh captcha on any server-side login failure (wrong credentials, etc.)
+          this.generateCaptcha();
+          // clear password so user can retype
+          this.loginForm.get('matKhau')?.setValue('');
+          this.loginForm.get('matKhau')?.markAsUntouched();
         },
       });
     } else {

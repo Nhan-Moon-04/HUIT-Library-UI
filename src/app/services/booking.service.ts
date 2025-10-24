@@ -6,7 +6,6 @@ import { environment } from '../../environments/environment';
 export interface CreateBookingPayload {
   maLoaiPhong: number;
   thoiGianBatDau: string; // ISO string
-  thoiGianKetThuc: string; // ISO string
   lyDo?: string;
 }
 

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BookingService, LoaiPhong } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
@@ -7,7 +7,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-booking-request',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIf],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './booking-request.component.html',
   styleUrls: ['./booking-request.component.css'],
 })
@@ -18,8 +18,8 @@ export class BookingRequestComponent implements OnInit {
 
   form = this.fb.group({
     maLoaiPhong: [null, [Validators.required]],
-    thoiGianBatDau: ['', [Validators.required]],
-    thoiGianKetThuc: ['', [Validators.required]],
+    ngayBatDau: ['', [Validators.required]],
+    gioBatDau: ['', [Validators.required]],
     lyDo: [''],
   });
 
@@ -58,6 +58,25 @@ export class BookingRequestComponent implements OnInit {
     return this.roomTypes().find((rt) => rt.maLoaiPhong === selectedId);
   }
 
+  getFormattedDateTime(): string {
+    const ngay = this.form.value.ngayBatDau;
+    const gio = this.form.value.gioBatDau;
+    if (!ngay || !gio) return '-';
+
+    try {
+      const date = new Date(`${ngay}T${gio}`);
+      return date.toLocaleString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return `${ngay} ${gio}`;
+    }
+  }
+
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -74,14 +93,21 @@ export class BookingRequestComponent implements OnInit {
     this.error.set(null);
     this.success.set(null);
 
-    const startRaw = this.form.value.thoiGianBatDau as string | null | undefined;
-    const endRaw = this.form.value.thoiGianKetThuc as string | null | undefined;
+    const ngayBatDau = this.form.value.ngayBatDau as string | null | undefined;
+    const gioBatDau = this.form.value.gioBatDau as string | null | undefined;
+
+    // Kết hợp ngày và giờ
+    let thoiGianBatDau: string;
+    if (ngayBatDau && gioBatDau) {
+      thoiGianBatDau = new Date(`${ngayBatDau}T${gioBatDau}`).toISOString();
+    } else {
+      thoiGianBatDau = new Date().toISOString();
+    }
 
     const payload = {
       maLoaiPhong: Number(this.form.value.maLoaiPhong),
-      thoiGianBatDau: startRaw ? new Date(startRaw).toISOString() : new Date().toISOString(),
-      thoiGianKetThuc: endRaw ? new Date(endRaw).toISOString() : new Date().toISOString(),
-      lyDo: this.form.value.lyDo || undefined,
+      thoiGianBatDau: thoiGianBatDau,
+      lyDo: this.form.value.lyDo || 'Không có mô tả',
     } as const;
 
     this.bookingService.createBooking(payload).subscribe({
@@ -121,17 +147,5 @@ export class BookingRequestComponent implements OnInit {
         this.loading.set(false);
       },
     });
-  }
-
-  // helper to validate times client-side
-  isTimeRangeValid(): boolean {
-    const s = this.form.get('thoiGianBatDau')?.value;
-    const e = this.form.get('thoiGianKetThuc')?.value;
-    if (!s || !e) return true;
-    try {
-      return new Date(s) < new Date(e);
-    } catch (err) {
-      return false;
-    }
   }
 }

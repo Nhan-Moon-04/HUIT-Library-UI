@@ -1,0 +1,58 @@
+<div class="notification-detail-page">
+  <!-- Header -->
+  <div class="header">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fas fa-arrow-left"></i>
+      Quay lại
+    </button>
+    <h2><i class="fas fa-bell"></i> Chi tiết thông báo</h2>
+  </div>
+
+  <!-- Loading -->
+  @if (loading()) {
+    <div class="state-message loading">
+      <i class="fas fa-spinner fa-spin"></i> Đang tải thông báo...
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error()) {
+    <div class="state-message error">
+      <i class="fas fa-exclamation-triangle"></i> {{ error() }}
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!loading() && notification()) {
+  <div class="notification-card">
+    <div class="card-header">
+      <div class="status">
+        @if (!notification()!.daDoc) {
+          <span class="badge unread"><i class="fas fa-envelope"></i> Chưa đọc</span>
+        } @else {
+          <span class="badge read"><i class="fas fa-envelope-open"></i> Đã đọc</span>
+        }
+      </div>
+      <h1 class="title">{{ notification()!.tieuDe }}</h1>
+      <div class="meta">
+        <span><i class="fas fa-clock"></i> {{ formatDate(notification()!.thoiGian) }}</span>
+        <span><i class="fas fa-hashtag"></i> ID: {{ notification()!.maThongBao }}</span>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <h3><i class="fas fa-file-alt"></i> Nội dung</h3>
+      <div class="content">
+        {{ notification()!.noiDung }}
+      </div>
+
+      @if (notification()!.ghiChu) {
+      <h3><i class="fas fa-sticky-note"></i> Ghi chú</h3>
+      <div class="note">
+        {{ notification()!.ghiChu }}
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,209 @@
+/* ============================= */
+/* 🌐 Navbar tổng thể            */
+/* ============================= */
+.navbar {
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+/* ============================= */
+/* 🏫 Logo & tiêu đề              */
+/* ============================= */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  height: 100px; /* logo lớn */
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.05);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.1;
+}
+
+/* Tiêu đề chính xanh, nhiều viền trắng + bóng */
+.brand-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #004aad;
+  margin: 0;
+  line-height: 1.05;
+  text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, -3px 0px 0 #fff,
+    3px 0px 0 #fff, 0px -3px 0 #fff, 0px 3px 0 #fff, 4px 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Phụ đề đỏ, nhiều viền trắng + bóng */
+.brand-subtitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #d32f2f;
+  margin-top: 5px;
+  text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, -3px 0px 0 #fff,
+    3px 0px 0 #fff, 0px -3px 0 #fff, 0px 3px 0 #fff, 3px 3px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================= */
+/* 🔗 Navigation Links            */
+/* ============================= */
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: #004aad;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  transition: all 0.25s ease-in-out;
+  font-size: 16px;
+}
+
+.nav-link:hover {
+  background: #004aad;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.nav-link.active {
+  background: #004aad;
+  color: #fff;
+  font-weight: 600;
+}
+/* ============================= */
+/* 👤 User Info Section - ngang hàng */
+/* ============================= */
+.navbar-user {
+  display: flex;
+  align-items: center; /* căn giữa dọc */
+  justify-content: flex-end; /* nằm bên phải nếu cần */
+  gap: 15px; /* khoảng cách giữa các phần tử */
+  height: 50px; /* cố định chiều cao hàng */
+  font-size: 1rem;
+  color: #004aad;
+}
+
+/* Greeting và username */
+.navbar-user .greeting {
+  font-weight: 500;
+}
+
+.navbar-user .username {
+  font-weight: 600;
+  color: #004aad;
+}
+
+/* Username link styling */
+.username-link {
+  font-weight: 600;
+  color: #004aad;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.username-link:hover {
+  color: #fff;
+  background-color: #004aad;
+  text-decoration: none;
+}
+
+/* Nút hồ sơ & đăng xuất */
+.icon-btn,
+.logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #004aad;
+  transition: color 0.3s ease, transform 0.2s ease;
+  height: 36px;
+  padding: 0 10px;
+}
+
+/* Text trong nút đăng xuất */
+.logout-btn span {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* Hover effect */
+.icon-btn:hover,
+.logout-btn:hover {
+  color: #007bff;
+  transform: scale(1.1);
+}
+
+/* ============================= */
+/* 📱 Responsive chỉnh mobile     */
+/* ============================= */
+@media (max-width: 992px) {
+  .navbar-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .navbar-nav {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .brand-text {
+    text-align: left;
+  }
+
+  .brand-title {
+    font-size: 38px;
+  }
+
+  .brand-subtitle {
+    font-size: 18px;
+  }
+
+  .brand-logo {
+    height: 60px;
+  }
+}

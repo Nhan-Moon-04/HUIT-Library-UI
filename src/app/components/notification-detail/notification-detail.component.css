@@ -1,0 +1,157 @@
+.notification-detail-page {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 25px;
+  font-family: "Segoe UI", sans-serif;
+  color: #2d2d2d;
+  background: #f9fafc;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.header h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #004aad;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-btn {
+  background: #004aad;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #005ff5;
+}
+
+/* Card */
+.notification-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 25px 30px;
+  transition: all 0.3s ease;
+}
+
+/* 💥 Làm nổi bật thông báo chưa đọc */
+.notification-card.unread {
+  border-left: 6px solid #ff4b4b;
+  background: #fff7f7;
+}
+
+.notification-card.read {
+  border-left: 6px solid #004aad;
+  background: #f9fbff;
+}
+
+.notification-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Header Info */
+.card-header {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e6e9ef;
+  padding-bottom: 10px;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #222;
+  margin: 10px 0;
+  transition: color 0.2s;
+}
+
+/* 🔸 In đậm, tô màu tiêu đề nếu chưa đọc */
+.notification-card.unread .title {
+  color: #d40000;
+  font-weight: 700;
+}
+
+.meta {
+  font-size: 0.9rem;
+  color: #555;
+  display: flex;
+  gap: 20px;
+}
+
+.meta i {
+  color: #004aad;
+  margin-right: 6px;
+}
+
+/* Status badge */
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge.unread {
+  background: #ffe0e0;
+  color: #c70000;
+}
+
+.badge.read {
+  background: #e7f5ff;
+  color: #0077cc;
+}
+
+/* Body content */
+.card-body h3 {
+  font-size: 1.1rem;
+  color: #004aad;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.content,
+.note {
+  background: #f4f8ff;
+  padding: 15px;
+  border-radius: 10px;
+  line-height: 1.6;
+  margin-top: 10px;
+  color: #333;
+}
+
+/* State messages */
+.state-message {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 50px;
+}
+
+.state-message.loading {
+  color: #0077cc;
+}
+
+.state-message.error {
+  color: #d40000;
+}

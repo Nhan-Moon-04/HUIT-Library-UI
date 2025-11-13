@@ -1,0 +1,52 @@
+<div class="notification-page">
+    <div class="header">
+        <button class="back-home-btn" routerLink="/dashboard">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </button>
+        <h2>Thông báo</h2>
+        <button class="refresh-btn" (click)="loadNotifications()" [disabled]="loading()">
+            <i class="fas fa-sync-alt" [class.spinning]="loading()"></i>
+            Làm mới
+        </button>
+    </div>
+
+    @if (loading()) {
+        <div class="loading">Đang tải thông báo...</div>
+    }
+
+    @if (error()) {
+        <div class="error">{{ error() }}</div>
+    }
+
+    @if (!loading() && notifications().length === 0) {
+        <div class="empty-state">
+            <i class="fas fa-bell-slash"></i>
+            <p>Không có thông báo nào</p>
+        </div>
+    }
+
+    @if (!loading() && notifications().length > 0) {
+        <div class="notification-list">
+            @for (notification of notifications(); track notification.maThongBao) {
+                <div class="notification-item" [class.unread]="!notification.daDoc"
+                     [routerLink]="['/notifications', notification.maThongBao]">
+                    <div class="notification-header">
+                        <div class="title-with-icon">
+                            <i class="fas fa-bell"></i>
+                            <h3>{{ notification.tieuDe }}</h3>
+                        </div>
+                        <div class="notification-meta">
+                            <span class="time">
+                                <i class="far fa-clock"></i> {{ formatDate(notification.thoiGian) }}
+                            </span>
+                            @if (!notification.daDoc) {
+                                <span class="unread-indicator">Chưa đọc</span>
+                            }
+                        </div>
+                    </div>
+                    <p class="notification-content">{{ notification.noiDung }}</p>
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,48 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Brand -->
+    <div class="navbar-brand d-flex align-items-center">
+      <img src="https://virtual-event.huit.edu.vn/static/huit/logo-en.png" alt="HUIT Logo" class="brand-logo me-3" />
+      <div class="brand-text">
+        <h1 class="brand-title">THƯ VIỆN ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h1>
+        <p class="brand-subtitle">HỆ THỐNG QUẢN LÝ TÀI NGUYÊN PHÒNG HỌP</p>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="navbar-nav">
+      <a [routerLink]="getHomeLink()" class="nav-link" [class.active]="isActiveRoute(getHomeLink())">
+        <i class="fas fa-home"></i><span>Trang chủ</span>
+      </a>
+      <a routerLink="/room-search" class="nav-link" [class.active]="isActiveRoute('/room-search')">
+        <i class="fas fa-search"></i><span>Tra cứu</span>
+      </a>
+      <a routerLink="/booking/create" class="nav-link" [class.active]="isActiveRoute('/booking')">
+        <i class="fas fa-calendar-plus"></i><span>Đặt phòng</span>
+      </a>
+      <a routerLink="/bookings" class="nav-link" [class.active]="isActiveRoute('/bookings')">
+        <i class="fas fa-list"></i><span>Phòng đang mượn</span>
+      </a>
+      <a routerLink="/bookings/history" class="nav-link" [class.active]="isActiveRoute('/bookings/history')">
+        <i class="fas fa-history"></i><span>Lịch sử</span>
+      </a>
+    </div>
+
+    <!-- User Info -->
+    <div class="navbar-user d-flex align-items-center">
+      <div class="user-info me-3">
+        <span class="greeting">Xin chào, </span>
+        <a routerLink="/profile" class="username-link">{{ getUserName() }}</a>
+      </div>
+      <!-- <div class="user-actions d-flex align-items-center">
+        <button class="icon-btn" title="Hồ sơ">
+          <i class="fas fa-user-circle"></i>
+        </button> -->
+      <button class="logout-btn" type="button" (click)="logout()" title="Đăng xuất">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Đăng xuất</span>
+      </button>
+      <!-- </div> -->
+    </div>
+  </div>
+</nav>

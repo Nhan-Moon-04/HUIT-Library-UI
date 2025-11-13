@@ -1,0 +1,113 @@
+<div class="login-container">
+    <div class="overlay"></div>
+    <div class="login-wrapper">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="logo-section">
+
+                <div class="university-info">
+                    <h1 class="university-name">TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h1>
+                    <h2>TRUNG TÂM QUẢN LÝ THƯ VIỆN</h2>
+                    <h2 class="system-name">HỆ THỐNG QUẢN LÝ TÀI NGUYÊN PHÒNG HỌP</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-form-container">
+            <div class="form-card">
+                <div class="form-header">
+                    <h3 class="form-title">Đăng nhập hệ thống</h3>
+                    <p class="form-subtitle">Vui lòng nhập thông tin đăng nhập của bạn</p>
+                </div>
+
+                <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+                    <!-- Error Message -->
+                    <div *ngIf="errorMessage()" class="alert alert-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ errorMessage() }}
+                    </div>
+
+                    <!-- Mã đăng nhập -->
+                    <div class="form-group">
+                        <label for="maDangNhap" class="form-label">
+                            <i class="fas fa-user"></i>
+                            Mã đăng nhập
+                        </label>
+                        <input type="text" id="maDangNhap" formControlName="maDangNhap" class="form-input"
+                            [class.error]="isFieldInvalid('maDangNhap')"
+                            placeholder="Nhập mã sinh viên hoặc mã nhân viên" autocomplete="username"
+                            [disabled]="authService.isLoading()" />
+                        <div *ngIf="isFieldInvalid('maDangNhap')" class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ getFieldError('maDangNhap') }}
+                        </div>
+                    </div>
+
+                    <!-- Mật khẩu -->
+                    <div class="form-group">
+                        <label for="matKhau" class="form-label">
+                            <i class="fas fa-lock"></i>
+                            Mật khẩu
+                        </label>
+                        <div class="password-input-wrapper">
+                            <input [type]="showPassword() ? 'text' : 'password'" id="matKhau" formControlName="matKhau"
+                                class="form-input" [class.error]="isFieldInvalid('matKhau')" placeholder="Nhập mật khẩu"
+                                autocomplete="current-password" [disabled]="authService.isLoading()" />
+                            <button type="button" class="password-toggle" (click)="togglePasswordVisibility()"
+                                [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+                                [disabled]="authService.isLoading()">
+                                <i [class]="showPassword() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
+                        <div *ngIf="isFieldInvalid('matKhau')" class="error-message">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ getFieldError('matKhau') }}
+                        </div>
+                    </div>
+
+                    <!-- Captcha -->
+                    <div class="form-row captcha-row">
+                        <div class="form-group captcha-input-group">
+                            <label for="captcha" class="form-label">Nhập mã</label>
+                            <input id="captcha" type="text" formControlName="captcha" class="form-input"
+                                placeholder="Nhập mã captcha" autocomplete="off" [disabled]="authService.isLoading()" />
+                            <div *ngIf="isFieldInvalid('captcha')" class="error-message">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Vui lòng nhập mã captcha
+                            </div>
+                        </div>
+
+                        <div class="captcha-box" title="Nhấn refresh để thay mã">
+                            <div class="captcha-text">{{ captchaText() }}</div>
+                            <button type="button" class="captcha-refresh" (click)="refreshCaptcha()"
+                                aria-label="Làm mới mã">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn" [disabled]="loginForm.invalid || authService.isLoading()">
+                        <ng-container *ngIf="authService.isLoading(); else loginLabel">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Đang đăng nhập...
+                        </ng-container>
+                        <ng-template #loginLabel>
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </ng-template>
+                    </button>
+
+                    <!-- Links -->
+                    <div class="form-links">
+                        <a routerLink="/forgot-password" class="link">Quên mật khẩu?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

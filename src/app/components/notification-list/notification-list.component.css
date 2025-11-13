@@ -1,0 +1,217 @@
+.notification-page {
+  max-width: 850px;
+  margin: 40px auto;
+  padding: 30px;
+  font-family: "Segoe UI", "Roboto", sans-serif;
+  color: #222;
+  background: #f5f8ff;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #004aad;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Nút Quay lại Trang chủ - bên trái */
+.back-home-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #004aad;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-home-btn:hover {
+  background: #00327a;
+  transform: translateY(-50%) translateY(-2px);
+}
+
+/* Nút refresh - bên phải */
+.refresh-btn {
+  background: #004aad;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+  background: #005ff5;
+  transform: translateY(-2px);
+}
+
+.refresh-btn:disabled {
+  background: #9bb5e1;
+  cursor: not-allowed;
+}
+
+.refresh-btn .spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading, Error, Empty */
+.loading,
+.error,
+.empty-state {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 1rem;
+}
+
+.loading {
+  color: #007bff;
+  font-weight: 500;
+}
+
+.error {
+  color: #d63031;
+  font-weight: 600;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: #b0b8c3;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Notification list container */
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Notification item */
+.notification-item {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 6px solid #004aad;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Chưa đọc - nổi bật */
+.notification-item.unread {
+  border-left-color: #ff4b4b;
+  background: #fff7f7;
+}
+
+.notification-item.unread:hover {
+  background: #ffecec;
+}
+
+/* Header của từng thông báo */
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-with-icon i {
+  color: #f0a500;
+  font-size: 1.1rem;
+}
+
+.notification-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #222;
+}
+
+.notification-item.unread h3 {
+  font-weight: 700;
+  color: #d40000;
+}
+
+/* Meta info */
+.notification-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.notification-meta .time {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.unread-indicator {
+  background: #f0a500;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Nội dung thông báo */
+.notification-content {
+  margin-top: 8px;
+  color: #333;
+  line-height: 1.5;
+  font-size: 0.96rem;
+}
+
+.notification-item.unread .notification-content {
+  font-weight: 600;
+  color: #1a73e8;
+}

@@ -10,16 +10,16 @@
 
   <!-- Loading -->
   @if (loading()) {
-    <div class="state-message loading">
-      <i class="fas fa-spinner fa-spin"></i> Đang tải thông báo...
-    </div>
+  <div class="state-message loading">
+    <i class="fas fa-spinner fa-spin"></i> Đang tải thông báo...
+  </div>
   }
 
   <!-- Error -->
   @if (error()) {
-    <div class="state-message error">
-      <i class="fas fa-exclamation-triangle"></i> {{ error() }}
-    </div>
+  <div class="state-message error">
+    <i class="fas fa-exclamation-triangle"></i> {{ error() }}
+  </div>
   }
 
   <!-- Content -->
@@ -28,9 +28,9 @@
     <div class="card-header">
       <div class="status">
         @if (!notification()!.daDoc) {
-          <span class="badge unread"><i class="fas fa-envelope"></i> Chưa đọc</span>
+        <span class="badge unread"><i class="fas fa-envelope"></i> Chưa đọc</span>
         } @else {
-          <span class="badge read"><i class="fas fa-envelope-open"></i> Đã đọc</span>
+        <span class="badge read"><i class="fas fa-envelope-open"></i> Đã đọc</span>
         }
       </div>
       <h1 class="title">{{ notification()!.tieuDe }}</h1>

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { NotificationService, Notification } from '../../services/notification.service';
+import { NotificationService, NotificationDetail } from '../../services/notification.service';
 
 @Component({
   selector: 'app-notification-detail',
@@ -15,7 +15,7 @@ export class NotificationDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  notification = signal<Notification | null>(null);
+  notification = signal<NotificationDetail | null>(null);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
 
@@ -33,8 +33,12 @@ export class NotificationDetailComponent implements OnInit {
     this.error.set(null);
 
     this.notificationService.getNotificationById(id).subscribe({
-      next: (notification) => {
-        this.notification.set(notification);
+      next: (response) => {
+        if (response.success && response.data) {
+          this.notification.set(response.data);
+        } else {
+          this.error.set('Không thể tải thông tin thông báo.');
+        }
         this.loading.set(false);
       },
       error: (err) => {

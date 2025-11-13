@@ -11,42 +11,42 @@
     </div>
 
     @if (loading()) {
-        <div class="loading">Đang tải thông báo...</div>
+    <div class="loading">Đang tải thông báo...</div>
     }
 
     @if (error()) {
-        <div class="error">{{ error() }}</div>
+    <div class="error">{{ error() }}</div>
     }
 
     @if (!loading() && notifications().length === 0) {
-        <div class="empty-state">
-            <i class="fas fa-bell-slash"></i>
-            <p>Không có thông báo nào</p>
-        </div>
+    <div class="empty-state">
+        <i class="fas fa-bell-slash"></i>
+        <p>Không có thông báo nào</p>
+    </div>
     }
 
     @if (!loading() && notifications().length > 0) {
-        <div class="notification-list">
-            @for (notification of notifications(); track notification.maThongBao) {
-                <div class="notification-item" [class.unread]="!notification.daDoc"
-                     [routerLink]="['/notifications', notification.maThongBao]">
-                    <div class="notification-header">
-                        <div class="title-with-icon">
-                            <i class="fas fa-bell"></i>
-                            <h3>{{ notification.tieuDe }}</h3>
-                        </div>
-                        <div class="notification-meta">
-                            <span class="time">
-                                <i class="far fa-clock"></i> {{ formatDate(notification.thoiGian) }}
-                            </span>
-                            @if (!notification.daDoc) {
-                                <span class="unread-indicator">Chưa đọc</span>
-                            }
-                        </div>
-                    </div>
-                    <p class="notification-content">{{ notification.noiDung }}</p>
+    <div class="notification-list">
+        @for (notification of notifications(); track notification.maThongBao) {
+        <div class="notification-item" [class.unread]="!notification.daDoc"
+            [routerLink]="['/notifications', notification.maThongBao]">
+            <div class="notification-header">
+                <div class="title-with-icon">
+                    <i class="fas fa-bell"></i>
+                    <h3>{{ notification.tieuDe }}</h3>
                 </div>
-            }
+                <div class="notification-meta">
+                    <span class="time">
+                        <i class="far fa-clock"></i> {{ formatDate(notification.ngayTao) }}
+                    </span>
+                    @if (!notification.daDoc) {
+                    <span class="unread-indicator">Chưa đọc</span>
+                    }
+                </div>
+            </div>
+            <p class="notification-content">{{ notification.noiDung }}</p>
         </div>
+        }
+    </div>
     }
 </div>

@@ -2,7 +2,11 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { NotificationService, Notification } from '../../services/notification.service';
+import {
+  NotificationService,
+  Notification,
+  NotificationListResponse,
+} from '../../services/notification.service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -134,7 +138,7 @@ import { NotificationService, Notification } from '../../services/notification.s
                 <div class="announcement-content">
                   <h4>{{ notification.tieuDe }}</h4>
                   <p>{{ notification.noiDung }}</p>
-                  <span class="announcement-date">{{ formatDate(notification.thoiGian) }}</span>
+                  <span class="announcement-date">{{ formatDate(notification.ngayTao) }}</span>
                 </div>
               </div>
 
@@ -483,10 +487,12 @@ export class StudentDashboardComponent implements OnInit {
 
   loadLatestNotifications(): void {
     this.isLoadingNotifications.set(true);
-    this.notificationService.getNotifications().subscribe({
-      next: (data) => {
-        // Lấy 2 thông báo mới nhất
-        this.notifications.set(data.slice(0, 2));
+    this.notificationService.getNotifications(1, 2).subscribe({
+      next: (response) => {
+        // Lấy 2 thông báo mới nhất từ response.data
+        if (response.success && response.data) {
+          this.notifications.set(response.data);
+        }
         this.isLoadingNotifications.set(false);
       },
       error: (error) => {

@@ -1,7 +1,11 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { NotificationService, Notification } from '../../services/notification.service';
+import {
+  NotificationService,
+  Notification,
+  NotificationListResponse,
+} from '../../services/notification.service';
 
 @Component({
   selector: 'app-notification-list',
@@ -25,9 +29,13 @@ export class NotificationListComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
-    this.notificationService.getNotifications().subscribe({
-      next: (notifications) => {
-        this.notifications.set(notifications);
+    this.notificationService.getNotifications(1, 50).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.notifications.set(response.data);
+        } else {
+          this.notifications.set([]);
+        }
         this.loading.set(false);
       },
       error: (err) => {

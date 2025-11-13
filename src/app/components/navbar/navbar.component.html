@@ -30,6 +30,40 @@
 
     <!-- User Info -->
     <div class="navbar-user">
+      <!-- Notification Dropdown -->
+      <div class="notification-dropdown" (click)="toggleNotification()">
+        <div class="notification-icon">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge" *ngIf="unreadCount > 0">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+        </div>
+        <div class="notification-menu" [class.show]="isNotificationOpen">
+          <div class="notification-header">
+            <span>Thông báo</span>
+            <button *ngIf="unreadCount > 0" (click)="markAllAsRead()" class="mark-all-read-btn">
+              Đánh dấu đã đọc tất cả
+            </button>
+          </div>
+          <div class="notification-list">
+            <div *ngIf="notifications.length === 0" class="no-notifications">
+              Không có thông báo
+            </div>
+            <div *ngFor="let notification of notifications" class="notification-item"
+              [class.unread]="!notification.daDoc" [routerLink]="['/notifications', notification.maThongBao]"
+              (click)="closeNotification()">
+              <div class="notification-content">
+                <h6 class="notification-title">{{ notification.tieuDe }}</h6>
+                <p class="notification-text">{{ notification.noiDung }}</p>
+                <small class="notification-time">{{ notification.ngayTao | date:'dd/MM/yyyy HH:mm' }}</small>
+              </div>
+              <div *ngIf="!notification.daDoc" class="unread-indicator"></div>
+            </div>
+          </div>
+          <div class="notification-footer">
+            <a routerLink="/notifications" (click)="closeNotification()">Xem tất cả thông báo</a>
+          </div>
+        </div>
+      </div>
+
       <div class="user-dropdown" (click)="toggleDropdown()">
         <div class="user-avatar">
           <i class="fas fa-user-circle"></i>

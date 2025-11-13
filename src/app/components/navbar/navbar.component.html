@@ -29,20 +29,23 @@
     </div>
 
     <!-- User Info -->
-    <div class="navbar-user d-flex align-items-center">
-      <div class="user-info me-3">
-        <span class="greeting">Xin chào, </span>
-        <a routerLink="/profile" class="username-link">{{ getUserName() }}</a>
-      </div>
-      <!-- <div class="user-actions d-flex align-items-center">
-        <button class="icon-btn" title="Hồ sơ">
+    <div class="navbar-user">
+      <div class="user-dropdown" (click)="toggleDropdown()">
+        <div class="user-avatar">
           <i class="fas fa-user-circle"></i>
-        </button> -->
-      <button class="logout-btn" type="button" (click)="logout()" title="Đăng xuất">
-        <i class="fas fa-sign-out-alt"></i>
-        <span>Đăng xuất</span>
-      </button>
-      <!-- </div> -->
+        </div>
+        <div class="dropdown-menu" [class.show]="isDropdownOpen">
+          <a routerLink="/profile" class="dropdown-item" (click)="closeDropdown()">
+            <i class="fas fa-user-cog"></i>
+            <span>Cài đặt tài khoản</span>
+          </a>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item logout-item" (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Đăng xuất</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </nav>

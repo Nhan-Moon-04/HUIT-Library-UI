@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
 export class NavbarComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
+  isDropdownOpen = false;
 
   logout(): void {
     this.authService.logout();
@@ -36,10 +37,30 @@ export class NavbarComponent {
         return '/student-dashboard';
       case 'NHAN_VIEN':
         return '/staff-dashboard';
+      case 'GIANG_VIEN':
+        return '/staff-dashboard';
       case 'QUAN_LY':
         return '/admin-dashboard';
       default:
         return '/student-dashboard'; // default fallback
+    }
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen = !this.isDropdownOpen;
+  }
+
+  closeDropdown(): void {
+    this.isDropdownOpen = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+    const dropdown = document.querySelector('.user-dropdown');
+
+    if (dropdown && !dropdown.contains(target)) {
+      this.isDropdownOpen = false;
     }
   }
 }

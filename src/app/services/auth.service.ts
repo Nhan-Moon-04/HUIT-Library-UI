@@ -109,6 +109,9 @@ export class AuthService {
       case 'NHAN_VIEN':
         this.router.navigate(['/staff-dashboard']);
         break;
+      case 'GIANG_VIEN':
+        this.router.navigate(['/staff-dashboard']);
+        break;
       case 'QUAN_LY':
         this.router.navigate(['/admin-dashboard']);
         break;

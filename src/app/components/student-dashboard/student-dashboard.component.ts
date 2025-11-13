@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService, Notification } from '../../services/notification.service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -115,19 +116,35 @@ import { AuthService } from '../../services/auth.service';
               <a class="view-all" (click)="router.navigate(['/notifications'])">Xem tất cả</a>
             </div>
             <div class="announcements-list">
-              <div class="announcement-item new">
-                <div class="announcement-badge">MỚI</div>
+              <!-- Loading state -->
+              <div *ngIf="isLoadingNotifications()" class="announcement-item">
                 <div class="announcement-content">
-                  <h4>Lịch nghỉ lễ 30/4 - 1/5</h4>
-                  <p>Thư viện sẽ đóng cửa từ 29/4 đến 2/5</p>
-                  <span class="announcement-date">25/04/2024</span>
+                  <p>Đang tải thông báo...</p>
                 </div>
               </div>
-              <div class="announcement-item">
+
+              <!-- Notifications from API -->
+              <div
+                *ngFor="let notification of notifications(); let i = index"
+                class="announcement-item"
+                [class.new]="i === 0"
+                (click)="router.navigate(['/notifications', notification.maThongBao])"
+              >
+                <div *ngIf="i === 0" class="announcement-badge">MỚI</div>
                 <div class="announcement-content">
-                  <h4>Thay đổi giờ mở cửa</h4>
-                  <p>Từ 15/5, thư viện mở cửa 7:00 - 21:00</p>
-                  <span class="announcement-date">20/04/2024</span>
+                  <h4>{{ notification.tieuDe }}</h4>
+                  <p>{{ notification.noiDung }}</p>
+                  <span class="announcement-date">{{ formatDate(notification.thoiGian) }}</span>
+                </div>
+              </div>
+
+              <!-- Fallback if no notifications -->
+              <div
+                *ngIf="!isLoadingNotifications() && notifications().length === 0"
+                class="announcement-item"
+              >
+                <div class="announcement-content">
+                  <p>Không có thông báo mới</p>
                 </div>
               </div>
             </div>
@@ -452,9 +469,38 @@ import { AuthService } from '../../services/auth.service';
     `,
   ],
 })
-export class StudentDashboardComponent {
+export class StudentDashboardComponent implements OnInit {
   authService = inject(AuthService);
+  notificationService = inject(NotificationService);
   router = inject(Router);
+
+  notifications = signal<Notification[]>([]);
+  isLoadingNotifications = signal<boolean>(false);
+
+  ngOnInit(): void {
+    this.loadLatestNotifications();
+  }
+
+  loadLatestNotifications(): void {
+    this.isLoadingNotifications.set(true);
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => {
+        // Lấy 2 thông báo mới nhất
+        this.notifications.set(data.slice(0, 2));
+        this.isLoadingNotifications.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading notifications:', error);
+        this.isLoadingNotifications.set(false);
+      },
+    });
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+  }
+
   logout(): void {
     this.authService.logout();
   }

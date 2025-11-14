@@ -27,20 +27,12 @@ export class BookingRequestComponent implements OnInit {
 
   // Step management
   currentStep = signal(1);
-  
-  // Time slots data
-  availableTimeSlots: TimeSlot[] = [
-    { id: 'morning-1', startTime: '08:00', duration: '2 giờ', available: true },
-    { id: 'morning-2', startTime: '10:00', duration: '2 giờ', available: true },
-    { id: 'afternoon-1', startTime: '14:00', duration: '2 giờ', available: false },
-    { id: 'afternoon-2', startTime: '16:00', duration: '2 giờ', available: true },
-    { id: 'evening-1', startTime: '18:00', duration: '2 giờ', available: true },
-    { id: 'evening-2', startTime: '20:00', duration: '2 giờ', available: false },
-  ];
-  
+
+  // Time slots data - Generated dynamically
+  availableTimeSlots: TimeSlot[] = [];
+
   selectedTimeSlot = signal<TimeSlot | null>(null);
   selectedRoomType = signal<LoaiPhong | null>(null);
-
   form = this.fb.group({
     maLoaiPhong: [null as number | null, [Validators.required]],
     ngayBatDau: ['', [Validators.required]],
@@ -56,8 +48,71 @@ export class BookingRequestComponent implements OnInit {
   roomTypes = signal<LoaiPhong[]>([]);
 
   ngOnInit(): void {
+    this.generateTimeSlots();
     this.loadRoomTypes();
     this.setMinDate();
+    this.setupFormListeners();
+  }
+
+  // Setup form listeners
+  setupFormListeners(): void {
+    // Listen for date changes to refresh availability
+    this.form.get('ngayBatDau')?.valueChanges.subscribe((newDate) => {
+      if (newDate) {
+        this.refreshAvailabilityForDate(newDate);
+      }
+    });
+  }
+
+  // Generate time slots from 8:00 to 21:30 with 30-minute intervals
+  generateTimeSlots(): void {
+    const slots: TimeSlot[] = [];
+    const startHour = 8; // 8:00 AM
+    const endHour = 21; // 9:30 PM
+    const intervalMinutes = 30;
+
+    for (let hour = startHour; hour <= endHour; hour++) {
+      for (let minutes = 0; minutes < 60; minutes += intervalMinutes) {
+        // Stop at 21:30 (last slot)
+        if (hour === endHour && minutes > 30) break;
+
+        const timeString = `${hour.toString().padStart(2, '0')}:${minutes
+          .toString()
+          .padStart(2, '0')}`;
+        const id = `slot-${hour}-${minutes}`;
+
+        // Randomly simulate availability (in real app, this would come from backend)
+        const available = Math.random() > 0.2; // 80% chance of being available
+
+        slots.push({
+          id,
+          startTime: timeString,
+          duration: '2 giờ',
+          available,
+        });
+      }
+    }
+
+    this.availableTimeSlots = slots;
+  }
+
+  // Method to refresh availability based on selected date (optional - can integrate with backend)
+  refreshAvailabilityForDate(selectedDate: string): void {
+    // In a real application, you would call your booking service here
+    // this.bookingService.getAvailableTimeSlots(selectedDate, this.selectedRoomType()?.maLoaiPhong)
+
+    // For now, we'll just regenerate with different random availability
+    this.generateTimeSlots();
+
+    // Clear current selection if it becomes unavailable
+    const currentSelection = this.selectedTimeSlot();
+    if (
+      currentSelection &&
+      !this.availableTimeSlots.find((slot) => slot.id === currentSelection.id && slot.available)
+    ) {
+      this.selectedTimeSlot.set(null);
+      this.form.patchValue({ gioBatDau: '' });
+    }
   }
 
   // Step navigation methods
@@ -146,7 +201,7 @@ export class BookingRequestComponent implements OnInit {
     this.route.queryParams.subscribe((params) => {
       if (params['maLoaiPhong']) {
         const roomTypeId = Number(params['maLoaiPhong']);
-        const roomType = this.roomTypes().find(rt => rt.maLoaiPhong === roomTypeId);
+        const roomType = this.roomTypes().find((rt) => rt.maLoaiPhong === roomTypeId);
         if (roomType) {
           this.selectRoomType(roomType);
         }
@@ -160,9 +215,9 @@ export class BookingRequestComponent implements OnInit {
           ngayBatDau: date,
           gioBatDau: time,
         });
-        
+
         // Find matching time slot
-        const matchingSlot = this.availableTimeSlots.find(slot => slot.startTime === time);
+        const matchingSlot = this.availableTimeSlots.find((slot) => slot.startTime === time);
         if (matchingSlot) {
           this.selectTimeSlot(matchingSlot);
         }
@@ -253,7 +308,7 @@ export class BookingRequestComponent implements OnInit {
         this.selectedTimeSlot.set(null);
         this.selectedRoomType.set(null);
         this.currentStep.set(1);
-        
+
         // Auto redirect after success
         setTimeout(() => {
           this.goBack();

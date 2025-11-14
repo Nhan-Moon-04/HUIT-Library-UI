@@ -5,6 +5,13 @@ import { ActivatedRoute } from '@angular/router';
 import { BookingService, LoaiPhong } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
 
+export interface TimeSlot {
+  id: string;
+  startTime: string;
+  duration: string;
+  available: boolean;
+}
+
 @Component({
   selector: 'app-booking-request',
   standalone: true,
@@ -18,13 +25,29 @@ export class BookingRequestComponent implements OnInit {
   private auth = inject(AuthService);
   private route = inject(ActivatedRoute);
 
+  // Step management
+  currentStep = signal(1);
+  
+  // Time slots data
+  availableTimeSlots: TimeSlot[] = [
+    { id: 'morning-1', startTime: '08:00', duration: '2 giờ', available: true },
+    { id: 'morning-2', startTime: '10:00', duration: '2 giờ', available: true },
+    { id: 'afternoon-1', startTime: '14:00', duration: '2 giờ', available: false },
+    { id: 'afternoon-2', startTime: '16:00', duration: '2 giờ', available: true },
+    { id: 'evening-1', startTime: '18:00', duration: '2 giờ', available: true },
+    { id: 'evening-2', startTime: '20:00', duration: '2 giờ', available: false },
+  ];
+  
+  selectedTimeSlot = signal<TimeSlot | null>(null);
+  selectedRoomType = signal<LoaiPhong | null>(null);
+
   form = this.fb.group({
     maLoaiPhong: [null as number | null, [Validators.required]],
     ngayBatDau: ['', [Validators.required]],
     gioBatDau: ['', [Validators.required]],
     lyDo: ['', [Validators.required]],
     ghiChu: [''],
-    soLuong: [1, [Validators.required, Validators.min(1)]],
+    soLuong: [1, [Validators.required, Validators.min(1), Validators.max(50)]],
   });
 
   loading = signal(false);
@@ -34,11 +57,72 @@ export class BookingRequestComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadRoomTypes();
+    this.setMinDate();
+  }
+
+  // Step navigation methods
+  nextStep(): void {
+    if (this.currentStep() < 4) {
+      this.currentStep.set(this.currentStep() + 1);
+    }
+  }
+
+  previousStep(): void {
+    if (this.currentStep() > 1) {
+      this.currentStep.set(this.currentStep() - 1);
+    }
+  }
+
+  // Step validation methods
+  canProceedToStep2(): boolean {
+    return this.form.get('ngayBatDau')?.valid === true && this.selectedTimeSlot() !== null;
+  }
+
+  canProceedToStep3(): boolean {
+    return this.form.get('maLoaiPhong')?.valid === true;
+  }
+
+  canProceedToStep4(): boolean {
+    return this.form.get('soLuong')?.valid === true && this.form.get('lyDo')?.valid === true;
+  }
+
+  // Time slot methods
+  selectTimeSlot(slot: TimeSlot): void {
+    if (slot.available) {
+      this.selectedTimeSlot.set(slot);
+      this.form.patchValue({ gioBatDau: slot.startTime });
+    }
+  }
+
+  isTimeSlotSelected(slot: TimeSlot): boolean {
+    return this.selectedTimeSlot()?.id === slot.id;
+  }
+
+  getSelectedTimeSlot(): TimeSlot | null {
+    return this.selectedTimeSlot();
+  }
+
+  // Room selection methods
+  selectRoomType(roomType: LoaiPhong): void {
+    this.selectedRoomType.set(roomType);
+    this.form.patchValue({ maLoaiPhong: roomType.maLoaiPhong });
+  }
+
+  isRoomTypeSelected(roomType: LoaiPhong): boolean {
+    return this.selectedRoomType()?.maLoaiPhong === roomType.maLoaiPhong;
+  }
+
+  // Utility methods
+  getTodayDate(): string {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  setMinDate(): void {
+    const today = this.getTodayDate();
+    this.form.patchValue({ ngayBatDau: today });
   }
 
   goBack(): void {
-    // navigate back to main dashboard
-    // using router via window.location fallback to keep this component standalone-friendly
     try {
       window.history.back();
     } catch (e) {
@@ -50,7 +134,6 @@ export class BookingRequestComponent implements OnInit {
     this.bookingService.getRoomTypes().subscribe({
       next: (types) => {
         this.roomTypes.set(types);
-        // Check for prefilled data after room types are loaded
         this.checkForPrefilledData();
       },
       error: (err) => {
@@ -62,7 +145,11 @@ export class BookingRequestComponent implements OnInit {
   private checkForPrefilledData(): void {
     this.route.queryParams.subscribe((params) => {
       if (params['maLoaiPhong']) {
-        this.form.patchValue({ maLoaiPhong: Number(params['maLoaiPhong']) });
+        const roomTypeId = Number(params['maLoaiPhong']);
+        const roomType = this.roomTypes().find(rt => rt.maLoaiPhong === roomTypeId);
+        if (roomType) {
+          this.selectRoomType(roomType);
+        }
       }
 
       if (params['thoiGianBatDau']) {
@@ -73,6 +160,12 @@ export class BookingRequestComponent implements OnInit {
           ngayBatDau: date,
           gioBatDau: time,
         });
+        
+        // Find matching time slot
+        const matchingSlot = this.availableTimeSlots.find(slot => slot.startTime === time);
+        if (matchingSlot) {
+          this.selectTimeSlot(matchingSlot);
+        }
       }
 
       if (params['soLuong']) {
@@ -80,7 +173,6 @@ export class BookingRequestComponent implements OnInit {
       }
 
       if (params['maPhong']) {
-        // If a specific room was selected, add it to the notes
         const roomInfo = `Phòng được chọn từ tra cứu: Mã phòng ${params['maPhong']}`;
         this.form.patchValue({ ghiChu: roomInfo });
       }
@@ -88,27 +180,27 @@ export class BookingRequestComponent implements OnInit {
   }
 
   getSelectedRoomType(): LoaiPhong | undefined {
-    const selectedId = Number(this.form.get('maLoaiPhong')?.value);
-    return this.roomTypes().find((rt) => rt.maLoaiPhong === selectedId);
+    return this.selectedRoomType() || undefined;
   }
 
   getFormattedDateTime(): string {
     const ngay = this.form.value.ngayBatDau;
-    const gio = this.form.value.gioBatDau;
-    if (!ngay || !gio) return '-';
+    const timeSlot = this.selectedTimeSlot();
+    if (!ngay || !timeSlot) return '-';
 
     try {
-      const date = new Date(`${ngay}T${gio}`);
+      const date = new Date(`${ngay}T${timeSlot.startTime}`);
       return date.toLocaleString('vi-VN', {
+        weekday: 'long',
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false, // Use 24-hour format to avoid AM/PM confusion
+        hour12: false,
       });
     } catch {
-      return `${ngay} ${gio}`;
+      return `${ngay} ${timeSlot.startTime}`;
     }
   }
 
@@ -128,24 +220,13 @@ export class BookingRequestComponent implements OnInit {
     this.error.set(null);
     this.success.set(null);
 
-    const ngayBatDau = this.form.value.ngayBatDau as string | null | undefined;
-    const gioBatDau = this.form.value.gioBatDau as string | null | undefined;
+    const ngayBatDau = this.form.value.ngayBatDau as string;
+    const timeSlot = this.selectedTimeSlot();
 
-    // Kết hợp ngày và giờ
-    // NOTE: avoid converting to UTC with toISOString() because that shifts the hour
-    // based on the client's timezone. The backend expects a local datetime string
-    // (without 'Z') like 'YYYY-MM-DDTHH:mm:SS'. Preserve the exact minute selected
-    // by the user.
     let thoiGianBatDau: string;
-    if (ngayBatDau && gioBatDau) {
-      // ensure seconds present
-      const time =
-        gioBatDau.includes(':') && gioBatDau.split(':').length === 2
-          ? `${gioBatDau}:00`
-          : gioBatDau;
-      thoiGianBatDau = `${ngayBatDau}T${time}`; // e.g. '2025-11-04T15:39:00'
+    if (ngayBatDau && timeSlot) {
+      thoiGianBatDau = `${ngayBatDau}T${timeSlot.startTime}:00`;
     } else {
-      // fallback to current local datetime without timezone
       const now = new Date();
       const pad = (n: number) => n.toString().padStart(2, '0');
       thoiGianBatDau = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(
@@ -160,20 +241,26 @@ export class BookingRequestComponent implements OnInit {
       soLuong: Number(this.form.value.soLuong) || 1,
     };
 
-    // Thêm ghiChu nếu có
     if (this.form.value.ghiChu && this.form.value.ghiChu.trim()) {
       payload.ghiChu = this.form.value.ghiChu.trim();
     }
 
     this.bookingService.createBooking(payload).subscribe({
       next: (res) => {
-        this.success.set(res?.message || 'Yêu cầu mượn phòng đã gửi.');
+        this.success.set(res?.message || 'Yêu cầu đặt phòng đã được gửi thành công!');
         this.loading.set(false);
         this.form.reset({ soLuong: 1 });
+        this.selectedTimeSlot.set(null);
+        this.selectedRoomType.set(null);
+        this.currentStep.set(1);
+        
+        // Auto redirect after success
+        setTimeout(() => {
+          this.goBack();
+        }, 3000);
       },
       error: (err) => {
-        // Try to extract detailed error information from API
-        let msg = 'Lỗi khi gửi yêu cầu.';
+        let msg = 'Lỗi khi gửi yêu cầu đặt phòng.';
         const body = err?.error;
         if (!body) {
           msg = err?.message || msg;
@@ -182,16 +269,14 @@ export class BookingRequestComponent implements OnInit {
         } else if (body.message) {
           msg = body.message;
         } else if (body.errors && typeof body.errors === 'object') {
-          // model validation object: collect messages
           const parts: string[] = [];
           for (const k of Object.keys(body.errors)) {
             const v = body.errors[k];
             if (Array.isArray(v)) parts.push(...v.map((s) => `${k}: ${s}`));
             else parts.push(`${k}: ${v}`);
           }
-          msg = parts.join(' \n ');
+          msg = parts.join('\n');
         } else {
-          // fallback to JSON stringify for developer-friendly info
           try {
             msg = JSON.stringify(body);
           } catch (e) {

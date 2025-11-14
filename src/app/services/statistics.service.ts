@@ -35,23 +35,26 @@ export class StatisticsService {
    * Lấy thống kê tổng quan
    */
   getOverview(): Observable<StatisticsResponse> {
-    return this.http.get<StatisticsResponse>(`${this.baseUrl}/Statistics/overview`);
+    const url = `${this.baseUrl}/Statistics/overview`;
+    console.log('Statistics API - Calling:', url);
+    return this.http.get<StatisticsResponse>(url);
   }
 
   /**
    * Ghi nhận lượt truy cập
    */
   recordVisit(): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(`${this.baseUrl}/Statistics/visit`, {});
+    const url = `${this.baseUrl}/Statistics/visit`;
+    console.log('Statistics API - Recording visit:', url);
+    return this.http.post<ApiResponse>(url, {});
   }
 
   /**
    * Cập nhật trạng thái online
    */
   updateOnlineStatus(isOnline: boolean): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(
-      `${this.baseUrl}/Statistics/online-status?isOnline=${isOnline}`,
-      {}
-    );
+    const url = `${this.baseUrl}/Statistics/online-status?isOnline=${isOnline}`;
+    console.log('Statistics API - Updating online status:', url, isOnline);
+    return this.http.post<ApiResponse>(url, {});
   }
 }

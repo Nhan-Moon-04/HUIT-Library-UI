@@ -94,27 +94,53 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   }
 
   loadStatistics(): void {
+    console.log('Loading statistics from API...');
     this.statisticsService.getOverview().subscribe({
       next: (response) => {
+        console.log('Statistics response:', response);
         if (response.success) {
           this.statistics.set(response.data);
+          console.log('Statistics loaded successfully:', response.data);
+        } else {
+          console.warn('Statistics API returned unsuccessful response:', response);
         }
       },
       error: (error) => {
         console.error('Error loading statistics:', error);
+        console.error('Error status:', error.status);
+        console.error('Error message:', error.message);
+
+        // Fallback data nếu API lỗi
+        const fallbackStats = {
+          tongLuotTruyCap: 0,
+          soLuongOnline: 0,
+          thanhVienOnline: 0,
+          khachOnline: 0,
+          trongNgay: 0,
+          homQua: 0,
+          trongThang: 0,
+        };
+        this.statistics.set(fallbackStats);
+        console.log('Using fallback statistics data');
       },
     });
   }
 
   recordVisit(): void {
+    console.log('Recording visit...');
     this.statisticsService.recordVisit().subscribe({
       next: (response) => {
+        console.log('Visit record response:', response);
         if (response.success) {
           console.log('Visit recorded successfully');
+        } else {
+          console.warn('Visit record unsuccessful:', response.message);
         }
       },
       error: (error) => {
         console.error('Error recording visit:', error);
+        console.error('Error status:', error.status);
+        console.error('Error message:', error.message);
       },
     });
   }
@@ -122,16 +148,24 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   setOnlineStatus(isOnline: boolean): void {
     // Chỉ gọi API khi đã đăng nhập
     if (this.authService.isLoggedIn()) {
+      console.log(`Updating online status: ${isOnline}`);
       this.statisticsService.updateOnlineStatus(isOnline).subscribe({
         next: (response) => {
+          console.log('Online status response:', response);
           if (response.success) {
-            console.log(`Online status updated: ${isOnline}`);
+            console.log(`Online status updated successfully: ${isOnline}`);
+          } else {
+            console.warn('Online status update unsuccessful:', response.message);
           }
         },
         error: (error) => {
           console.error('Error updating online status:', error);
+          console.error('Error status:', error.status);
+          console.error('Error message:', error.message);
         },
       });
+    } else {
+      console.log('User not logged in, skipping online status update');
     }
   }
 

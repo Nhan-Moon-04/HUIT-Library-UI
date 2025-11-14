@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface NewsItem {
@@ -40,7 +41,7 @@ export interface NewsResponse {
 export class NewsService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.appUrl}`; // Localhost cho các API khác
-  private newsApiUrl = 'https://thuvien.huit.edu.vn'; // API tin tức từ website trường
+  private newsApiUrl = '/news-proxy'; // Sử dụng proxy cho API tin tức
   private customerId = 'HUFI'; // Customer ID for HUIT
 
   /**
@@ -60,7 +61,15 @@ export class NewsService {
     };
 
     console.log('GetOverViews payload:', body);
-    return this.http.post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers });
+    return this.http
+      .post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers })
+      .pipe(
+        catchError((error) => {
+          console.error('News API error:', error);
+          // Return demo data as fallback
+          return this.getDemoNewsData();
+        })
+      );
   }
 
   /**
@@ -79,7 +88,15 @@ export class NewsService {
     };
 
     console.log('GetFeaturedNews payload:', body);
-    return this.http.post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers });
+    return this.http
+      .post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers })
+      .pipe(
+        catchError((error) => {
+          console.error('Featured News API error:', error);
+          // Return demo data as fallback
+          return this.getDemoNewsData();
+        })
+      );
   }
 
   /**
@@ -121,7 +138,7 @@ export class NewsService {
       return `data:image/jpeg;base64,${newsItem.ITEMIMG}`;
     }
 
-    // Nếu có ITEMID, sử dụng DisplayImage API
+    // Nếu có ITEMID, sử dụng proxy cho DisplayImage API
     if (newsItem.ITEMID) {
       const timestamp = Date.now();
       return `${this.newsApiUrl}/News/DisplayImage/?customerId=${this.customerId}&itemID=${newsItem.ITEMID}&t=${timestamp}`;
@@ -182,5 +199,96 @@ export class NewsService {
    */
   getAuthorName(newsItem: NewsItem): string {
     return newsItem.STRAUTHOR_NAME || 'Ban biên tập';
+  }
+
+  /**
+   * Get demo news data as fallback
+   */
+  private getDemoNewsData(): Observable<NewsResponse> {
+    const demoNews: NewsItem[] = [
+      {
+        ITEMID: 5259,
+        TITLE:
+          'Thư viện Trường Đại học Công Thương TP. HCM tiếp nhận hơn 1.000 quyển sách ngoại văn từ GS. Trần Hữu Dũng và Chương trình Books4VN của TS. Võ Tá Hân',
+        CONTENT:
+          'Sáng ngày 08/11/2025, tại Trường Đại học Công Thương TP. Hồ Chí Minh (HUIT) đã diễn ra Lễ tiếp nhận 1.191 quyển sách ngoại văn do GS. Trần Hữu Dũng, nguyên giảng viên Đại học Wright State (Hoa Kỳ), một học giả uy tín và có nhiều cống hiến trong lĩnh vực kinh tế học, và Chương trình Books4VN của TS. Võ Tá Hân trao tặng.',
+        ITEMSHORTCONTENT: '',
+        ITEMIMG: '',
+        PUBLISHDATE: '2025-11-08T00:00:00',
+        CREATED: '2025-11-10T15:14:05',
+        MODIFIED: '2025-11-12T14:05:58.567',
+        VIEWCOUNT: 48,
+        AUTHORID: 48,
+        STRAUTHOR_NAME: 'Nguyễn Thị Thúy Hà',
+        STRCATEGORY_NAME: 'Tin tức',
+        STRARTICLETYPE_NAME: 'Sự kiện',
+        FRIENDLYNAME:
+          'thu-vien-truong-dai-hoc-cong-thuong-tp-hcm-tiep-nhan-hon-1-000-quyen-sach-ngoai-van-tu-gs-tran-huu-dung-va-chuong-trinh-books4vn-cua-ts-vo-ta-han',
+        ISDISPLAY: true,
+        STATUS: 3,
+        STRSTATUS: 'Đã ban hành',
+        STRUCTUREID: ',284,',
+        CATEGORYID: undefined,
+        ARTICLETYPEID: 18,
+        TAG: '',
+        TOPITEM: true,
+      },
+      {
+        ITEMID: 5255,
+        TITLE: 'Ngày sách và Văn hoá đọc Việt Nam năm 2025',
+        CONTENT:
+          'Nhằm phát triển văn hóa đọc trong cộng đồng, thư viện tổ chức các hoạt động kỷ niệm ngày sách Việt Nam.',
+        ITEMSHORTCONTENT: '',
+        ITEMIMG: '',
+        PUBLISHDATE: '2025-10-21T00:00:00',
+        CREATED: '2025-10-21T10:30:00',
+        MODIFIED: '2025-10-21T14:20:00',
+        VIEWCOUNT: 125,
+        AUTHORID: 48,
+        STRAUTHOR_NAME: 'Ban thư viện',
+        STRCATEGORY_NAME: 'Văn hóa đọc',
+        STRARTICLETYPE_NAME: 'Hoạt động',
+        FRIENDLYNAME: 'ngay-sach-va-van-hoa-doc-viet-nam-nam-2025',
+        ISDISPLAY: true,
+        STATUS: 3,
+        STRSTATUS: 'Đã ban hành',
+        STRUCTUREID: ',284,',
+        CATEGORYID: undefined,
+        ARTICLETYPEID: 18,
+        TAG: 'sách, văn hóa đọc',
+        TOPITEM: false,
+      },
+      {
+        ITEMID: 5250,
+        TITLE: 'Hội thảo khoa học "Xu hướng phát triển thư viện số trong thời đại 4.0"',
+        CONTENT:
+          'Thư viện HUIT tổ chức hội thảo về xu hướng phát triển thư viện số, ứng dụng công nghệ mới.',
+        ITEMSHORTCONTENT: '',
+        ITEMIMG: '',
+        PUBLISHDATE: '2025-10-15T00:00:00',
+        CREATED: '2025-10-15T09:00:00',
+        MODIFIED: '2025-10-15T16:45:00',
+        VIEWCOUNT: 89,
+        AUTHORID: 48,
+        STRAUTHOR_NAME: 'Ban khoa học',
+        STRCATEGORY_NAME: 'Hội thảo',
+        STRARTICLETYPE_NAME: 'Khoa học',
+        FRIENDLYNAME: 'hoi-thao-khoa-hoc-xu-huong-phat-trien-thu-vien-so-trong-thoi-dai-4-0',
+        ISDISPLAY: true,
+        STATUS: 3,
+        STRSTATUS: 'Đã ban hành',
+        STRUCTUREID: ',284,',
+        CATEGORYID: undefined,
+        ARTICLETYPEID: 18,
+        TAG: 'thư viện số, công nghệ',
+        TOPITEM: false,
+      },
+    ];
+
+    return of({
+      success: true,
+      lstNewsPaging: demoNews,
+      message: 'Demo data loaded as fallback',
+    });
   }
 }

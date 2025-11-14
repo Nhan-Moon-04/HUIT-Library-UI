@@ -217,7 +217,7 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   }
 
   navigateToBooking(): void {
-    this.router.navigate(['/booking-request']);
+    this.router.navigate(['/booking/create']);
   }
 
   navigateToLogin(): void {
@@ -241,7 +241,7 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   }
 
   navigateToHistory(): void {
-    this.router.navigate(['/booking-history']);
+    this.router.navigate(['/bookings/history']);
   }
 
   navigateToChat(): void {

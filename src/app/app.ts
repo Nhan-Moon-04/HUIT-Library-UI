@@ -19,14 +19,18 @@ export class App {
   private authService = inject(AuthService);
 
   showNavbar = signal(true);
+  showChatWidget = signal(true);
 
   constructor() {
-    // Hide navbar on login page
+    // Hide navbar on login page and chat widget on chat page
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         const hiddenNavbarRoutes = ['/login', '/forgot-password', '/reset-password'];
         this.showNavbar.set(!hiddenNavbarRoutes.includes(event.url));
+
+        // Hide chat widget when on chat page
+        this.showChatWidget.set(event.url !== '/chat');
       });
   }
 }

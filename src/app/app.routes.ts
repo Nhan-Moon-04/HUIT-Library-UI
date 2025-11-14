@@ -62,6 +62,19 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'booking-history',
+    loadComponent: () =>
+      import('./components/booking-history/booking-history.component').then(
+        (m) => m.BookingHistoryComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'chat',
+    loadComponent: () => import('./components/chat/chat.component').then((m) => m.ChatComponent),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'loans',
     redirectTo: 'bookings',
     pathMatch: 'full',

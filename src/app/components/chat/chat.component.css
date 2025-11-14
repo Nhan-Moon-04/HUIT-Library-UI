@@ -189,3 +189,115 @@
   border: none;
   cursor: pointer;
 }
+
+/* Chat Page Mode Styles */
+.chat-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-page-header {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #0066cc, #00aaff);
+  color: white;
+  border-radius: 12px;
+}
+
+.chat-page-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.chat-page-header p {
+  margin: 8px 0 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.chat-page-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.chat-page-body {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-page-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px;
+  background: white;
+}
+
+.chat-page-footer input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.chat-page-footer input:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.chat-page-footer button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0066cc, #00aaff);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.chat-page-footer button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+/* Responsive adjustments for page mode */
+@media (max-width: 768px) {
+  .chat-page {
+    padding: 16px;
+    height: calc(100vh - 60px);
+  }
+
+  .chat-page-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .chat-page-header p {
+    font-size: 1rem;
+  }
+
+  .chat-page-body {
+    padding: 16px;
+  }
+
+  .chat-page-footer {
+    padding: 16px;
+  }
+}

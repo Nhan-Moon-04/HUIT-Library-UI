@@ -53,11 +53,13 @@ export class NewsService {
     };
 
     const body = {
-      pageNumber,
-      pageSize,
-      customerId: this.customerId,
+      friendlyName: 'tin-tuc-su-kien',
+      pageIndex: pageNumber,
+      pageSize: pageSize,
+      language: '',
     };
 
+    console.log('GetOverViews payload:', body);
     return this.http.post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers });
   }
 
@@ -70,12 +72,13 @@ export class NewsService {
     };
 
     const body = {
-      pageNumber: 1,
+      friendlyName: 'tin-tuc-su-kien',
+      pageIndex: 1,
       pageSize: limit,
-      customerId: this.customerId,
-      isTopItem: true, // Filter for featured news
+      language: '',
     };
 
+    console.log('GetFeaturedNews payload:', body);
     return this.http.post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers });
   }
 

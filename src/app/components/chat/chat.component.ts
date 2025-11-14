@@ -1,6 +1,7 @@
 import { Component, signal, inject, effect, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ChatService } from './chat.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -23,6 +24,7 @@ interface Message {
 export class ChatComponent {
   private chatService = inject(ChatService);
   private auth = inject(AuthService);
+  private router = inject(Router);
 
   isOpen = signal(false);
   draft = signal('');
@@ -95,7 +97,9 @@ export class ChatComponent {
         // user logged out -> clear messages and reset session id
         this.messages.set([]);
         this.maPhienChat.set(Math.floor(Math.random() * 100000));
-        this.isOpen.set(false);
+        if (!this.isPageMode()) {
+          this.isOpen.set(false);
+        }
       }
     });
 
@@ -103,8 +107,8 @@ export class ChatComponent {
     effect(() => {
       // read messages signal to track changes
       this.messages();
-      // only scroll automatically if panel is open
-      if (this.isOpen()) {
+      // only scroll automatically if panel is open or in page mode
+      if (this.isOpen() || this.isPageMode()) {
         // scroll to bottom after DOM updates
         this.scrollToBottom();
       }
@@ -112,7 +116,7 @@ export class ChatComponent {
 
     // When user opens the chat panel, ensure we scroll to the latest messages
     effect(() => {
-      if (this.isOpen()) {
+      if (this.isOpen() || this.isPageMode()) {
         // wait a tick so the chatBody ViewChild is available
         setTimeout(() => this.scrollToBottom(), 0);
       }
@@ -161,14 +165,20 @@ export class ChatComponent {
             ]);
           }
 
-          // Open if the session is active or user logged in
-          if (s.isActive || this.auth.isLoggedIn()) this.isOpen.set(true);
+          // Open if the session is active or user logged in or in page mode
+          if (s.isActive || this.auth.isLoggedIn() || this.isPageMode()) {
+            this.isOpen.set(true);
+          }
         } else {
-          if (this.auth.isLoggedIn()) this.isOpen.set(true);
+          if (this.auth.isLoggedIn() || this.isPageMode()) {
+            this.isOpen.set(true);
+          }
         }
       },
       error: () => {
-        if (this.auth.isLoggedIn()) this.isOpen.set(true);
+        if (this.auth.isLoggedIn() || this.isPageMode()) {
+          this.isOpen.set(true);
+        }
       },
     });
   }
@@ -197,5 +207,10 @@ export class ChatComponent {
     } catch (e) {
       return '';
     }
+  }
+
+  isPageMode(): boolean {
+    // Kiểm tra xem đang ở chế độ trang độc lập hay widget
+    return this.router.url === '/chat';
   }
 }

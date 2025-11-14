@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, signal, OnDestroy, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -32,6 +32,14 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   newsList = signal<NewsItem[]>([]);
   isLoadingNews = signal<boolean>(false);
   currentNewsIndex = signal(0);
+
+  // Computed signal cho current news
+  currentNews = computed(() => {
+    const list = this.newsList();
+    const index = this.currentNewsIndex();
+    console.log('Computed currentNews - Index:', index, 'List length:', list.length);
+    return list.length > 0 && index < list.length ? list[index] : null;
+  });
 
   // Hero carousel state
   activeSlideIndex = signal(0);
@@ -131,17 +139,19 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     this.isLoadingNews.set(true);
     this.newsService.getNewsList(1, 10).subscribe({
       next: (response) => {
+        console.log('API Response:', response);
         if (response.success && response.lstNewsPaging) {
-          // Lấy tất cả tin tức (bỏ filter để test)
+          // Sử dụng dữ liệu đã được filter từ server
           const displayNews = response.lstNewsPaging;
           this.newsList.set(displayNews);
           console.log('News loaded:', displayNews.length, 'items');
-          console.log('First news:', displayNews[0]?.TITLE);
           console.log(
-            'All news titles:',
-            displayNews.map((n) => n.TITLE)
+            'First 3 news titles:',
+            displayNews.slice(0, 3).map((n) => n.TITLE)
           );
           console.log('Current news index:', this.currentNewsIndex());
+        } else {
+          console.log('API response không có dữ liệu:', response);
         }
         this.isLoadingNews.set(false);
       },
@@ -235,8 +245,8 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   }
 
   navigateToChat(): void {
-    // Open chat widget or navigate to chat page
-    console.log('Opening chat...');
+    // Điều hướng tới trang chat
+    this.router.navigate(['/chat']);
   }
 
   navigateToRegulations(): void {
@@ -249,16 +259,11 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     const newsList = this.newsList();
     console.log('Previous news - Current:', current, 'Total news:', newsList.length);
 
-    if (newsList.length === 0) return;
+    if (newsList.length <= 1) return;
 
     const previous = current > 0 ? current - 1 : newsList.length - 1;
     this.currentNewsIndex.set(previous);
-    console.log('Previous news - New index:', previous);
-
-    // Force change detection
-    setTimeout(() => {
-      console.log('After timeout - current news:', this.getCurrentNews()?.TITLE);
-    }, 100);
+    console.log('Previous news - New index:', previous, 'New title:', this.currentNews()?.TITLE);
   }
 
   nextNews(): void {
@@ -266,32 +271,11 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     const newsList = this.newsList();
     console.log('Next news - Current:', current, 'Total news:', newsList.length);
 
-    if (newsList.length === 0) return;
+    if (newsList.length <= 1) return;
 
     const next = (current + 1) % newsList.length;
     this.currentNewsIndex.set(next);
-    console.log('Next news - New index:', next);
-
-    // Force change detection by triggering getCurrentNews
-    setTimeout(() => {
-      console.log('After timeout - current news:', this.getCurrentNews()?.TITLE);
-    }, 100);
-  }
-
-  getCurrentNews(): NewsItem | null {
-    const newsList = this.newsList();
-    const currentIndex = this.currentNewsIndex();
-
-    console.log('getCurrentNews called - Index:', currentIndex, 'List length:', newsList.length);
-
-    if (newsList.length === 0 || currentIndex >= newsList.length) {
-      console.log('No news available or invalid index');
-      return null;
-    }
-
-    const currentNews = newsList[currentIndex];
-    console.log('Current news:', currentNews?.TITLE);
-    return currentNews;
+    console.log('Next news - New index:', next, 'New title:', this.currentNews()?.TITLE);
   }
 
   getNewsImage(newsItem: NewsItem): string {

@@ -156,31 +156,31 @@
                         </div>
                     </div>
                     <div class="news-carousel">
-                        <div class="news-item featured" *ngIf="getCurrentNews(); else loadingNews">
+                        <div class="news-item featured" *ngIf="currentNews(); else loadingNews">
                             <div class="news-image">
-                                <img [src]="getNewsImage(getCurrentNews()!)" [alt]="getCurrentNews()!.TITLE"
+                                <img [src]="getNewsImage(currentNews()!)" [alt]="currentNews()!.TITLE"
                                     onerror="this.src='https://via.placeholder.com/400x250/2196F3/FFFFFF?text=Tin+tức+HUIT'">
-                                <div class="news-badge" *ngIf="isHotNews(getCurrentNews()!)">HOT</div>
-                                <div class="news-category-badge">{{ getNewsCategory(getCurrentNews()!) }}</div>
+                                <div class="news-badge" *ngIf="isHotNews(currentNews()!)">HOT</div>
+                                <div class="news-category-badge">{{ getNewsCategory(currentNews()!) }}</div>
                             </div>
                             <div class="news-content">
-                                <h4 [title]="getCurrentNews()!.TITLE">{{ getCurrentNews()!.TITLE }}</h4>
-                                <p>{{ getNewsExcerpt(getCurrentNews()!) }}</p>
+                                <h4 [title]="currentNews()!.TITLE">{{ currentNews()!.TITLE }}</h4>
+                                <p>{{ getNewsExcerpt(currentNews()!) }}</p>
                                 <div class="news-meta">
                                     <span class="news-date">
                                         <i class="fas fa-calendar"></i>
-                                        {{ formatNewsDate(getCurrentNews()!.PUBLISHDATE) }}
+                                        {{ formatNewsDate(currentNews()!.PUBLISHDATE) }}
                                     </span>
                                     <span class="news-views">
                                         <i class="fas fa-eye"></i>
-                                        {{ getCurrentNews()!.VIEWCOUNT }} lượt xem
+                                        {{ currentNews()!.VIEWCOUNT }} lượt xem
                                     </span>
                                 </div>
-                                <div class="news-author" *ngIf="getCurrentNews()!.STRAUTHOR_NAME">
+                                <div class="news-author" *ngIf="currentNews()!.STRAUTHOR_NAME">
                                     <i class="fas fa-user"></i>
-                                    {{ getCurrentNews()!.STRAUTHOR_NAME }}
+                                    {{ currentNews()!.STRAUTHOR_NAME }}
                                 </div>
-                                <button class="btn-read-more" (click)="readNewsDetail(getCurrentNews()!)">
+                                <button class="btn-read-more" (click)="readNewsDetail(currentNews()!)">
                                     <i class="fas fa-arrow-right"></i>
                                     Xem chi tiết
                                 </button>

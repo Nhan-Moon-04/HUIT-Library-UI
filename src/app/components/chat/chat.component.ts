@@ -185,4 +185,17 @@ export class ChatComponent {
       // ignore
     }
   }
+
+  formatTime(timeString?: string): string {
+    if (!timeString) return '';
+    try {
+      const date = new Date(timeString);
+      return date.toLocaleTimeString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch (e) {
+      return '';
+    }
+  }
 }

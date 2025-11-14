@@ -7,8 +7,20 @@
     <div class="chat-panel" *ngIf="isOpen()">
         <div class="chat-header">Trợ lý thư viện</div>
         <div class="chat-body" #chatBody>
-            <div *ngFor="let m of messages()" class="message" [class.bot]="m.laBot">
-                <div class="content">{{ m.noiDung }}</div>
+            <div *ngFor="let m of messages()" class="message" [class.user-message]="!m.laBot"
+                [class.bot-message]="m.laBot">
+                <div class="message-wrapper">
+                    <div class="avatar">
+                        <i *ngIf="m.laBot" class="bot-icon">🤖</i>
+                        <i *ngIf="!m.laBot" class="user-icon">👤</i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">{{ m.noiDung }}</div>
+                        <div class="message-time" *ngIf="m.thoiGianGui">
+                            {{ formatTime(m.thoiGianGui) }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

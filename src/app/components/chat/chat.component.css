@@ -46,22 +46,127 @@
 }
 
 .message {
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+  width: 100%;
 }
-.message .content {
-  padding: 8px 10px;
-  border-radius: 8px;
+
+.message-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.bot-icon {
+  background: linear-gradient(135deg, #4caf50, #45a049);
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-icon {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.message-bubble {
+  padding: 10px 14px;
+  border-radius: 16px;
   display: inline-block;
   max-width: 85%;
+  word-wrap: break-word;
+  position: relative;
 }
-.message.bot .content {
-  background: #e6f0ff;
-  color: #002a5c;
+
+.message-time {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+  padding-left: 4px;
 }
-.message:not(.bot) .content {
-  background: #dfecec;
-  color: #002a2b;
-  align-self: flex-end;
+
+/* Bot message styling */
+.bot-message .message-wrapper {
+  justify-content: flex-start;
+}
+
+.bot-message .message-bubble {
+  background: linear-gradient(135deg, #e8f4fd, #d1e7dd);
+  color: #155724;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bot-message .message-bubble::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 12px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid #e8f4fd;
+}
+
+/* User message styling */
+.user-message .message-wrapper {
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+}
+
+.user-message .message-content {
+  text-align: right;
+}
+
+.user-message .message-bubble {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.user-message .message-bubble::after {
+  content: '';
+  position: absolute;
+  right: -8px;
+  top: 12px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid #007bff;
+}
+
+.user-message .message-time {
+  text-align: right;
+  padding-right: 4px;
+  padding-left: 0;
 }
 
 .chat-footer {

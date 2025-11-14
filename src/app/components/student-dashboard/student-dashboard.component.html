@@ -1,161 +1,382 @@
-<div class="dashboard-container">
-    <main class="library-main">
-        <div class="container">
-            <!-- Welcome Banner -->
-            <div class="welcome-banner">
-                <div class="banner-content">
-                    <h2>{{ 'dashboard.welcomeToLibrary' | translate }}</h2>
-                    <p>{{ 'dashboard.manageBookingEasily' | translate }}</p>
-                </div>
-                <div class="banner-icon">
-                    <i class="fas fa-university"></i>
-                </div>
-            </div>
-
-            <!-- Quick Stats -->
-            <section class="quick-stats">
-                <div class="stat-card primary">
-                    <div class="stat-icon">
-                        <i class="fas fa-door-open"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>12</h3>
-                        <p>{{ 'dashboard.roomsCurrentlyBorrowed' | translate }}</p>
-                    </div>
-                </div>
-                <div class="stat-card success">
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>24</h3>
-                        <p>{{ 'dashboard.successfulBookings' | translate }}</p>
-                    </div>
-                </div>
-                <div class="stat-card warning">
-                    <div class="stat-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3>3</h3>
-                        <p>{{ 'dashboard.awaitingApproval' | translate }}</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Features Grid -->
-            <section class="features-section">
-                <h3 class="section-title">{{ 'dashboard.libraryServices' | translate }}</h3>
-                <div class="features-grid">
-                    <div class="feature-card" (click)="router.navigate(['/room-search'])">
-                        <div class="card-icon search"><i class="fas fa-search"></i></div>
-                        <div class="card-content">
-                            <h4>{{ 'dashboard.searchRooms' | translate }}</h4>
-                            <p>{{ 'dashboard.searchRoomsDesc' | translate }}</p>
-                        </div>
-                        <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
-                    </div>
-                    <div class="feature-card" (click)="router.navigate(['/booking/create'])">
-                        <div class="card-icon booking"><i class="fas fa-calendar-check"></i></div>
-                        <div class="card-content">
-                            <h4>{{ 'dashboard.bookRoom' | translate }}</h4>
-                            <p>{{ 'dashboard.bookRoomDesc' | translate }}</p>
-                        </div>
-                        <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
-                    </div>
-                    <div class="feature-card" (click)="router.navigate(['/loans'])">
-                        <div class="card-icon loans"><i class="fas fa-clipboard-list"></i></div>
-                        <div class="card-content">
-                            <h4>{{ 'nav.currentBookings' | translate }}</h4>
-                            <p>{{ 'dashboard.currentBookingsDesc' | translate }}</p>
-                        </div>
-                        <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
-                    </div>
-                    <div class="feature-card" (click)="router.navigate(['/bookings/history'])">
-                        <div class="card-icon history"><i class="fas fa-history"></i></div>
-                        <div class="card-content">
-                            <h4>{{ 'nav.history' | translate }}</h4>
-                            <p>{{ 'dashboard.historyDesc' | translate }}</p>
-                        </div>
-                        <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
-                    </div>
-                    <div class="feature-card" (click)="router.navigate(['/notifications'])">
-                        <div class="card-icon notify"><i class="fas fa-bell"></i></div>
-                        <div class="card-content">
-                            <h4>{{ 'nav.notifications' | translate }}</h4>
-                            <p>{{ 'dashboard.latestAnnouncements' | translate }}</p>
-                        </div>
-                        <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
-                    </div>
-                    <div class="feature-card" (click)="router.navigate(['/regulations'])">
-                        <div class="card-icon regulation"><i class="fas fa-file-alt"></i></div>
-                        <div class="card-content">
-                            <h4>{{ 'nav.profile' | translate }}</h4>
-                            <p>{{ 'dashboard.profileDesc' | translate }}</p>
-                        </div>
-                        <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Announcements -->
-            <section class="announcements-section">
-                <div class="section-header">
-                    <h3 class="section-title">{{ 'dashboard.latestAnnouncements' | translate }}</h3>
-                    <a class="view-all" (click)="router.navigate(['/notifications'])">{{ 'dashboard.viewAll' | translate
-                        }}</a>
-                </div>
-                <div class="announcements-list">
-                    <!-- Loading state -->
-                    <div *ngIf="isLoadingNotifications()" class="announcement-item">
-                        <div class="announcement-content">
-                            <p>{{ 'dashboard.loadingData' | translate }}</p>
-                        </div>
-                    </div>
-
-                    <!-- Notifications from API -->
-                    <div *ngFor="let notification of notifications(); let i = index" class="announcement-item"
-                        [class.new]="i === 0" (click)="router.navigate(['/notifications', notification.maThongBao])">
-                        <div *ngIf="i === 0" class="announcement-badge">
-                            {{ 'MỚI' | translate }}
-                        </div>
-                        <div class="announcement-content">
-                            <h4>{{ notification.tieuDe }}</h4>
-                            <p>{{ notification.noiDung }}</p>
-                            <span class="announcement-date">{{ formatDate(notification.thoiGian) }}</span>
-                        </div>
-                    </div>
-
-                    <!-- Fallback if no notifications -->
-                    <div *ngIf="!isLoadingNotifications() && notifications().length === 0" class="announcement-item">
-                        <div class="announcement-content">
-                            <p>{{ 'dashboard.noNewAnnouncements' | translate }}</p>
+<!-- Hero Section with Background Images -->
+<section class="hero-section">
+    <div class="hero-carousel">
+        <div class="hero-slide" [class.active]="activeSlideIndex() === 0"
+            style="background-image: url('assets/images/bg1.jpg')">
+            <div class="hero-overlay">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>THƯ VIỆN TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h1>
+                        <p>Nơi tri thức hội tụ - Tương lai khởi nguồn</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" (click)="navigateToRoomSearch()">
+                                <i class="fas fa-search"></i> Tìm kiếm phòng
+                            </button>
+                            <button class="btn btn-outline" (click)="navigateToBooking()">
+                                <i class="fas fa-calendar-plus"></i> Đăng ký phòng
+                            </button>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
-    </main>
-</div>
-
-<!-- Footer -->
-<footer class="library-footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-info">
-                <h4>{{ 'footer.libraryFullName' | translate }}</h4>
-                <p>{{ 'footer.address' | translate }}</p>
-                <p>{{ 'footer.phone' | translate }}</p>
-            </div>
-            <div class="footer-hours">
-                <h5>{{ 'footer.openingHours' | translate }}</h5>
-                <p>{{ 'footer.weekdayHours' | translate }}</p>
-                <p>{{ 'footer.saturdayHours' | translate }}</p>
-                <p>{{ 'footer.sundayHours' | translate }}</p>
             </div>
         </div>
-        <div class="footer-copyright">
-            <p>{{ 'footer.copyright' | translate }}</p>
+        <div class="hero-slide" [class.active]="activeSlideIndex() === 1"
+            style="background-image: url('assets/images/bg2.jpg')">
+            <div class="hero-overlay">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>HỆ THỐNG QUẢN LÝ PHÒNG THÔNG MINH</h1>
+                        <p>Đặt phòng dễ dàng - Quản lý hiệu quả</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" *ngIf="!authService.isLoggedIn()"
+                                (click)="navigateToLogin()">
+                                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                            </button>
+                            <button class="btn btn-outline" *ngIf="!authService.isLoggedIn()"
+                                (click)="navigateToRegister()">
+                                <i class="fas fa-user-plus"></i> Đăng ký
+                            </button>
+                            <button class="btn btn-primary" *ngIf="authService.isLoggedIn()"
+                                (click)="navigateToProfile()">
+                                <i class="fas fa-user"></i> Hồ sơ cá nhân
+                            </button>
+                            <button class="btn btn-outline" *ngIf="authService.isLoggedIn()"
+                                (click)="navigateToBooking()">
+                                <i class="fas fa-calendar-plus"></i> Đặt phòng mới
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-slide" [class.active]="activeSlideIndex() === 2"
+            style="background-image: url('assets/images/bg3.jpg')">
+            <div class="hero-overlay">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1>TIN TỨC & THÔNG BÁO</h1>
+                        <p>Cập nhật thông tin mới nhất từ thư viện</p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" (click)="navigateToNotifications()">
+                                <i class="fas fa-bell"></i> Xem thông báo
+                            </button>
+                            <button class="btn btn-outline" (click)="navigateToChat()">
+                                <i class="fas fa-comments"></i> Hỗ trợ trực tuyến
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</footer>
+
+    <!-- Hero Navigation -->
+    <div class="hero-nav">
+        <button class="nav-dot" [class.active]="activeSlideIndex() === 0" (click)="setActiveSlide(0)"></button>
+        <button class="nav-dot" [class.active]="activeSlideIndex() === 1" (click)="setActiveSlide(1)"></button>
+        <button class="nav-dot" [class.active]="activeSlideIndex() === 2" (click)="setActiveSlide(2)"></button>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="statistics-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-icon online">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ statistics()?.soLuongOnline || 0 }}</h3>
+                    <p>Đang truy cập</p>
+                    <small>Thành viên: {{ statistics()?.thanhVienOnline || 0 }} | Khách: {{ statistics()?.khachOnline ||
+                        0 }}</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-icon today">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ statistics()?.trongNgay || 0 }}</h3>
+                    <p>Lượt truy cập hôm nay</p>
+                    <small>Hôm qua: {{ statistics()?.homQua || 0 }} lượt</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-icon month">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ statistics()?.trongThang || 0 }}</h3>
+                    <p>Lượt truy cập tháng này</p>
+                    <small>Tổng cộng: {{ statistics()?.tongLuotTruyCap || 0 }} lượt</small>
+                </div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-icon rooms">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>24</h3>
+                    <p>Phòng có sẵn</p>
+                    <small>Tổng: 30 phòng</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content Grid -->
+<section class="main-content">
+    <div class="container">
+        <div class="content-grid">
+            <!-- Left Column: News & Announcements -->
+            <div class="content-left">
+                <!-- Hot News Section -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-fire text-danger"></i>
+                            TIN TỨC SỰ KIỆN
+                        </h3>
+                        <div class="header-nav">
+                            <button class="nav-btn" (click)="previousNews()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="nav-btn" (click)="nextNews()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="news-carousel">
+                        <div class="news-item featured" *ngIf="featuredNews">
+                            <div class="news-image">
+                                <img [src]="featuredNews.image || 'assets/images/default-news.jpg'"
+                                    [alt]="featuredNews.title">
+                                <div class="news-badge">MỚI</div>
+                            </div>
+                            <div class="news-content">
+                                <h4>{{ featuredNews.title }}</h4>
+                                <p>{{ featuredNews.excerpt }}</p>
+                                <div class="news-meta">
+                                    <span class="news-date">
+                                        <i class="fas fa-calendar"></i>
+                                        {{ formatNewsDate(featuredNews.date) }}
+                                    </span>
+                                    <span class="news-category">
+                                        <i class="fas fa-tag"></i>
+                                        {{ featuredNews.category }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcements Section -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-bullhorn text-primary"></i>
+                            THÔNG BÁO
+                        </h3>
+                        <a class="view-all-link" (click)="navigateToNotifications()">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                    <div class="announcements-list">
+                        <div class="announcement-item"
+                            *ngFor="let notification of notifications().slice(0, 5); let i = index"
+                            (click)="navigateToNotificationDetail(notification.maThongBao)">
+                            <div class="announcement-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="announcement-content">
+                                <h5>{{ notification.tieuDe }}</h5>
+                                <p>{{ truncateText(notification.noiDung, 100) }}</p>
+                                <span class="announcement-date">
+                                    {{ formatDate(notification.ngayTao) }}
+                                </span>
+                            </div>
+                            <div class="announcement-arrow">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+
+                        <div class="no-announcements" *ngIf="notifications().length === 0">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Hiện tại chưa có thông báo mới</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Quick Actions & Info -->
+            <div class="content-right">
+                <!-- Quick Actions -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h3>
+                            <i class="fas fa-bolt text-warning"></i>
+                            TRUY CẬP NHANH
+                        </h3>
+                    </div>
+                    <div class="quick-actions">
+                        <div class="action-item" (click)="navigateToRoomSearch()">
+                            <div class="action-icon search">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>Tìm kiếm phòng</h5>
+                                <p>Tìm phòng phù hợp với nhu cầu</p>
+                            </div>
+                        </div>
+
+                        <div class="action-item" (click)="navigateToBooking()">
+                            <div class="action-icon booking">
+                                <i class="fas fa-calendar-plus"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>Đặt phòng</h5>
+                                <p>Đăng ký sử dụng phòng học</p>
+                            </div>
+                        </div>
+
+                        <div class="action-item" (click)="navigateToProfile()">
+                            <div class="action-icon profile">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>Hồ sơ cá nhân</h5>
+                                <p>Quản lý thông tin tài khoản</p>
+                            </div>
+                        </div>
+
+                        <div class="action-item" (click)="navigateToHistory()">
+                            <div class="action-icon history">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>Lịch sử đặt phòng</h5>
+                                <p>Xem các lần đặt phòng trước</p>
+                            </div>
+                        </div>
+
+                        <div class="action-item" (click)="navigateToChat()">
+                            <div class="action-icon support">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>Hỗ trợ trực tuyến</h5>
+                                <p>Chat với trợ lý thư viện</p>
+                            </div>
+                        </div>
+
+                        <div class="action-item" (click)="navigateToRegulations()">
+                            <div class="action-icon rules">
+                                <i class="fas fa-file-contract"></i>
+                            </div>
+                            <div class="action-content">
+                                <h5>Nội quy thư viện</h5>
+                                <p>Quy định sử dụng dịch vụ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- New Books Section -->
+<section class="new-books-section">
+    <div class="container">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-book text-success"></i>
+                SÁCH MỚI
+            </h3>
+            <div class="header-nav">
+                <button class="nav-btn" (click)="previousBook()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-btn" (click)="nextBook()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="books-grid">
+            <div class="book-item" *ngFor="let book of newBooks.slice(0, 4)">
+                <div class="book-cover">
+                    <img [src]="book.coverImage || 'assets/images/default-book.jpg'" [alt]="book.title">
+                    <div class="book-overlay">
+                        <button class="btn-view" (click)="viewBookDetail(book)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="book-info">
+                    <h5>{{ book.title }}</h5>
+                    <p class="book-author">{{ book.author }}</p>
+                    <div class="book-meta">
+                        <span class="book-category">{{ book.category }}</span>
+                        <span class="book-year">{{ book.publishYear }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer Links -->
+<section class="footer-links">
+    <div class="container">
+        <div class="links-grid">
+            <div class="link-column">
+                <h4>TRUNG TÂM THÔNG TIN - THƯ VIỆN</h4>
+                <p>ĐẠI HỌC CÔNG THƯƠNG TP.HCM</p>
+                <div class="contact-info">
+                    <p><i class="fas fa-map-marker-alt"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</p>
+                    <p><i class="fas fa-phone"></i> ĐT: (028) 3816 1673 - 137</p>
+                    <p><i class="fas fa-envelope"></i> Email: thuvien@huit.edu.vn</p>
+                    <p><i class="fas fa-globe"></i> Website: MT: 1F.3627</p>
+                </div>
+            </div>
+
+            <div class="link-column">
+                <h5>THỐNG KÊ TRUY CẬP</h5>
+                <div class="stats-info">
+                    <p>Tổng lượt truy cập: <strong>{{ statistics()?.tongLuotTruyCap || 0 }}</strong></p>
+                    <p>Số lượt truy cập: <strong>{{ statistics()?.trongNgay || 0 }}</strong></p>
+                    <p>Thành viên online: <strong>{{ statistics()?.thanhVienOnline || 0 }}</strong></p>
+                    <p>Khách online: <strong>{{ statistics()?.khachOnline || 0 }}</strong></p>
+                </div>
+            </div>
+
+            <div class="link-column">
+                <h5>LIÊN KẾT</h5>
+                <div class="external-links">
+                    <a href="https://huit.edu.vn" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> Website HUIT
+                    </a>
+                    <a href="#" class="facebook-link">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    <a href="#" class="youtube-link">
+                        <i class="fab fa-youtube"></i> YouTube
+                    </a>
+                </div>
+                <div class="help-section">
+                    <h6>Hỗ trợ gặp lỗi?</h6>
+                    <a href="#" class="help-link" (click)="navigateToChat()">
+                        <i class="fas fa-question-circle"></i> Trợ giúp
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

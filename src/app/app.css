@@ -9,3 +9,8 @@
   flex: 1;
   background: #f8f9fa;
 }
+
+.main-content.full-height {
+  min-height: 100vh;
+  background: #ffffff;
+}

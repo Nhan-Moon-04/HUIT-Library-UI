@@ -1,7 +1,7 @@
 <div class="app-layout">
-    <app-navbar></app-navbar>
-    <main class="main-content">
+    <app-navbar *ngIf="showNavbar()"></app-navbar>
+    <main class="main-content" [class.full-height]="!showNavbar()">
         <router-outlet />
     </main>
 </div>
-<app-chat></app-chat>
+<app-chat *ngIf="showNavbar()"></app-chat>

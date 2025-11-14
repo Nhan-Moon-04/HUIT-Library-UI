@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { StatisticsService, StatisticsOverview } from '../../services/statistics.service';
+import { NewsService, NewsItem } from '../../services/news.service';
 import {
   NotificationService,
   Notification,
@@ -20,11 +21,17 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   authService = inject(AuthService);
   notificationService = inject(NotificationService);
   statisticsService = inject(StatisticsService);
+  newsService = inject(NewsService);
   router = inject(Router);
 
   notifications = signal<Notification[]>([]);
   isLoadingNotifications = signal<boolean>(false);
   statistics = signal<StatisticsOverview | null>(null);
+
+  // News signals
+  newsList = signal<NewsItem[]>([]);
+  isLoadingNews = signal<boolean>(false);
+  currentNewsIndex = signal(0);
 
   // Hero carousel state
   activeSlideIndex = signal(0);
@@ -41,26 +48,10 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     category: 'Sự kiện',
   };
 
-  newBooks = [
-    {
-      title: 'Danh mục sách mới nhất 2025',
-      author: 'Tập thể tác giả',
-      category: 'Tài liệu học tập',
-      publishYear: 2025,
-      coverImage: 'assets/images/book1.jpg',
-    },
-    {
-      title: 'Tạp chí Khoa học Công nghệ',
-      author: 'Tạp chí Đại học',
-      category: 'Ấn phẩm định kỳ',
-      publishYear: 2024,
-      coverImage: 'assets/images/book2.jpg',
-    },
-  ];
-
   ngOnInit(): void {
     this.loadLatestNotifications();
     this.loadStatistics();
+    this.loadNews();
     this.recordVisit();
     this.setOnlineStatus(true);
     this.startCarousel();
@@ -136,11 +127,61 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  setupStatisticsRefresh(): void {
-    // Refresh thống kê mỗi 30 giây
-    this.statisticsInterval = setInterval(() => {
-      this.loadStatistics();
-    }, 30000);
+  loadNews(): void {
+    this.isLoadingNews.set(true);
+    this.newsService.getNewsList(1, 10).subscribe({
+      next: (response) => {
+        if (response.success && response.lstNewsPaging) {
+          // Lấy tất cả tin tức (bỏ filter để test)
+          const displayNews = response.lstNewsPaging;
+          this.newsList.set(displayNews);
+          console.log('News loaded:', displayNews.length, 'items');
+          console.log('First news:', displayNews[0]?.TITLE);
+          console.log(
+            'All news titles:',
+            displayNews.map((n) => n.TITLE)
+          );
+          console.log('Current news index:', this.currentNewsIndex());
+        }
+        this.isLoadingNews.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading news:', error);
+        this.isLoadingNews.set(false);
+        // Fallback to demo data if API fails
+        this.loadDemoNews();
+      },
+    });
+  }
+
+  loadDemoNews(): void {
+    // Demo news data as fallback
+    const demoNews: NewsItem[] = [
+      {
+        ITEMID: 1,
+        TITLE:
+          'Thư viện Trường Đại học Công Thương TP. HCM tiếp nhận hơn 1.000 quyển sách ngoại văn từ GS. Trần Hữu Dũng',
+        CONTENT:
+          'Nhằm góp phần nâng cao chất lượng học tập và nghiên cứu của sinh viên, học viên...',
+        ITEMIMG: '',
+        PUBLISHDATE: '2025-11-08T00:00:00',
+        CREATED: '2025-11-10T15:14:05',
+        MODIFIED: '2025-11-12T14:05:58.567',
+        VIEWCOUNT: 48,
+        AUTHORID: 48,
+        STRAUTHOR_NAME: 'Ban thư viện',
+        STRCATEGORY_NAME: 'Tin tức',
+        STRARTICLETYPE_NAME: 'Sự kiện',
+        FRIENDLYNAME: 'thu-vien-truong-dai-hoc-cong-thuong-tp-hcm-tiep-nhan-hon-1-000-quyen-sach',
+        ISDISPLAY: true,
+        STATUS: 3,
+        STRSTATUS: 'Đã ban hành',
+        STRUCTUREID: ',284,',
+        ARTICLETYPEID: 18,
+        TOPITEM: true,
+      },
+    ];
+    this.newsList.set(demoNews);
   }
 
   // Hero carousel methods
@@ -204,13 +245,73 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
 
   // News navigation methods
   previousNews(): void {
-    // Implement news carousel navigation
-    console.log('Previous news');
+    const current = this.currentNewsIndex();
+    const newsList = this.newsList();
+    console.log('Previous news - Current:', current, 'Total news:', newsList.length);
+
+    if (newsList.length === 0) return;
+
+    const previous = current > 0 ? current - 1 : newsList.length - 1;
+    this.currentNewsIndex.set(previous);
+    console.log('Previous news - New index:', previous);
+
+    // Force change detection
+    setTimeout(() => {
+      console.log('After timeout - current news:', this.getCurrentNews()?.TITLE);
+    }, 100);
   }
 
   nextNews(): void {
-    // Implement news carousel navigation
-    console.log('Next news');
+    const current = this.currentNewsIndex();
+    const newsList = this.newsList();
+    console.log('Next news - Current:', current, 'Total news:', newsList.length);
+
+    if (newsList.length === 0) return;
+
+    const next = (current + 1) % newsList.length;
+    this.currentNewsIndex.set(next);
+    console.log('Next news - New index:', next);
+
+    // Force change detection by triggering getCurrentNews
+    setTimeout(() => {
+      console.log('After timeout - current news:', this.getCurrentNews()?.TITLE);
+    }, 100);
+  }
+
+  getCurrentNews(): NewsItem | null {
+    const newsList = this.newsList();
+    const currentIndex = this.currentNewsIndex();
+
+    console.log('getCurrentNews called - Index:', currentIndex, 'List length:', newsList.length);
+
+    if (newsList.length === 0 || currentIndex >= newsList.length) {
+      console.log('No news available or invalid index');
+      return null;
+    }
+
+    const currentNews = newsList[currentIndex];
+    console.log('Current news:', currentNews?.TITLE);
+    return currentNews;
+  }
+
+  getNewsImage(newsItem: NewsItem): string {
+    return this.newsService.getImageUrl(newsItem);
+  }
+
+  getNewsCategory(newsItem: NewsItem): string {
+    return this.newsService.getCategoryName(newsItem);
+  }
+
+  isHotNews(newsItem: NewsItem): boolean {
+    return this.newsService.isHotNews(newsItem);
+  }
+
+  getNewsExcerpt(newsItem: NewsItem): string {
+    return this.newsService.getExcerpt(newsItem.CONTENT, 150);
+  }
+
+  formatNewsDate(dateString: string): string {
+    return this.newsService.formatDate(dateString);
   }
 
   // Books navigation methods
@@ -227,6 +328,45 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   viewBookDetail(book: any): void {
     // Navigate to book detail or open modal
     console.log('Viewing book:', book.title);
+    // You can implement a modal or navigate to detail page
+    // this.router.navigate(['/books', book.id]);
+  }
+
+  borrowBook(book: any): void {
+    if (!book.available) {
+      console.log('Book not available');
+      return;
+    }
+    // Implement book borrowing logic
+    console.log('Borrowing book:', book.title);
+    // this.bookService.borrowBook(book.id).subscribe(...);
+  }
+
+  readNewsDetail(news: NewsItem): void {
+    console.log('Reading news:', news.TITLE);
+
+    // Tăng view count
+    this.newsService.increaseViewCount(news.ITEMID).subscribe({
+      next: (response) => {
+        if (response.success) {
+          console.log('View count increased for news:', news.ITEMID);
+          // Cập nhật view count trong danh sách hiện tại
+          const currentList = this.newsList();
+          const updatedList = currentList.map((item) =>
+            item.ITEMID === news.ITEMID ? { ...item, VIEWCOUNT: item.VIEWCOUNT + 1 } : item
+          );
+          this.newsList.set(updatedList);
+        }
+      },
+      error: (error) => {
+        console.error('Error increasing view count:', error);
+      },
+    });
+
+    // Navigate to news detail page hoặc mở modal
+    // this.router.navigate(['/news', news.FRIENDLYNAME]);
+    // Hoặc mở trong tab mới
+    // window.open(`/news/${news.FRIENDLYNAME}`, '_blank');
   }
 
   formatDate(dateString: string): string {
@@ -243,12 +383,11 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatNewsDate(date: Date): string {
-    return date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
+  setupStatisticsRefresh(): void {
+    // Refresh thống kê mỗi 30 giây
+    this.statisticsInterval = setInterval(() => {
+      this.loadStatistics();
+    }, 30000);
   }
 
   truncateText(text: string, maxLength: number): string {

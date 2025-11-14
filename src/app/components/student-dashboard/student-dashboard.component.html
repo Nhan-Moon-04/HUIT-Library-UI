@@ -142,6 +142,9 @@
                         <h3>
                             <i class="fas fa-fire text-danger"></i>
                             TIN TỨC SỰ KIỆN
+                            <small style="font-size: 12px; color: #666; margin-left: 10px;">
+                                ({{ currentNewsIndex() + 1 }}/{{ newsList().length }})
+                            </small>
                         </h3>
                         <div class="header-nav">
                             <button class="nav-btn" (click)="previousNews()">
@@ -153,27 +156,49 @@
                         </div>
                     </div>
                     <div class="news-carousel">
-                        <div class="news-item featured" *ngIf="featuredNews">
+                        <div class="news-item featured" *ngIf="getCurrentNews(); else loadingNews">
                             <div class="news-image">
-                                <img [src]="featuredNews.image || 'assets/images/default-news.jpg'"
-                                    [alt]="featuredNews.title">
-                                <div class="news-badge">MỚI</div>
+                                <img [src]="getNewsImage(getCurrentNews()!)" [alt]="getCurrentNews()!.TITLE"
+                                    onerror="this.src='https://via.placeholder.com/400x250/2196F3/FFFFFF?text=Tin+tức+HUIT'">
+                                <div class="news-badge" *ngIf="isHotNews(getCurrentNews()!)">HOT</div>
+                                <div class="news-category-badge">{{ getNewsCategory(getCurrentNews()!) }}</div>
                             </div>
                             <div class="news-content">
-                                <h4>{{ featuredNews.title }}</h4>
-                                <p>{{ featuredNews.excerpt }}</p>
+                                <h4 [title]="getCurrentNews()!.TITLE">{{ getCurrentNews()!.TITLE }}</h4>
+                                <p>{{ getNewsExcerpt(getCurrentNews()!) }}</p>
                                 <div class="news-meta">
                                     <span class="news-date">
                                         <i class="fas fa-calendar"></i>
-                                        {{ formatNewsDate(featuredNews.date) }}
+                                        {{ formatNewsDate(getCurrentNews()!.PUBLISHDATE) }}
                                     </span>
-                                    <span class="news-category">
-                                        <i class="fas fa-tag"></i>
-                                        {{ featuredNews.category }}
+                                    <span class="news-views">
+                                        <i class="fas fa-eye"></i>
+                                        {{ getCurrentNews()!.VIEWCOUNT }} lượt xem
                                     </span>
                                 </div>
+                                <div class="news-author" *ngIf="getCurrentNews()!.STRAUTHOR_NAME">
+                                    <i class="fas fa-user"></i>
+                                    {{ getCurrentNews()!.STRAUTHOR_NAME }}
+                                </div>
+                                <button class="btn-read-more" (click)="readNewsDetail(getCurrentNews()!)">
+                                    <i class="fas fa-arrow-right"></i>
+                                    Xem chi tiết
+                                </button>
                             </div>
                         </div>
+
+                        <ng-template #loadingNews>
+                            <div class="news-loading">
+                                <div class="loading-spinner" *ngIf="isLoadingNews()">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <p>Đang tải tin tức...</p>
+                                </div>
+                                <div class="no-news" *ngIf="!isLoadingNews() && newsList().length === 0">
+                                    <i class="fas fa-newspaper"></i>
+                                    <p>Hiện tại chưa có tin tức mới</p>
+                                </div>
+                            </div>
+                        </ng-template>
                     </div>
                 </div>
 
@@ -309,26 +334,7 @@
             </div>
         </div>
 
-        <div class="books-grid">
-            <div class="book-item" *ngFor="let book of newBooks.slice(0, 4)">
-                <div class="book-cover">
-                    <img [src]="book.coverImage || 'assets/images/default-book.jpg'" [alt]="book.title">
-                    <div class="book-overlay">
-                        <button class="btn-view" (click)="viewBookDetail(book)">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="book-info">
-                    <h5>{{ book.title }}</h5>
-                    <p class="book-author">{{ book.author }}</p>
-                    <div class="book-meta">
-                        <span class="book-category">{{ book.category }}</span>
-                        <span class="book-year">{{ book.publishYear }}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 </section>
 

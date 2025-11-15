@@ -1,422 +1,343 @@
-<div class="booking-list-page library-theme">
-    <div class="page-controls">
-        <!-- Nút Quay lại bên trái -->
-        <button class="back-home-btn" (click)="router.navigate(['/dashboard'])">
-            <i class="fas fa-arrow-left"></i> Quay lại
-        </button>
-
-
-        <!-- Nút Làm mới bên phải -->
-        <button class="refresh-btn" type="button" (click)="loadBookings()" [disabled]="loading()">
-            <i class="fas fa-sync-alt" [class.spinning]="loading()"></i>
-            Làm mới
-        </button>
-    </div>
-
-    <div class="content-container">
-        <!-- Messages Section -->
-        <div class="messages-section">
-            <div *ngIf="loading()" class="alert alert-loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <span>Đang tải dữ liệu...</span>
+<!-- Modern Library Booking Dashboard -->
+<div class="library-dashboard">
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <div class="breadcrumb-nav">
+                <button class="nav-btn" (click)="router.navigate(['/student-dashboard'])">
+                    <i class="material-icons">arrow_back</i>
+                    Trang chủ
+                </button>
+                <span class="separator">/</span>
+                <span class="current-page">Phiếu đặt phòng</span>
             </div>
-            <div *ngIf="error()" class="alert alert-error">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>{{ error() }}</span>
-            </div>
-            <div *ngIf="message()" class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
-                <span>{{ message() }}</span>
-            </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Empty State -->
-            <div *ngIf="!loading() && bookings().length === 0" class="empty-state">
-                <div class="empty-icon">
-                    <i class="fas fa-door-open"></i>
-                </div>
-                <h3>CHƯA CÓ ĐĂNG KÝ PHÒNG</h3>
-                <p>Bạn chưa đăng ký sử dụng phòng nào. Hãy tạo yêu cầu mượn phòng mới!</p>
-                <button class="btn btn-primary" (click)="router.navigate(['/booking/create'])">
-                    <i class="fas fa-plus-circle"></i>
-                    TẠO YÊU CẦU MỚI
+            <div class="header-actions">
+                <button class="action-btn refresh-btn" (click)="loadBookings()" [disabled]="loading()">
+                    <i class="material-icons" [class.spinning]="loading()">refresh</i>
+                    <span>Làm mới</span>
+                </button>
+                <button class="action-btn primary-btn" (click)="router.navigate(['/booking/create'])">
+                    <i class="material-icons">add</i>
+                    <span>Đặt phòng mới</span>
                 </button>
             </div>
+        </div>
+    </div>
 
-            <!-- Currently Using Bookings -->
-            <div *ngIf="!loading() && usingBookings().length > 0" class="bookings-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-play-circle"></i>
-                        PHÒNG ĐANG SỬ DỤNG
-                    </h2>
-                    <span class="section-badge">{{ usingBookings().length }}</span>
+    <!-- Page Title & Stats -->
+    <div class="page-title-section">
+        <div class="title-content">
+            <h1 class="page-title">
+                <i class="material-icons">event_available</i>
+                Phiếu Đặt Phòng
+            </h1>
+            <p class="page-subtitle">Quản lý các phiếu đặt phòng thư viện của bạn</p>
+        </div>
+
+        <div class="stats-cards" *ngIf="!loading() && bookings().length > 0">
+            <div class="stat-card active">
+                <div class="stat-number">{{ usingBookings().length }}</div>
+                <div class="stat-label">Đang sử dụng</div>
+            </div>
+            <div class="stat-card pending">
+                <div class="stat-number">{{ getPendingCount() }}</div>
+                <div class="stat-label">Chờ duyệt</div>
+            </div>
+            <div class="stat-card total">
+                <div class="stat-number">{{ bookings().length }}</div>
+                <div class="stat-label">Tổng cộng</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="alerts-section" *ngIf="loading() || error() || message()">
+        <div *ngIf="loading()" class="alert alert-info">
+            <i class="material-icons">hourglass_empty</i>
+            <span>Đang tải danh sách phiếu đặt phòng...</span>
+        </div>
+        <div *ngIf="error()" class="alert alert-error">
+            <i class="material-icons">error</i>
+            <span>{{ error() }}</span>
+        </div>
+        <div *ngIf="message()" class="alert alert-success">
+            <i class="material-icons">check_circle</i>
+            <span>{{ message() }}</span>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+        <!-- Empty State -->
+        <div *ngIf="!loading() && bookings().length === 0" class="empty-state">
+            <div class="empty-illustration">
+                <i class="material-icons">meeting_room</i>
+            </div>
+            <h2>Chưa có phiếu đặt phòng nào</h2>
+            <p>Hãy tạo phiếu đặt phòng đầu tiên để sử dụng không gian học tập và tài nguyên thư viện.</p>
+            <button class="cta-button" (click)="router.navigate(['/booking/create'])">
+                <i class="material-icons">add_circle</i>
+                Tạo phiếu đặt phòng đầu tiên
+            </button>
+        </div>
+
+        <!-- Active Bookings Section -->
+        <div *ngIf="!loading() && usingBookings().length > 0" class="bookings-section active-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="material-icons">play_circle</i>
+                    <h2>Phiên Đang Sử Dụng</h2>
+                    <span class="count-badge">{{ usingBookings().length }}</span>
                 </div>
+            </div>
 
-                <div class="bookings-grid">
-                    <div class="booking-card" *ngFor="let booking of usingBookings()">
-                        <div class="card-header" [ngClass]="getStatusClass(booking.maTrangThai)">
-                            <div class="status-info">
-                                <div class="status-badge">
-                                    <i class="fas" [ngClass]="{
-                                        'fa-door-open': booking.maTrangThai === 4,
-                                        'fa-check-circle': booking.maTrangThai === 2
-                                    }"></i>
-                                    {{ booking.tenTrangThai }}
+            <div class="bookings-grid">
+                <div class="booking-card active-booking" *ngFor="let booking of usingBookings()"
+                    (click)="viewBookingDetail(booking.maDangKy)">
+                    <div class="card-header">
+                        <div class="room-info">
+                            <h3 class="room-name">{{ booking.tenPhong }}</h3>
+                            <span class="room-type">{{ booking.tenLoaiPhong }}</span>
+                        </div>
+                        <div class="status-indicator active">
+                            <i class="material-icons">radio_button_checked</i>
+                            <span>{{ booking.tenTrangThai }}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="time-section">
+                            <div class="time-item">
+                                <i class="material-icons">schedule</i>
+                                <div class="time-details">
+                                    <span class="time-label">Bắt đầu</span>
+                                    <span class="time-value">{{ formatDateTime(booking.thoiGianBatDau) }}</span>
                                 </div>
-                                <div class="booking-meta">
-                                    <span class="booking-id">Mã: #{{ booking.maDangKy }}</span>
-                                    <span class="booking-date">{{ formatDate(booking.ngayMuon) }}</span>
+                            </div>
+                            <div class="time-item">
+                                <i class="material-icons">event</i>
+                                <div class="time-details">
+                                    <span class="time-label">Kết thúc</span>
+                                    <span class="time-value">{{ formatDateTime(booking.thoiGianKetThuc) }}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-body">
-                            <!-- Room Information -->
-                            <div class="room-section">
-                                <div class="room-header">
-                                    <h3 class="room-name">
-                                        <i class="fas fa-door-closed"></i>
-                                        {{ booking.tenPhong }}
-                                    </h3>
-                                    <span class="room-type">{{ booking.tenLoaiPhong }}</span>
-                                </div>
+                        <div class="details-grid">
+                            <div class="detail-item" *ngIf="booking.soLuong">
+                                <i class="material-icons">group</i>
+                                <span>{{ booking.soLuong }} người</span>
                             </div>
-
-                            <!-- Booking Details -->
-                            <div class="details-section">
-                                <div class="detail-row">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-clock"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Thời gian bắt đầu</span>
-                                            <span class="detail-value">{{ formatDateTime(booking.thoiGianBatDau)
-                                                }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-flag-checkered"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Thời gian kết thúc</span>
-                                            <span class="detail-value">{{ formatDateTime(booking.thoiGianKetThuc)
-                                                }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="detail-row">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-users"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Số lượng người</span>
-                                            <span class="detail-value">{{ booking.soLuong || 'Không xác định' }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-hourglass"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Trạng thái</span>
-                                            <span class="detail-value status-text">{{ booking.tenTrangThai }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Purpose -->
-                                <div class="detail-full" *ngIf="booking.lyDo">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-comment-alt"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <span class="detail-label">Mục đích sử dụng</span>
-                                        <span class="detail-value">{{ booking.lyDo }}</span>
-                                    </div>
-                                </div>
-
-                                <!-- Notes -->
-                                <div class="detail-full" *ngIf="booking.ghiChu">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-sticky-note"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <span class="detail-label">Ghi chú</span>
-                                        <span class="detail-value">{{ booking.ghiChu }}</span>
-                                    </div>
-                                </div>
+                            <div class="detail-item" *ngIf="booking.lyDo">
+                                <i class="material-icons">description</i>
+                                <span>{{ booking.lyDo }}</span>
                             </div>
+                        </div>
 
-                            <!-- Status Information -->
-                            <div class="status-section">
-                                <div class="status-message">
-                                    <i class="fas fa-info-circle"></i>
-                                    <span>{{ booking.statusDescription }}</span>
-                                </div>
-
-                                <!-- Time Information -->
-                                <div class="time-info"
-                                    *ngIf="booking.minutesUntilStart > 0 && booking.maTrangThai !== 3">
-                                    <div class="time-badge">
-                                        <i class="fas fa-hourglass-start"></i>
-                                        Bắt đầu sau: <strong>{{ formatMinutes(booking.minutesUntilStart) }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="actions-section"
-                                *ngIf="(booking.canExtend || booking.canComplete || canCancelBooking(booking)) && (booking.maTrangThai === 1 || booking.maTrangThai === 2 || booking.maTrangThai === 4)">
-                                <button class="btn btn-action btn-extend" *ngIf="booking.canExtend">
-                                    <i class="fas fa-clock"></i>
-                                    Gia hạn thời gian
-                                </button>
-                                <button class="btn btn-action btn-complete" *ngIf="booking.canComplete">
-                                    <i class="fas fa-check"></i>
-                                    Hoàn thành
-                                </button>
-                                <button class="btn btn-action btn-cancel" *ngIf="canCancelBooking(booking)"
-                                    (click)="openCancelModal(booking)">
-                                    <i class="fas fa-times"></i>
-                                    Hủy đặt phòng
-                                </button>
+                        <div class="progress-section" *ngIf="booking.minutesRemaining > 0">
+                            <div class="time-remaining">
+                                <i class="material-icons">timer</i>
+                                <span>Còn {{ formatMinutes(booking.minutesRemaining) }}</span>
                             </div>
                         </div>
                     </div>
+
+                    <div class="card-actions" *ngIf="booking.canExtend || booking.canComplete">
+                        <button class="action-btn secondary" *ngIf="booking.canExtend"
+                            (click)="openExtendModal(booking); $event.stopPropagation()">
+                            <i class="material-icons">access_time</i>
+                            Gia hạn
+                        </button>
+                        <button class="action-btn primary" *ngIf="booking.canComplete"
+                            (click)="$event.stopPropagation()">
+                            <i class="material-icons">check</i>
+                            Hoàn thành
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming & Other Bookings -->
+        <div *ngIf="!loading() && otherBookings().length > 0" class="bookings-section upcoming-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="material-icons">upcoming</i>
+                    <h2>Sắp Tới & Lịch Sử</h2>
+                    <span class="count-badge">{{ otherBookings().length }}</span>
                 </div>
             </div>
 
-            <!-- Other Bookings -->
-            <div *ngIf="!loading() && otherBookings().length > 0" class="bookings-section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-list-alt"></i>
-                        CÁC ĐĂNG KÝ KHÁC
-                    </h2>
-                    <span class="section-badge">{{ otherBookings().length }}</span>
-                </div>
+            <div class="bookings-list">
+                <div class="booking-item" *ngFor="let booking of otherBookings()"
+                    [ngClass]="'status-' + booking.maTrangThai" (click)="viewBookingDetail(booking.maDangKy)">
 
-                <div class="bookings-grid">
-                    <div class="booking-card" *ngFor="let booking of otherBookings()">
-                        <div class="card-header" [ngClass]="getStatusClass(booking.maTrangThai)">
-                            <div class="status-info">
-                                <div class="status-badge">
-                                    <i class="fas" [ngClass]="{
-                                        'fa-clock': booking.maTrangThai === 1,
-                                        'fa-check-circle': booking.maTrangThai === 2,
-                                        'fa-times-circle': booking.maTrangThai === 3,
-                                        'fa-flag-checkered': booking.maTrangThai === 5
-                                    }"></i>
-                                    {{ booking.tenTrangThai }}
-                                </div>
-                                <div class="booking-meta">
-                                    <span class="booking-id">Mã: #{{ booking.maDangKy }}</span>
-                                    <span class="booking-date">{{ formatDate(booking.ngayMuon) }}</span>
-                                </div>
+                    <div class="item-status">
+                        <div class="status-icon" [ngClass]="getStatusClass(booking.maTrangThai)">
+                            <i class="material-icons">{{ getStatusIcon(booking.maTrangThai) }}</i>
+                        </div>
+                    </div>
+
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="room-name">{{ booking.tenPhong }}</h3>
+                            <span class="booking-id">#{{ booking.maDangKy }}</span>
+                        </div>
+
+                        <div class="item-details">
+                            <div class="detail-row">
+                                <i class="material-icons">schedule</i>
+                                <span>{{ formatDateTime(booking.thoiGianBatDau) }} - {{
+                                    formatDateTime(booking.thoiGianKetThuc) }}</span>
+                            </div>
+                            <div class="detail-row" *ngIf="booking.lyDo">
+                                <i class="material-icons">description</i>
+                                <span>{{ booking.lyDo }}</span>
                             </div>
                         </div>
 
-                        <div class="card-body">
-                            <!-- Room Information -->
-                            <div class="room-section">
-                                <div class="room-header">
-                                    <h3 class="room-name">
-                                        <i class="fas fa-door-closed"></i>
-                                        {{ booking.tenPhong }}
-                                    </h3>
-                                    <span class="room-type">{{ booking.tenLoaiPhong }}</span>
-                                </div>
+                        <div class="item-meta">
+                            <span class="status-text">{{ booking.tenTrangThai }}</span>
+                            <span class="date-text">{{ formatDate(booking.ngayMuon) }}</span>
+                        </div>
+
+                        <!-- Countdown for approved bookings -->
+                        <div class="countdown-section"
+                            *ngIf="booking.maTrangThai === 2 && booking.minutesUntilStart > 0">
+                            <div class="countdown-badge">
+                                <i class="material-icons">schedule</i>
+                                <span>Bắt đầu sau {{ formatMinutes(booking.minutesUntilStart) }}</span>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- Booking Details -->
-                            <div class="details-section">
-                                <div class="detail-row">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-clock"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Thời gian bắt đầu</span>
-                                            <span class="detail-value">{{ formatDateTime(booking.thoiGianBatDau)
-                                                }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-flag-checkered"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Thời gian kết thúc</span>
-                                            <span class="detail-value">{{ formatDateTime(booking.thoiGianKetThuc)
-                                                }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="detail-row">
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-users"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Số lượng người</span>
-                                            <span class="detail-value">{{ booking.soLuong || 'Không xác định' }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-hourglass"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Trạng thái</span>
-                                            <span class="detail-value status-text">{{ booking.tenTrangThai }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Purpose -->
-                                <div class="detail-full" *ngIf="booking.lyDo">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-comment-alt"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <span class="detail-label">Mục đích sử dụng</span>
-                                        <span class="detail-value">{{ booking.lyDo }}</span>
-                                    </div>
-                                </div>
-
-                                <!-- Notes -->
-                                <div class="detail-full" *ngIf="booking.ghiChu">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-sticky-note"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <span class="detail-label">Ghi chú</span>
-                                        <span class="detail-value">{{ booking.ghiChu }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Status Information -->
-                            <div class="status-section">
-                                <div class="status-message">
-                                    <i class="fas fa-info-circle"></i>
-                                    <span>{{ booking.statusDescription }}</span>
-                                </div>
-
-                                <!-- Time Information -->
-                                <div class="time-info"
-                                    *ngIf="booking.minutesUntilStart > 0 && booking.maTrangThai !== 3">
-                                    <div class="time-badge">
-                                        <i class="fas fa-hourglass-start"></i>
-                                        Bắt đầu sau: <strong>{{ formatMinutes(booking.minutesUntilStart) }}</strong>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="actions-section"
-                                *ngIf="(booking.canExtend || booking.canComplete || canCancelBooking(booking)) && (booking.maTrangThai === 1 || booking.maTrangThai === 2 || booking.maTrangThai === 4)">
-                                <button class="btn btn-action btn-extend" *ngIf="booking.canExtend">
-                                    <i class="fas fa-clock"></i>
-                                    Gia hạn thời gian
-                                </button>
-                                <button class="btn btn-action btn-complete" *ngIf="booking.canComplete">
-                                    <i class="fas fa-check"></i>
-                                    Hoàn thành
-                                </button>
-                                <button class="btn btn-action btn-cancel" *ngIf="canCancelBooking(booking)"
-                                    (click)="openCancelModal(booking)">
-                                    <i class="fas fa-times"></i>
-                                    Hủy đặt phòng
-                                </button>
-                            </div>
+                    <div class="item-actions">
+                        <div class="action-menu">
+                            <button class="menu-btn" *ngIf="booking.canExtend"
+                                (click)="openExtendModal(booking); $event.stopPropagation()" title="Gia hạn">
+                                <i class="material-icons">access_time</i>
+                            </button>
+                            <button class="menu-btn" *ngIf="canCancelBooking(booking)"
+                                (click)="openCancelModal(booking); $event.stopPropagation()" title="Hủy đặt phòng">
+                                <i class="material-icons">cancel</i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Cancel Booking Modal -->
-    <div class="modal-overlay" *ngIf="showCancelModal()" (click)="closeCancelModal()">
-        <div class="modal-container" (click)="$event.stopPropagation()">
-            <div class="modal-header">
-                <h3 class="modal-title">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Hủy đặt phòng
-                </h3>
-                <button class="modal-close" (click)="closeCancelModal()" type="button">
-                    <i class="fas fa-times"></i>
-                </button>
+<!-- Extend Modal -->
+<div class="modal-overlay" *ngIf="showExtendModal()" (click)="closeExtendModal()">
+    <div class="modal-container extend-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>
+                <i class="material-icons">access_time</i>
+                Gia Hạn Đặt Phòng
+            </h2>
+            <button class="close-btn" (click)="closeExtendModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="booking-summary" *ngIf="selectedExtendBooking()">
+                <h3>{{ selectedExtendBooking()!.tenPhong }}</h3>
+                <p>Thời gian kết thúc hiện tại: {{ formatDateTime(selectedExtendBooking()!.thoiGianKetThuc) }}</p>
             </div>
 
-            <div class="modal-body">
-                <div class="booking-info" *ngIf="selectedBooking()">
-                    <h4>Thông tin đặt phòng</h4>
-                    <div class="booking-details">
-                        <div class="detail-item">
-                            <span class="label">Mã đăng ký:</span>
-                            <span class="value">#{{ selectedBooking()!.maDangKy }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Phòng:</span>
-                            <span class="value">{{ selectedBooking()!.tenPhong }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Thời gian:</span>
-                            <span class="value">{{ formatDateTime(selectedBooking()!.thoiGianBatDau) }} - {{
-                                formatDateTime(selectedBooking()!.thoiGianKetThuc) }}</span>
-                        </div>
+            <div class="extend-options">
+                <h4>Thời gian gia hạn</h4>
+                <div class="time-picker">
+                    <div class="time-group">
+                        <label>Giờ</label>
+                        <select class="time-select" [value]="extendHours()"
+                            (change)="updateExtendHours(+$any($event.target).value)">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="time-group">
+                        <label>Phút</label>
+                        <select class="time-select" [value]="extendMinutes()"
+                            (change)="updateExtendMinutes(+$any($event.target).value)">
+                            <option value="0">0</option>
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                        </select>
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <div class="form-group">
-                        <label for="cancelReason" class="form-label">
-                            Lý do hủy <span class="required">*</span>
-                        </label>
-                        <textarea id="cancelReason" class="form-input" rows="3"
-                            placeholder="Nhập lý do hủy đặt phòng..." [value]="cancelReason()"
-                            (input)="updateCancelReason($any($event.target).value)"
-                            [disabled]="cancelLoading()"></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="cancelNote" class="form-label">
-                            Ghi chú thêm
-                        </label>
-                        <textarea id="cancelNote" class="form-input" rows="2"
-                            placeholder="Ghi chú bổ sung (không bắt buộc)..." [value]="cancelNote()"
-                            (input)="updateCancelNote($any($event.target).value)"
-                            [disabled]="cancelLoading()"></textarea>
-                    </div>
+                <div class="extension-preview" *ngIf="extendHours() > 0 || extendMinutes() > 0">
+                    <p class="preview-text">
+                        Thời gian kết thúc mới:
+                        <strong>{{ getNewEndTime() }}</strong>
+                    </p>
                 </div>
             </div>
+        </div>
 
-            <div class="modal-footer">
-                <button class="btn btn-secondary" (click)="closeCancelModal()" type="button"
-                    [disabled]="cancelLoading()">
-                    Hủy bỏ
-                </button>
-                <button class="btn btn-danger" (click)="confirmCancel()" type="button"
-                    [disabled]="cancelLoading() || !cancelReason().trim()">
-                    <i class="fas fa-spinner fa-spin" *ngIf="cancelLoading()"></i>
-                    <i class="fas fa-times" *ngIf="!cancelLoading()"></i>
-                    {{ cancelLoading() ? 'Đang xử lý...' : 'Xác nhận hủy' }}
-                </button>
+        <div class="modal-footer">
+            <button class="btn secondary" (click)="closeExtendModal()">Hủy</button>
+            <button class="btn primary" (click)="confirmExtend()"
+                [disabled]="extendLoading() || (extendHours() === 0 && extendMinutes() === 0)">
+                <i class="material-icons" *ngIf="extendLoading()">hourglass_empty</i>
+                <i class="material-icons" *ngIf="!extendLoading()">check</i>
+                {{ extendLoading() ? 'Đang gia hạn...' : 'Xác nhận gia hạn' }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal-overlay" *ngIf="showCancelModal()" (click)="closeCancelModal()">
+    <div class="modal-container cancel-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>
+                <i class="material-icons">cancel</i>
+                Hủy Đặt Phòng
+            </h2>
+            <button class="close-btn" (click)="closeCancelModal()">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="booking-summary" *ngIf="selectedBooking()">
+                <h3>{{ selectedBooking()!.tenPhong }}</h3>
+                <p>{{ formatDateTime(selectedBooking()!.thoiGianBatDau) }} - {{
+                    formatDateTime(selectedBooking()!.thoiGianKetThuc) }}</p>
             </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="cancelReason">Lý do hủy *</label>
+                    <textarea id="cancelReason" class="form-input" rows="3"
+                        placeholder="Vui lòng cung cấp lý do hủy đặt phòng này..." [value]="cancelReason()"
+                        (input)="updateCancelReason($any($event.target).value)" [disabled]="cancelLoading()"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="cancelNote">Ghi chú thêm</label>
+                    <textarea id="cancelNote" class="form-input" rows="2"
+                        placeholder="Các bình luận bổ sung (tùy chọn)..." [value]="cancelNote()"
+                        (input)="updateCancelNote($any($event.target).value)" [disabled]="cancelLoading()"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn secondary" (click)="closeCancelModal()">Giữ đặt phòng</button>
+            <button class="btn danger" (click)="confirmCancel()" [disabled]="cancelLoading() || !cancelReason().trim()">
+                <i class="material-icons" *ngIf="cancelLoading()">hourglass_empty</i>
+                <i class="material-icons" *ngIf="!cancelLoading()">cancel</i>
+                {{ cancelLoading() ? 'Đang hủy...' : 'Xác nhận hủy' }}
+            </button>
         </div>
     </div>
 </div>

@@ -1,0 +1,200 @@
+<!-- Trang Chi Tiết Phiếu Đặt Phòng -->
+<div class="chi-tiet-phieu" *ngIf="!loading() && bookingDetail()">
+    <!-- Đầu trang -->
+    <div class="dau-trang">
+        <div class="noi-dung-dau">
+            <div class="duong-dan">
+                <button class="nut-quay-lai" (click)="router.navigate(['/bookings'])">
+                    <i class="material-icons">arrow_back</i>
+                    Danh sách phiếu đặt
+                </button>
+                <span class="phan-cach">/</span>
+                <span class="trang-hien-tai">Chi tiết phiếu #{{ bookingDetail()!.maDangKy }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nội dung chính -->
+    <div class="noi-dung-chinh">
+        <div class="the-chi-tiet">
+            <!-- Đầu trạng thái -->
+            <div class="dau-trang-thai" [ngClass]="getStatusClass(bookingDetail()!.maTrangThai)">
+                <div class="thong-tin-trang-thai">
+                    <div class="bieu-tuong-trang-thai">
+                        <i class="material-icons">{{ getStatusIcon(bookingDetail()!.maTrangThai) }}</i>
+                    </div>
+                    <div class="chu-trang-thai">
+                        <h1>{{ bookingDetail()!.tenTrangThai }}</h1>
+                        <p>Phiếu đặt phòng #{{ bookingDetail()!.maDangKy }}</p>
+                    </div>
+                </div>
+                <div class="ngay-tao">
+                    <span>Ngày tạo: {{ formatDate(bookingDetail()!.ngayMuon) }}</span>
+                </div>
+            </div>
+
+            <!-- Thông tin phòng -->
+            <div class="muc-chi-tiet">
+                <h2 class="tieu-de-muc">
+                    <i class="material-icons">meeting_room</i>
+                    Thông tin phòng
+                </h2>
+                <div class="luoi-thong-tin">
+                    <div class="muc-thong-tin">
+                        <label>Tên phòng</label>
+                        <span class="gia-tri">{{ bookingDetail()!.tenPhong }}</span>
+                    </div>
+                    <div class="muc-thong-tin">
+                        <label>Loại phòng</label>
+                        <span class="gia-tri">{{ bookingDetail()!.tenLoaiPhong }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thời gian sử dụng -->
+            <div class="muc-chi-tiet">
+                <h2 class="tieu-de-muc">
+                    <i class="material-icons">schedule</i>
+                    Thời gian sử dụng
+                </h2>
+                <div class="thong-tin-thoi-gian">
+                    <div class="muc-thoi-gian">
+                        <div class="bieu-tuong-thoi-gian bat-dau">
+                            <i class="material-icons">play_arrow</i>
+                        </div>
+                        <div class="chi-tiet-thoi-gian">
+                            <label>Bắt đầu</label>
+                            <span class="gia-tri-thoi-gian">{{ formatDateTime(bookingDetail()!.thoiGianBatDau) }}</span>
+                        </div>
+                    </div>
+                    <div class="phan-chia-thoi-gian">
+                        <i class="material-icons">arrow_forward</i>
+                    </div>
+                    <div class="muc-thoi-gian">
+                        <div class="bieu-tuong-thoi-gian ket-thuc">
+                            <i class="material-icons">stop</i>
+                        </div>
+                        <div class="chi-tiet-thoi-gian">
+                            <label>Kết thúc</label>
+                            <span class="gia-tri-thoi-gian">{{ formatDateTime(bookingDetail()!.thoiGianKetThuc)
+                                }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thời gian thực tế -->
+                <div class="thoi-gian-thuc-te"
+                    *ngIf="bookingDetail()!.gioBatDauThucTe || bookingDetail()!.gioKetThucThucTe">
+                    <h3>Thời gian thực tế</h3>
+                    <div class="thong-tin-thuc-te">
+                        <div class="muc-thuc-te" *ngIf="bookingDetail()!.gioBatDauThucTe">
+                            <label>Bắt đầu thực tế</label>
+                            <span>{{ formatDateTime(bookingDetail()!.gioBatDauThucTe!) }}</span>
+                        </div>
+                        <div class="muc-thuc-te" *ngIf="bookingDetail()!.gioKetThucThucTe">
+                            <label>Kết thúc thực tế</label>
+                            <span>{{ formatDateTime(bookingDetail()!.gioKetThucThucTe!) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chi tiết đặt phòng -->
+            <div class="muc-chi-tiet">
+                <h2 class="tieu-de-muc">
+                    <i class="material-icons">description</i>
+                    Chi tiết đặt phòng
+                </h2>
+                <div class="luoi-thong-tin">
+                    <div class="muc-thong-tin" *ngIf="bookingDetail()!.lyDo">
+                        <label>Mục đích</label>
+                        <span class="gia-tri">{{ bookingDetail()!.lyDo }}</span>
+                    </div>
+                    <div class="muc-thong-tin" *ngIf="bookingDetail()!.soLuong">
+                        <label>Số lượng người</label>
+                        <span class="gia-tri">{{ bookingDetail()!.soLuong }} người</span>
+                    </div>
+                    <div class="muc-thong-tin full-width" *ngIf="bookingDetail()!.ghiChu">
+                        <label>Ghi chú</label>
+                        <span class="gia-tri">{{ bookingDetail()!.ghiChu }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin duyệt -->
+            <div class="muc-chi-tiet" *ngIf="bookingDetail()!.ngayDuyet">
+                <h2 class="tieu-de-muc">
+                    <i class="material-icons">verified</i>
+                    Thông tin duyệt
+                </h2>
+                <div class="luoi-thong-tin">
+                    <div class="muc-thong-tin">
+                        <label>Ngày duyệt</label>
+                        <span class="gia-tri">{{ formatDateTime(bookingDetail()!.ngayDuyet!) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tình trạng phòng -->
+            <div class="muc-chi-tiet" *ngIf="bookingDetail()!.tinhTrangPhong || bookingDetail()!.ghiChuSuDung">
+                <h2 class="tieu-de-muc">
+                    <i class="material-icons">fact_check</i>
+                    Tình trạng phòng
+                </h2>
+                <div class="luoi-thong-tin">
+                    <div class="muc-thong-tin" *ngIf="bookingDetail()!.tinhTrangPhong">
+                        <label>Tình trạng</label>
+                        <span class="gia-tri">{{ bookingDetail()!.tinhTrangPhong }}</span>
+                    </div>
+                    <div class="muc-thong-tin full-width" *ngIf="bookingDetail()!.ghiChuSuDung">
+                        <label>Ghi chú sử dụng</label>
+                        <span class="gia-tri">{{ bookingDetail()!.ghiChuSuDung }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Các hành động -->
+            <div class="cac-hanh-dong" *ngIf="canShowActions()">
+                <button class="nut-hanh-dong ke-ngoai" (click)="router.navigate(['/bookings'])">
+                    <i class="material-icons">list</i>
+                    Về danh sách
+                </button>
+                <button class="nut-hanh-dong chinh" *ngIf="canExtend()">
+                    <i class="material-icons">access_time</i>
+                    Gia hạn
+                </button>
+                <button class="nut-hanh-dong nguy-hiem" *ngIf="canCancel()">
+                    <i class="material-icons">cancel</i>
+                    Hủy đặt phòng
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trạng thái đang tải -->
+<div class="trang-thai-tai" *ngIf="loading()">
+    <div class="noi-dung-tai">
+        <div class="vong-quay"></div>
+        <p>Đang tải chi tiết phiếu đặt phòng...</p>
+    </div>
+</div>
+
+<!-- Trạng thái lỗi -->
+<div class="trang-thai-loi" *ngIf="error()">
+    <div class="noi-dung-loi">
+        <i class="material-icons">error</i>
+        <h2>Không thể tải chi tiết</h2>
+        <p>{{ error() }}</p>
+        <div class="hanh-dong-loi">
+            <button class="nut-hanh-dong ke-ngoai" (click)="loadBookingDetail()">
+                <i class="material-icons">refresh</i>
+                Thử lại
+            </button>
+            <button class="nut-hanh-dong chinh" (click)="router.navigate(['/bookings'])">
+                <i class="material-icons">list</i>
+                Về danh sách
+            </button>
+        </div>
+    </div>
+</div>

@@ -59,6 +59,19 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'booking/list',
+    redirectTo: 'bookings',
+    pathMatch: 'full',
+  },
+  {
+    path: 'booking/detail/:id',
+    loadComponent: () =>
+      import('./components/booking-detail/booking-detail.component').then(
+        (m) => m.BookingDetailComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'bookings/history',
     loadComponent: () =>
       import('./components/booking-history/booking-history.component').then(

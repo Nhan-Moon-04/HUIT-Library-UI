@@ -26,7 +26,8 @@
     <div class="progress-wrapper">
         <div class="progress-container">
             <div class="progress-steps">
-                <div class="step" [class.active]="currentStep() === 1" [class.completed]="currentStep() > 1">
+                <div class="step" [class.active]="currentStep() === 1" [class.completed]="currentStep() > 1"
+                    [class.clickable]="currentStep() > 1" (click)="goToStep(1)">
                     <div class="step-circle">
                         <i class="fas fa-calendar-check" *ngIf="currentStep() > 1; else step1Icon"></i>
                         <ng-template #step1Icon><span>1</span></ng-template>
@@ -36,7 +37,8 @@
 
                 <div class="step-connector" [class.completed]="currentStep() > 1"></div>
 
-                <div class="step" [class.active]="currentStep() === 2" [class.completed]="currentStep() > 2">
+                <div class="step" [class.active]="currentStep() === 2" [class.completed]="currentStep() > 2"
+                    [class.clickable]="currentStep() > 2" (click)="goToStep(2)">
                     <div class="step-circle">
                         <i class="fas fa-door-open" *ngIf="currentStep() > 2; else step2Icon"></i>
                         <ng-template #step2Icon><span>2</span></ng-template>
@@ -46,7 +48,8 @@
 
                 <div class="step-connector" [class.completed]="currentStep() > 2"></div>
 
-                <div class="step" [class.active]="currentStep() === 3" [class.completed]="currentStep() > 3">
+                <div class="step" [class.active]="currentStep() === 3" [class.completed]="currentStep() > 3"
+                    [class.clickable]="currentStep() > 3" (click)="goToStep(3)">
                     <div class="step-circle">
                         <i class="fas fa-user-edit" *ngIf="currentStep() > 3; else step3Icon"></i>
                         <ng-template #step3Icon><span>3</span></ng-template>
@@ -113,62 +116,48 @@
                     </div>
 
                     <div class="time-selection-grid">
+                        <!-- Date Picker -->
                         <div class="date-picker-section">
                             <label class="field-label">
-                                <i class="fas fa-calendar-alt"></i>
-                                Chọn ngày
+                                <i class="fas fa-calendar-alt"></i> Chọn ngày
                             </label>
-                            <div class="date-input-wrapper">
-                                <input type="date" formControlName="ngayBatDau" class="date-input"
-                                    [class.error]="form.get('ngayBatDau')?.invalid && form.get('ngayBatDau')?.touched"
-                                    [min]="getTodayDate()">
-                                <div class="field-error"
-                                    *ngIf="form.get('ngayBatDau')?.invalid && form.get('ngayBatDau')?.touched">
-                                    <i class="fas fa-exclamation-circle"></i>
-                                    Vui lòng chọn ngày hợp lệ
-                                </div>
+                            <input type="date" formControlName="ngayBatDau" class="form-control" [min]="getTodayDate()">
+                            <small class="text-muted">Định dạng: dd/mm/yyyy</small>
+                            <div *ngIf="form.get('ngayBatDau')?.invalid && form.get('ngayBatDau')?.touched"
+                                class="text-danger">
+                                Vui lòng chọn ngày hợp lệ
+                            </div>
+
+                            <div class="operating-hours mt-3">
+                                <h4><i class="fas fa-clock"></i> Giờ hoạt động</h4>
+                                <p>Thứ 2 - Thứ 6: 08:00 - 21:30</p>
+                                <p>Thứ 7 - Chủ nhật: 08:00 - 17:00</p>
                             </div>
                         </div>
 
-                        <div class="time-slots-section">
+                        <!-- Time Picker -->
+                        <div class="time-picker-section">
                             <label class="field-label">
-                                <i class="fas fa-clock"></i>
-                                Chọn khung giờ
+                                <i class="fas fa-clock"></i> Chọn giờ bắt đầu
                             </label>
-                            <div class="time-info">
-                                <p>
-                                    <i class="fas fa-info-circle"></i>
-                                    Thời gian hoạt động: 8:00 - 21:30 (mỗi khung giờ 2 tiếng)
-                                </p>
-                            </div>
-                            <div class="time-slots-container">
-                                <div class="time-slots">
-                                    <div class="time-slot" *ngFor="let slot of availableTimeSlots"
-                                        [class.selected]="isTimeSlotSelected(slot)" [class.disabled]="!slot.available"
-                                        (click)="selectTimeSlot(slot)">
-                                        <div class="time-display">
-                                            <span class="time">{{ slot.startTime }}</span>
-                                            <span class="duration">{{ slot.duration }}</span>
-                                        </div>
-                                        <div class="availability-status">
-                                            <i class="fas fa-check-circle" *ngIf="slot.available"></i>
-                                            <i class="fas fa-times-circle" *ngIf="!slot.available"></i>
-                                            <span>{{ slot.available ? 'Có sẵn' : 'Đã đặt' }}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <input type="time" formControlName="gioBatDau" class="form-control" step="1800">
+                            <!-- 30 phút -->
+                            <small class="text-muted">Khoảng cách 30 phút (08:00, 08:30, ...) - Thời lượng mặc định: 2
+                                giờ</small>
+                            <div *ngIf="isDateTimeInPast()" class="text-danger mt-2">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Thời gian phải lớn hơn thời điểm hiện tại
                             </div>
                         </div>
                     </div>
 
-                    <div class="step-actions">
-                        <button type="button" class="btn-next" [disabled]="!canProceedToStep2()" (click)="nextStep()">
-                            Tiếp tục
-                            <i class="fas fa-arrow-right"></i>
+                    <div class="step-actions mt-4">
+                        <button type="button" class="btn btn-primary"
+                            [disabled]="!canProceedToStep2() || isDateTimeInPast()" (click)="nextStep()">
+                            Tiếp tục <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
-
                 <!-- Step 2: Room Selection -->
                 <div class="step-content" *ngIf="currentStep() === 2">
                     <div class="step-header">
@@ -207,11 +196,12 @@
                     </div>
 
                     <div class="step-actions">
-                        <button type="button" class="btn-back" (click)="previousStep()">
+                        <button type="button" class="btn btn-back" (click)="previousStep()">
                             <i class="fas fa-arrow-left"></i>
-                            Quay lại
+                            Quay lại bước 1
                         </button>
-                        <button type="button" class="btn-next" [disabled]="!canProceedToStep3()" (click)="nextStep()">
+                        <button type="button" class="btn btn-next" [disabled]="!canProceedToStep3()"
+                            (click)="nextStep()">
                             Tiếp tục
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -234,12 +224,16 @@
                                     <span class="required">*</span>
                                 </label>
                                 <input type="number" formControlName="soLuong" class="form-input"
-                                    [class.error]="form.get('soLuong')?.invalid && form.get('soLuong')?.touched"
-                                    placeholder="Nhập số người tham gia" min="1" max="50">
+                                    [class.error]="(form.get('soLuong')?.invalid && form.get('soLuong')?.touched) || !isCapacityValid()"
+                                    placeholder="Nhập số người tham gia" [min]="getMinCapacity()"
+                                    [max]="getMaxCapacity()">
+                                <small class="text-muted" *ngIf="selectedRoomType()">
+                                    Tối thiểu: {{getMinCapacity()}} người - Tối đa: {{getMaxCapacity()}} người
+                                </small>
                                 <div class="field-error"
-                                    *ngIf="form.get('soLuong')?.invalid && form.get('soLuong')?.touched">
+                                    *ngIf="(form.get('soLuong')?.invalid && form.get('soLuong')?.touched) || !isCapacityValid()">
                                     <i class="fas fa-exclamation-circle"></i>
-                                    Số người phải từ 1 đến 50
+                                    {{getCapacityErrorMessage() || 'Số người không hợp lệ'}}
                                 </div>
                             </div>
                         </div>
@@ -279,7 +273,8 @@
                             <i class="fas fa-arrow-left"></i>
                             Quay lại
                         </button>
-                        <button type="button" class="btn-next" [disabled]="!canProceedToStep4()" (click)="nextStep()">
+                        <button type="button" class="btn-next btn-compact" [disabled]="!canProceedToStep4()"
+                            (click)="nextStep()">
                             Tiếp tục
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -308,7 +303,7 @@
                                     </div>
                                     <div class="item-value">
                                         <strong>{{ getFormattedDateTime() }}</strong>
-                                        <span class="duration">({{ getSelectedTimeSlot()?.duration }})</span>
+                                        <span class="duration">(2 giờ)</span>
                                     </div>
                                 </div>
 
@@ -375,9 +370,9 @@
                             <i class="fas fa-arrow-left"></i>
                             Quay lại
                         </button>
-                        <button type="submit" class="btn-submit" [disabled]="loading() || form.invalid">
+                        <button type="submit" class="btn-submit btn-compact" [disabled]="loading() || form.invalid">
                             <i class="fas fa-paper-plane"></i>
-                            Gửi yêu cầu đặt phòng
+                            Gửi yêu cầu
                         </button>
                     </div>
                 </div>

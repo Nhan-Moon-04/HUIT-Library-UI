@@ -5,13 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { BookingService, LoaiPhong } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
 
-export interface TimeSlot {
-  id: string;
-  startTime: string;
-  duration: string;
-  available: boolean;
-}
-
 @Component({
   selector: 'app-booking-request',
   standalone: true,
@@ -28,18 +21,14 @@ export class BookingRequestComponent implements OnInit {
   // Step management
   currentStep = signal(1);
 
-  // Time slots data - Generated dynamically
-  availableTimeSlots: TimeSlot[] = [];
-
-  selectedTimeSlot = signal<TimeSlot | null>(null);
   selectedRoomType = signal<LoaiPhong | null>(null);
   form = this.fb.group({
     maLoaiPhong: [null as number | null, [Validators.required]],
     ngayBatDau: ['', [Validators.required]],
-    gioBatDau: ['', [Validators.required]],
+    gioBatDau: ['08:00', [Validators.required]],
     lyDo: ['', [Validators.required]],
     ghiChu: [''],
-    soLuong: [1, [Validators.required, Validators.min(1), Validators.max(50)]],
+    soLuong: [1, [Validators.required, Validators.min(1)]],
   });
 
   loading = signal(false);
@@ -48,74 +37,132 @@ export class BookingRequestComponent implements OnInit {
   roomTypes = signal<LoaiPhong[]>([]);
 
   ngOnInit(): void {
-    this.generateTimeSlots();
     this.loadRoomTypes();
     this.setMinDate();
     this.setupFormListeners();
+    // Set default time to 8:00
+    this.form.patchValue({ gioBatDau: '08:00' });
   }
 
   // Setup form listeners
   setupFormListeners(): void {
-    // Listen for date changes to refresh availability
+    // Listen for date changes
     this.form.get('ngayBatDau')?.valueChanges.subscribe((newDate) => {
       if (newDate) {
-        this.refreshAvailabilityForDate(newDate);
+        console.log('Date changed:', newDate);
       }
     });
   }
 
-  // Generate time slots from 8:00 to 21:30 with 30-minute intervals
-  generateTimeSlots(): void {
-    const slots: TimeSlot[] = [];
-    const startHour = 8; // 8:00 AM
-    const endHour = 21; // 9:30 PM
-    const intervalMinutes = 30;
-
-    for (let hour = startHour; hour <= endHour; hour++) {
-      for (let minutes = 0; minutes < 60; minutes += intervalMinutes) {
-        // Stop at 21:30 (last slot)
-        if (hour === endHour && minutes > 30) break;
-
-        const timeString = `${hour.toString().padStart(2, '0')}:${minutes
-          .toString()
-          .padStart(2, '0')}`;
-        const id = `slot-${hour}-${minutes}`;
-
-        // Randomly simulate availability (in real app, this would come from backend)
-        const available = Math.random() > 0.2; // 80% chance of being available
-
-        slots.push({
-          id,
-          startTime: timeString,
-          duration: '2 giờ',
-          available,
-        });
-      }
-    }
-
-    this.availableTimeSlots = slots;
+  // Modern Time Picker Methods
+  getDisplayTime(): string {
+    const time = this.form.get('gioBatDau')?.value;
+    return time || '08:00';
   }
 
-  // Method to refresh availability based on selected date (optional - can integrate with backend)
-  refreshAvailabilityForDate(selectedDate: string): void {
-    // In a real application, you would call your booking service here
-    // this.bookingService.getAvailableTimeSlots(selectedDate, this.selectedRoomType()?.maLoaiPhong)
-
-    // For now, we'll just regenerate with different random availability
-    this.generateTimeSlots();
-
-    // Clear current selection if it becomes unavailable
-    const currentSelection = this.selectedTimeSlot();
-    if (
-      currentSelection &&
-      !this.availableTimeSlots.find((slot) => slot.id === currentSelection.id && slot.available)
-    ) {
-      this.selectedTimeSlot.set(null);
-      this.form.patchValue({ gioBatDau: '' });
-    }
+  getMinTimeValue(): number {
+    return 8 * 60; // 8:00 = 480 minutes from midnight
   }
 
-  // Step navigation methods
+  getMaxTimeValue(): number {
+    return 21 * 60 + 30; // 21:30 = 1290 minutes from midnight
+  }
+
+  getCurrentTimeValue(): number {
+    const timeStr = this.form.get('gioBatDau')?.value || '08:00';
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+
+  onTimeSliderChange(event: any): void {
+    const minutes = parseInt(event.target.value);
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    const timeString = `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+    this.form.patchValue({ gioBatDau: timeString });
+  }
+
+  selectQuickTime(time: string): void {
+    this.form.patchValue({ gioBatDau: time });
+  }
+
+  isQuickTimeSelected(time: string): boolean {
+    return this.form.get('gioBatDau')?.value === time;
+  }
+
+  // Time picker validation
+  private isValidTime(time: string): boolean {
+    const [hours, minutes] = time.split(':').map(Number);
+    const totalMinutes = hours * 60 + minutes;
+    const startMinutes = 8 * 60; // 8:00 AM
+    const endMinutes = 21 * 60 + 30; // 9:30 PM
+
+    return totalMinutes >= startMinutes && totalMinutes <= endMinutes && minutes % 30 === 0;
+  }
+
+  // Check if selected date/time is in the past
+  isDateTimeInPast(): boolean {
+    const selectedDate = this.form.get('ngayBatDau')?.value;
+    const selectedTime = this.form.get('gioBatDau')?.value;
+
+    if (!selectedDate || !selectedTime) {
+      return false; // Don't show error if fields are empty
+    }
+
+    const selectedDateTime = new Date(`${selectedDate}T${selectedTime}`);
+    const currentDateTime = new Date();
+
+    return selectedDateTime <= currentDateTime;
+  }
+
+  // Get minimum capacity (50% of room capacity)
+  getMinCapacity(): number {
+    const selectedRoomType = this.selectedRoomType();
+    if (!selectedRoomType) return 1;
+    const capacity = Number(selectedRoomType.soLuongChoNgoi);
+    return Math.ceil(capacity / 2);
+  }
+
+  // Get maximum capacity (100% of room capacity)
+  getMaxCapacity(): number {
+    const selectedRoomType = this.selectedRoomType();
+    if (!selectedRoomType) return 50;
+    return Number(selectedRoomType.soLuongChoNgoi);
+  }
+
+  // Check if current capacity is valid
+  isCapacityValid(): boolean {
+    const selectedRoomType = this.selectedRoomType();
+    const soLuong = this.form.get('soLuong')?.value;
+
+    if (!selectedRoomType || !soLuong) return true; // Don't validate if incomplete
+
+    const minCapacity = this.getMinCapacity();
+    const maxCapacity = this.getMaxCapacity();
+
+    return soLuong >= minCapacity && soLuong <= maxCapacity;
+  }
+
+  // Get capacity validation error message
+  getCapacityErrorMessage(): string {
+    const selectedRoomType = this.selectedRoomType();
+    const soLuong = this.form.get('soLuong')?.value;
+
+    if (!selectedRoomType || !soLuong) return '';
+
+    const minCapacity = this.getMinCapacity();
+    const maxCapacity = this.getMaxCapacity();
+
+    if (soLuong < minCapacity) {
+      return `Số lượng người tham gia phải ít nhất ${minCapacity} người (50% sức chứa phòng ${maxCapacity} người).`;
+    }
+
+    if (soLuong > maxCapacity) {
+      return `Số lượng người tham gia không được vượt quá ${maxCapacity} người (sức chứa tối đa của phòng).`;
+    }
+
+    return '';
+  } // Step navigation methods
   nextStep(): void {
     if (this.currentStep() < 4) {
       this.currentStep.set(this.currentStep() + 1);
@@ -128,9 +175,18 @@ export class BookingRequestComponent implements OnInit {
     }
   }
 
+  // Navigate to specific step (only backward navigation allowed)
+  goToStep(step: number): void {
+    if (step < this.currentStep()) {
+      this.currentStep.set(step);
+    }
+  }
+
   // Step validation methods
   canProceedToStep2(): boolean {
-    return this.form.get('ngayBatDau')?.valid === true && this.selectedTimeSlot() !== null;
+    return (
+      this.form.get('ngayBatDau')?.valid === true && this.form.get('gioBatDau')?.valid === true
+    );
   }
 
   canProceedToStep3(): boolean {
@@ -138,29 +194,31 @@ export class BookingRequestComponent implements OnInit {
   }
 
   canProceedToStep4(): boolean {
-    return this.form.get('soLuong')?.valid === true && this.form.get('lyDo')?.valid === true;
-  }
-
-  // Time slot methods
-  selectTimeSlot(slot: TimeSlot): void {
-    if (slot.available) {
-      this.selectedTimeSlot.set(slot);
-      this.form.patchValue({ gioBatDau: slot.startTime });
-    }
-  }
-
-  isTimeSlotSelected(slot: TimeSlot): boolean {
-    return this.selectedTimeSlot()?.id === slot.id;
-  }
-
-  getSelectedTimeSlot(): TimeSlot | null {
-    return this.selectedTimeSlot();
+    return (
+      this.form.get('soLuong')?.valid === true &&
+      this.form.get('lyDo')?.valid === true &&
+      this.isCapacityValid()
+    );
   }
 
   // Room selection methods
   selectRoomType(roomType: LoaiPhong): void {
     this.selectedRoomType.set(roomType);
     this.form.patchValue({ maLoaiPhong: roomType.maLoaiPhong });
+
+    // Reset capacity to minimum when room type changes
+    const capacity = Number(roomType.soLuongChoNgoi);
+    const minCapacity = Math.ceil(capacity / 2);
+    this.form.patchValue({ soLuong: minCapacity });
+
+    // Update capacity field validation
+    const soLuongControl = this.form.get('soLuong');
+    soLuongControl?.setValidators([
+      Validators.required,
+      Validators.min(minCapacity),
+      Validators.max(capacity),
+    ]);
+    soLuongControl?.updateValueAndValidity();
   }
 
   isRoomTypeSelected(roomType: LoaiPhong): boolean {
@@ -216,11 +274,8 @@ export class BookingRequestComponent implements OnInit {
           gioBatDau: time,
         });
 
-        // Find matching time slot
-        const matchingSlot = this.availableTimeSlots.find((slot) => slot.startTime === time);
-        if (matchingSlot) {
-          this.selectTimeSlot(matchingSlot);
-        }
+        // Update time picker from prefilled data
+        // No additional action needed as form already updated
       }
 
       if (params['soLuong']) {
@@ -240,11 +295,11 @@ export class BookingRequestComponent implements OnInit {
 
   getFormattedDateTime(): string {
     const ngay = this.form.value.ngayBatDau;
-    const timeSlot = this.selectedTimeSlot();
-    if (!ngay || !timeSlot) return '-';
+    const gio = this.form.value.gioBatDau;
+    if (!ngay || !gio) return '-';
 
     try {
-      const date = new Date(`${ngay}T${timeSlot.startTime}`);
+      const date = new Date(`${ngay}T${gio}`);
       return date.toLocaleString('vi-VN', {
         weekday: 'long',
         day: '2-digit',
@@ -255,7 +310,7 @@ export class BookingRequestComponent implements OnInit {
         hour12: false,
       });
     } catch {
-      return `${ngay} ${timeSlot.startTime}`;
+      return `${ngay} ${gio}`;
     }
   }
 
@@ -276,11 +331,11 @@ export class BookingRequestComponent implements OnInit {
     this.success.set(null);
 
     const ngayBatDau = this.form.value.ngayBatDau as string;
-    const timeSlot = this.selectedTimeSlot();
+    const gioBatDau = this.form.value.gioBatDau as string;
 
     let thoiGianBatDau: string;
-    if (ngayBatDau && timeSlot) {
-      thoiGianBatDau = `${ngayBatDau}T${timeSlot.startTime}:00`;
+    if (ngayBatDau && gioBatDau) {
+      thoiGianBatDau = `${ngayBatDau}T${gioBatDau}:00`;
     } else {
       const now = new Date();
       const pad = (n: number) => n.toString().padStart(2, '0');
@@ -304,8 +359,7 @@ export class BookingRequestComponent implements OnInit {
       next: (res) => {
         this.success.set(res?.message || 'Yêu cầu đặt phòng đã được gửi thành công!');
         this.loading.set(false);
-        this.form.reset({ soLuong: 1 });
-        this.selectedTimeSlot.set(null);
+        this.form.reset({ soLuong: 1, gioBatDau: '08:00' });
         this.selectedRoomType.set(null);
         this.currentStep.set(1);
 

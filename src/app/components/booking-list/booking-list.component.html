@@ -1,17 +1,17 @@
 <div class="booking-list-page library-theme">
     <div class="page-controls">
-    <!-- Nút Quay lại bên trái -->
-    <button class="back-home-btn" (click)="router.navigate(['/dashboard'])">
-    <i class="fas fa-arrow-left"></i> Quay lại
-</button>
+        <!-- Nút Quay lại bên trái -->
+        <button class="back-home-btn" (click)="router.navigate(['/dashboard'])">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </button>
 
 
-    <!-- Nút Làm mới bên phải -->
-    <button class="refresh-btn" type="button" (click)="loadBookings()" [disabled]="loading()">
-        <i class="fas fa-sync-alt" [class.spinning]="loading()"></i>
-        Làm mới
-    </button>
-</div>
+        <!-- Nút Làm mới bên phải -->
+        <button class="refresh-btn" type="button" (click)="loadBookings()" [disabled]="loading()">
+            <i class="fas fa-sync-alt" [class.spinning]="loading()"></i>
+            Làm mới
+        </button>
+    </div>
 
     <div class="content-container">
         <!-- Messages Section -->

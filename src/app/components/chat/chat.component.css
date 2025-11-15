@@ -36,6 +36,57 @@
   background: #0066cc;
   color: white;
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  font-weight: bold;
+}
+
+.header-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-toggle-mode,
+.btn-sessions-mini,
+.btn-history-mini {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-toggle-mode:hover,
+.btn-sessions-mini:hover,
+.btn-history-mini:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-toggle-mode,
+.btn-sessions-mini {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-toggle-mode:hover,
+.btn-sessions-mini:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-toggle-mode:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .chat-body {
@@ -80,6 +131,17 @@
 
 .user-icon {
   background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: white;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.staff-icon {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
   color: white;
   border-radius: 50%;
   width: 32px;
@@ -190,6 +252,49 @@
   cursor: pointer;
 }
 
+/* Session List Mini */
+.session-list-mini {
+  background: #f0f0f0;
+  max-height: 150px;
+  overflow-y: auto;
+  border-bottom: 1px solid #ddd;
+}
+
+.session-item-mini {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.session-item-mini:hover {
+  background: #e0e0e0;
+}
+
+.session-item-mini.active {
+  background: #0066cc;
+  color: white;
+}
+
+.session-item-mini small {
+  display: block;
+  opacity: 0.7;
+}
+
+.btn-new-session-mini {
+  width: 100%;
+  padding: 8px;
+  background: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-new-session-mini:hover {
+  background: #218838;
+}
+
 /* Chat Page Mode Styles */
 .chat-page {
   max-width: 800px;
@@ -219,6 +324,115 @@
   margin: 8px 0 0;
   font-size: 1.1rem;
   opacity: 0.9;
+}
+
+/* Mode Toggle Buttons */
+.mode-toggle {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+  justify-content: center;
+}
+
+.btn-mode {
+  padding: 8px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.btn-mode:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-mode.active {
+  background: rgba(255, 255, 255, 0.9);
+  color: #0066cc;
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.btn-mode:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Session Controls */
+.session-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 12px 0;
+}
+
+.btn-sessions,
+.btn-new-session {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-sessions:hover,
+.btn-new-session:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Session List */
+.session-list {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin: 12px 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.session-item {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.session-item.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.session-item:last-child {
+  border-bottom: none;
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-id {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.session-type {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.session-date {
+  font-size: 12px;
+  opacity: 0.7;
 }
 
 .chat-page-container {
@@ -300,4 +514,364 @@
   .chat-page-footer {
     padding: 16px;
   }
+
+  .mode-toggle {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .session-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* History Modal Styles */
+.history-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.history-modal {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  max-height: 80vh;
+  width: 90%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.history-header {
+  padding: 20px;
+  background: #0066cc;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.btn-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.history-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  max-height: 60vh;
+}
+
+.load-more-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.btn-load-more {
+  background: #f0f8ff;
+  border: 1px solid #0066cc;
+  color: #0066cc;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-load-more:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-load-more:hover:not(:disabled) {
+  background: #e6f3ff;
+}
+
+.history-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.history-message {
+  border-radius: 8px;
+  padding: 12px;
+  border-left: 4px solid;
+}
+
+.history-message.user-message {
+  border-left-color: #0066cc;
+  background: #f0f8ff;
+}
+
+.history-message.staff-message {
+  border-left-color: #28a745;
+  background: #f0fff4;
+}
+
+.history-message.bot-message {
+  border-left-color: #6c757d;
+  background: #f8f9fa;
+}
+
+.message-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.sender {
+  font-weight: 600;
+}
+
+.timestamp {
+  color: #666;
+  font-size: 11px;
+}
+
+.message-content {
+  line-height: 1.4;
+  color: #333;
+}
+
+.no-more-messages,
+.no-messages {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 20px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+}
+
+.history-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.btn-close-modal {
+  background: #6c757d;
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-close-modal:hover {
+  background: #5a6268;
+}
+
+.btn-history,
+.btn-history-mini {
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid #28a745;
+  color: #28a745;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-history:hover,
+.btn-history-mini:hover {
+  background: rgba(40, 167, 69, 0.2);
+}
+
+/* Enhanced Session List Styles */
+.session-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.session-item {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.session-item:hover {
+  background-color: #f8f9fa;
+}
+
+.session-item.active {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+}
+
+.session-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.session-id {
+  font-weight: 600;
+  color: #333;
+}
+
+.session-status {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 12px;
+  background-color: #ffc107;
+  color: #000;
+}
+
+.session-status.active {
+  background-color: #28a745;
+  color: white;
+}
+
+.session-details {
+  font-size: 12px;
+  color: #666;
+}
+
+.session-meta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.session-type {
+  font-weight: 500;
+}
+
+.message-count {
+  color: #007bff;
+}
+
+.session-time {
+  margin-bottom: 4px;
+}
+
+.last-message {
+  font-style: italic;
+  color: #555;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.last-message-time {
+  color: #888;
+}
+
+.no-sessions {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+/* Enhanced Mini Session List */
+.session-list-mini {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: white;
+}
+
+.session-item-mini {
+  padding: 8px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 12px;
+}
+
+.session-item-mini:hover {
+  background-color: #f8f9fa;
+}
+
+.session-item-mini.active {
+  background-color: #e3f2fd;
+  border-left: 3px solid #2196f3;
+}
+
+.session-mini-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.session-id-mini {
+  font-weight: 600;
+  color: #333;
+}
+
+.session-status-mini {
+  font-size: 10px;
+}
+
+.session-status-mini.active {
+  color: #28a745;
+}
+
+.session-mini-details {
+  display: flex;
+  gap: 8px;
+  color: #666;
+  margin-bottom: 2px;
+}
+
+.session-date-mini,
+.message-count-mini {
+  font-size: 10px;
+}
+
+.message-count-mini {
+  color: #007bff;
+}
+
+.session-mini-preview {
+  color: #555;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.no-sessions-mini {
+  padding: 12px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
 }

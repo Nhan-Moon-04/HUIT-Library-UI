@@ -2,7 +2,64 @@
     <!-- Chat as full page -->
     <div class="chat-page-header">
         <h2>Hỗ trợ trực tuyến</h2>
-        <p>Trò chuyện với trợ lý thư viện HUIT</p>
+        <p *ngIf="!isStaffMode()">Trò chuyện với trợ lý thư viện HUIT</p>
+        <p *ngIf="isStaffMode()">Chat với nhân viên hỗ trợ</p>
+
+        <!-- Mode toggle buttons -->
+        <div class="mode-toggle">
+            <button [class.active]="!isStaffMode()" (click)="toggleMode()" class="btn-mode">
+                🤖 Chat Bot
+            </button>
+            <button [class.active]="isStaffMode()" (click)="toggleMode()" class="btn-mode"
+                [disabled]="!auth.isLoggedIn()">
+                👨‍💼 Chat Nhân viên
+            </button>
+        </div>
+
+        <!-- Staff session controls -->
+        <div class="session-controls" *ngIf="isStaffMode() && auth.isLoggedIn()">
+            <button (click)="toggleSessionList()" class="btn-sessions">
+                📋 Lịch sử chat ({{chatSessions().length}})
+            </button>
+            <button (click)="createNewStaffSession()" class="btn-new-session">
+                ➕ Tạo phiên mới
+            </button>
+            <button (click)="showMessageHistory()" class="btn-history" *ngIf="currentSession()">
+                📜 Xem lịch sử tin nhắn
+            </button>
+        </div>
+
+        <!-- Session list -->
+        <div class="session-list" *ngIf="showSessionList() && isStaffMode()">
+            <div class="session-item" *ngFor="let session of chatSessions()"
+                [class.active]="currentSession()?.maPhienChat === session.maPhienChat" (click)="selectSession(session)">
+                <div class="session-header">
+                    <span class="session-id">Phiên #{{session.maPhienChat}}</span>
+                    <span class="session-status" [class.active]="session.isActive">
+                        {{session.isActive ? '🟢 Đang hoạt động' : '🔴 Đã kết thúc'}}
+                    </span>
+                </div>
+                <div class="session-details">
+                    <div class="session-meta">
+                        <span class="session-type">{{session.coBot ? '🤖 Bot Chat' : '👨‍💼 Nhân viên'}}</span>
+                        <span class="message-count">{{session.soLuongTinNhan || 0}} tin nhắn</span>
+                    </div>
+                    <div class="session-time">
+                        <small>Bắt đầu: {{formatDate(session.thoiGianBatDau)}}
+                            {{formatTime(session.thoiGianBatDau)}}</small>
+                    </div>
+                    <div class="last-message" *ngIf="session.tinNhanCuoi">
+                        <small>Tin nhắn cuối: "{{session.tinNhanCuoi}}"</small>
+                        <small class="last-message-time" *ngIf="session.thoiGianTinNhanCuoi">
+                            ({{formatTime(session.thoiGianTinNhanCuoi)}})
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="no-sessions" *ngIf="chatSessions().length === 0">
+                📝 Chưa có phiên chat nào. Nhấn "Tạo phiên mới" để bắt đầu.
+            </div>
+        </div>
     </div>
 
     <div class="chat-page-container">
@@ -12,7 +69,10 @@
                 <div class="message-wrapper">
                     <div class="avatar">
                         <i *ngIf="m.laBot" class="bot-icon">🤖</i>
-                        <i *ngIf="!m.laBot" class="user-icon">👤</i>
+                        <i *ngIf="!m.laBot && !isStaffMode()" class="user-icon">👤</i>
+                        <i *ngIf="!m.laBot && isStaffMode()" class="user-icon">👨‍🎓</i>
+                        <i *ngIf="!m.laBot && isStaffMode() && m.maNguoiGui !== auth.currentUser()?.maNguoiDung"
+                            class="staff-icon">👨‍💼</i>
                     </div>
                     <div class="message-content">
                         <div class="message-bubble">{{ m.noiDung }}</div>
@@ -26,7 +86,7 @@
 
         <div class="chat-page-footer">
             <input [ngModel]="draft()" (ngModelChange)="draft.set($event)" (keydown.enter)="send()"
-                placeholder="Nhập tin nhắn..." />
+                [placeholder]="isStaffMode() ? 'Nhập tin nhắn gửi nhân viên...' : 'Nhập tin nhắn...'" />
             <button (click)="send()">Gửi</button>
         </div>
     </div>
@@ -39,14 +99,68 @@
     </button>
 
     <div class="chat-panel" *ngIf="isOpen()">
-        <div class="chat-header">Trợ lý thư viện</div>
+        <div class="chat-header">
+            <div class="header-title">
+                <span *ngIf="!isStaffMode()">Trợ lý thư viện</span>
+                <span *ngIf="isStaffMode()">Chat nhân viên</span>
+            </div>
+
+            <!-- Mode toggle -->
+            <div class="header-controls">
+                <button (click)="toggleMode()" class="btn-toggle-mode" [disabled]="!auth.isLoggedIn() && isStaffMode()">
+                    <span *ngIf="!isStaffMode()">👨‍💼</span>
+                    <span *ngIf="isStaffMode()">🤖</span>
+                </button>
+
+                <button *ngIf="isStaffMode() && auth.isLoggedIn()" (click)="toggleSessionList()"
+                    class="btn-sessions-mini">
+                    📋
+                </button>
+
+                <button *ngIf="isStaffMode() && auth.isLoggedIn() && currentSession()" (click)="showMessageHistory()"
+                    class="btn-history-mini">
+                    📜
+                </button>
+            </div>
+        </div>
+
+        <!-- Session list (mini version) -->
+        <div class="session-list-mini" *ngIf="showSessionList() && isStaffMode()">
+            <div class="session-item-mini" *ngFor="let session of chatSessions()"
+                [class.active]="currentSession()?.maPhienChat === session.maPhienChat" (click)="selectSession(session)">
+                <div class="session-mini-header">
+                    <span class="session-id-mini">Phiên #{{session.maPhienChat}}</span>
+                    <span class="session-status-mini" [class.active]="session.isActive">
+                        {{session.isActive ? '🟢' : '🔴'}}
+                    </span>
+                </div>
+                <div class="session-mini-details">
+                    <small class="session-date-mini">{{formatDate(session.thoiGianBatDau)}}</small>
+                    <small class="message-count-mini">{{session.soLuongTinNhan || 0}} tin nhắn</small>
+                </div>
+                <div class="session-mini-preview" *ngIf="session.tinNhanCuoi">
+                    <small>"{{session.tinNhanCuoi.length > 20 ? session.tinNhanCuoi.substring(0, 20) + '...' :
+                        session.tinNhanCuoi}}"</small>
+                </div>
+            </div>
+            <button (click)="createNewStaffSession()" class="btn-new-session-mini">
+                ➕ Tạo mới
+            </button>
+            <div class="no-sessions-mini" *ngIf="chatSessions().length === 0">
+                <small>📝 Chưa có phiên chat</small>
+            </div>
+        </div>
+
         <div class="chat-body" #chatBody>
             <div *ngFor="let m of messages()" class="message" [class.user-message]="!m.laBot"
                 [class.bot-message]="m.laBot">
                 <div class="message-wrapper">
                     <div class="avatar">
                         <i *ngIf="m.laBot" class="bot-icon">🤖</i>
-                        <i *ngIf="!m.laBot" class="user-icon">👤</i>
+                        <i *ngIf="!m.laBot && !isStaffMode()" class="user-icon">👤</i>
+                        <i *ngIf="!m.laBot && isStaffMode()" class="user-icon">👨‍🎓</i>
+                        <i *ngIf="!m.laBot && isStaffMode() && m.maNguoiGui !== auth.currentUser()?.maNguoiDung"
+                            class="staff-icon">👨‍💼</i>
                     </div>
                     <div class="message-content">
                         <div class="message-bubble">{{ m.noiDung }}</div>
@@ -60,8 +174,63 @@
 
         <div class="chat-footer">
             <input [ngModel]="draft()" (ngModelChange)="draft.set($event)" (keydown.enter)="send()"
-                placeholder="Nhập tin nhắn..." />
+                [placeholder]="isStaffMode() ? 'Nhập tin nhắn gửi nhân viên...' : 'Nhập tin nhắn...'" />
             <button (click)="send()">Gửi</button>
+        </div>
+    </div>
+</div>
+
+<!-- History Modal -->
+<div class="history-modal-overlay" *ngIf="showHistoryModal()" (click)="closeHistoryModal()">
+    <div class="history-modal" (click)="$event.stopPropagation()">
+        <div class="history-header">
+            <h3>Lịch sử tin nhắn - Phiên #{{currentSession()?.maPhienChat}}</h3>
+            <button class="btn-close" (click)="closeHistoryModal()">✕</button>
+        </div>
+
+        <div class="history-body">
+            <!-- Load more button -->
+            <div class="load-more-section" *ngIf="hasMoreMessages()">
+                <button (click)="loadMoreHistory()" class="btn-load-more" [disabled]="isLoadingHistory()">
+                    <span *ngIf="!isLoadingHistory()">📄 Tải tin nhắn cũ hơn</span>
+                    <span *ngIf="isLoadingHistory()">🔄 Đang tải...</span>
+                </button>
+            </div>
+
+            <!-- Messages -->
+            <div class="history-messages">
+                <div *ngFor="let m of messages(); trackBy: trackByMessageId" class="history-message"
+                    [class.user-message]="isCurrentUserMessage(m)"
+                    [class.staff-message]="!m.laBot && !isCurrentUserMessage(m)" [class.bot-message]="m.laBot">
+
+                    <div class="message-info">
+                        <span class="sender">
+                            <span *ngIf="m.laBot">🤖 Bot</span>
+                            <span *ngIf="!m.laBot && isCurrentUserMessage(m)">👨‍🎓 Bạn</span>
+                            <span *ngIf="!m.laBot && !isCurrentUserMessage(m)">👨‍💼 Nhân viên</span>
+                        </span>
+                        <span class="timestamp" *ngIf="m.thoiGianGui">
+                            {{formatDate(m.thoiGianGui)}} {{formatTime(m.thoiGianGui)}}
+                        </span>
+                    </div>
+
+                    <div class="message-content">
+                        {{m.noiDung}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-more-messages" *ngIf="!hasMoreMessages() && messages().length > 0">
+                📝 Đây là tin nhắn đầu tiên trong phiên chat này
+            </div>
+
+            <div class="no-messages" *ngIf="messages().length === 0 && !isLoadingHistory()">
+                💬 Chưa có tin nhắn nào trong phiên chat này
+            </div>
+        </div>
+
+        <div class="history-footer">
+            <button (click)="closeHistoryModal()" class="btn-close-modal">Đóng</button>
         </div>
     </div>
 </div>

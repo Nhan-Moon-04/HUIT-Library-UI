@@ -1051,3 +1051,77 @@
     align-self: center;
   }
 }
+
+/* Violation Alert Styles */
+.violation-alert {
+  background: linear-gradient(135deg, #ffebee, #ffcdd2);
+  border: 1px solid #f44336;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.2);
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c62828;
+}
+
+.alert-content .material-icons {
+  font-size: 20px;
+  color: #f44336;
+}
+
+.alert-text {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.view-violations-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.view-violations-btn:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.3);
+}
+
+.view-violations-btn .material-icons {
+  font-size: 14px;
+}
+
+.violation-warning {
+  background: rgba(244, 67, 54, 0.1);
+  color: #d32f2f;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0;
+  border-left: 3px solid #f44336;
+}
+
+.violation-warning .material-icons {
+  font-size: 16px;
+  color: #f44336;
+}

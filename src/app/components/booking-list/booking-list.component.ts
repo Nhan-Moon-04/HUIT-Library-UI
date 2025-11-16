@@ -293,4 +293,10 @@ export class BookingListComponent implements OnInit {
     // Navigate to booking detail page
     this.router.navigate(['/booking/detail', maDangKy]);
   }
+
+  // View violations method
+  viewViolations(maDangKy: number): void {
+    console.log('Navigating to violations for booking:', maDangKy);
+    this.router.navigate(['/violations', maDangKy]);
+  }
 }

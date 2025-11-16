@@ -135,7 +135,20 @@
                             </div>
                         </div>
 
-                        <div class="progress-section" *ngIf="booking.minutesRemaining > 0">
+                        <!-- Violation Alert -->
+                        <div class="violation-alert" *ngIf="booking.coBienBan">
+                            <div class="alert-content">
+                                <i class="material-icons">warning</i>
+                                <span class="alert-text">Có {{ booking.soLuongBienBan }} vi phạm - Cần xử lý</span>
+                            </div>
+                            <button class="view-violations-btn"
+                                (click)="viewViolations(booking.maDangKy); $event.stopPropagation()">
+                                <i class="material-icons">visibility</i>
+                                Xem chi tiết
+                            </button>
+                        </div>
+
+                        <div class="progress-section" *ngIf="booking.minutesRemaining > 0 && !booking.coBienBan">
                             <div class="time-remaining">
                                 <i class="material-icons">timer</i>
                                 <span>Còn {{ formatMinutes(booking.minutesRemaining) }}</span>
@@ -143,16 +156,11 @@
                         </div>
                     </div>
 
-                    <div class="card-actions" *ngIf="booking.canExtend || booking.canComplete">
-                        <button class="action-btn secondary" *ngIf="booking.canExtend"
+                    <div class="card-actions" *ngIf="booking.canExtend && !booking.coBienBan">
+                        <button class="action-btn secondary"
                             (click)="openExtendModal(booking); $event.stopPropagation()">
                             <i class="material-icons">access_time</i>
                             Gia hạn
-                        </button>
-                        <button class="action-btn primary" *ngIf="booking.canComplete"
-                            (click)="$event.stopPropagation()">
-                            <i class="material-icons">check</i>
-                            Hoàn thành
                         </button>
                     </div>
                 </div>
@@ -195,6 +203,12 @@
                                 <i class="material-icons">description</i>
                                 <span>{{ booking.lyDo }}</span>
                             </div>
+                        </div>
+
+                        <!-- Violation warning for other bookings -->
+                        <div class="violation-warning" *ngIf="booking.coBienBan">
+                            <i class="material-icons">error</i>
+                            <span>Có {{ booking.soLuongBienBan }} vi phạm</span>
                         </div>
 
                         <div class="item-meta">

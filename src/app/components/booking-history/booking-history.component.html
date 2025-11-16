@@ -1,4 +1,25 @@
 <div class="history-page library-theme">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-container">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>
+                        <i class="fas fa-history"></i>
+                        Lịch sử mượn phòng
+                    </h1>
+                    <p>Quản lý và theo dõi lịch sử đặt phòng của bạn</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-new-booking" (click)="navigateToBooking()" type="button">
+                        <i class="fas fa-plus"></i>
+                        Đặt phòng mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="page-container">
         <!-- Search & Controls Section -->
         <div class="page-controls">
@@ -65,134 +86,133 @@
             }
         </div>
 
-       <!-- History Section -->
-@if (!loading() && bookings().length > 0) {
-<div class="history-section">
-    <div class="section-header">
-        <div class="header-left">
-            <h2 class="section-title">
-                <i class="fas fa-history"></i>
-                @if (isSearchMode()) {
-                Kết quả tìm kiếm
-                } @else {
-                Lịch sử mượn phòng
-                }
-            </h2>
-        </div>
-        
-        <div class="section-meta">
-            @if (isSearchMode()) {
-            <span class="search-badge">
-                <i class="fas fa-search"></i>
-                "{{ searchTerm() }}"
-            </span>
-            }
-            <span class="section-badge">{{ bookings().length }} bản ghi</span>
-            <span class="pagination-info">
-                Trang {{ pageNumber() }} / {{ totalPages() }}
-            </span>
-        </div>
-    </div>
-
-    <!-- History List -->
-    <div class="history-list">
-        <table class="history-table">
-            <thead>
-                <tr>
-                    <th>Mã đặt</th>
-                    <th>Phòng</th>
-                    <th>Loại phòng</th>
-                    <th>Thời gian bắt đầu</th>
-                    <th>Thời gian kết thúc</th>
-                    <th>Số người</th>
-                    <th>Mục đích</th>
-                    <th>Ghi chú</th>
-                    <th>Trạng thái</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (booking of bookings(); track booking.maDangKy) {
-                <tr class="history-row" [ngClass]="getHistoryStatusClass(booking.maTrangThai)">
-                    <td class="booking-id-col">
-                        <strong>#{{ booking.maDangKy }}</strong>
-                        <div class="booking-date-col">{{ formatDateTime(booking.ngayMuon) }}</div>
-                    </td>
-                    <td class="room-name-col">
-                        <i class="fas fa-door-open"></i>
-                        {{ booking.tenPhong }}
-                    </td>
-                    <td class="room-type-col">{{ booking.tenLoaiPhong }}</td>
-                    <td class="time-col">{{ formatDateTime(booking.thoiGianBatDau) }}</td>
-                    <td class="time-col">{{ formatDateTime(booking.thoiGianKetThuc) }}</td>
-                    <td class="quantity-col">{{ booking.soLuong || '-' }}</td>
-                    <td class="reason-col">
-                        @if (booking.lyDo) {
-                            {{ booking.lyDo }}
+        <!-- History Section -->
+        @if (!loading() && bookings().length > 0) {
+        <div class="history-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-history"></i>
+                    <h2>
+                        @if (isSearchMode()) {
+                        Kết quả tìm kiếm
                         } @else {
-                            <span class="text-muted">-</span>
+                        Lịch sử mượn phòng
                         }
-                    </td>
-                    <td class="note-col" title="{{ booking.ghiChu ? booking.ghiChu : (booking.ghiChuSuDung ? booking.ghiChuSuDung : '') }}">
-                        <ng-container *ngIf="booking.ghiChu; else ghiChuSuDung">
-                            {{ booking.ghiChu | slice:0:60 }}<span *ngIf="booking.ghiChu.length > 60"> ...</span>
-                        </ng-container>
-                        <ng-template #ghiChuSuDung>
-                            <ng-container *ngIf="booking.ghiChuSuDung; else noNote">
-                                {{ booking.ghiChuSuDung | slice:0:60 }}<span *ngIf="booking.ghiChuSuDung.length > 60"> ...</span>
-                            </ng-container>
-                        </ng-template>
-                        <ng-template #noNote>
-                            <span class="text-muted">-</span>
-                        </ng-template>
-                    </td>
-                    <td class="status-col">
-                        <span class="status-badge">
-                            <i class="fas" [ngClass]="getHistoryStatusIcon(booking.maTrangThai)"></i>
-                            {{ booking.tenTrangThai }}
-                        </span>
-                    </td>
-                </tr>
-                @if (booking.ghiChu || booking.gioBatDauThucTe || booking.gioKetThucThucTe || booking.ghiChuSuDung) {
-                
+                    </h2>
+                    <span class="count-badge">{{ bookings().length }}</span>
+                </div>
+                @if (isSearchMode()) {
+                <span class="search-badge">
+                    <i class="fas fa-search"></i>
+                    "{{ searchTerm() }}"
+                </span>
                 }
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination Section -->
-    <div class="pagination-section">
-        <div class="pagination-left">
-            <button class="btn-back-home" (click)="navigateToDashboard()" type="button" title="Quay lại trang chủ">
-                <i class="fas fa-arrow-left"></i>
-                <span>Quay lại</span>
-            </button>
-        </div>
-
-        <div class="pagination-center">
-            <button class="btn-pagination" (click)="prev()" [disabled]="pageNumber() <= 1" type="button" aria-label="Trang trước">
-                <i class="fas fa-chevron-left"></i>
-                <span>Trang trước</span>
-            </button>
-
-            <div class="pagination-info" aria-live="polite">
-                <span class="current-page">{{ pageNumber() }}</span>
-                <span class="separator">/</span>
-                <span class="total-pages">{{ totalPages() }}</span>
             </div>
 
-            <button class="btn-pagination" (click)="next()" [disabled]="pageNumber() >= totalPages()" type="button" aria-label="Trang sau">
-                <span>Trang sau</span>
-                <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
+            <!-- History List -->
+            <div class="history-list">
+                @for (booking of bookings(); track booking.maDangKy) {
+                <div class="history-item" [ngClass]="'status-' + booking.maTrangThai"
+                    (click)="viewBookingDetail(booking.maDangKy)">
 
-        <div class="pagination-right">
-            <div class="section-badge">{{ totalItems() || bookings().length }} bản ghi</div>
+                    <div class="item-status">
+                        <div class="status-icon" [ngClass]="getHistoryStatusClass(booking.maTrangThai)">
+                            <i class="fas" [ngClass]="getHistoryStatusIcon(booking.maTrangThai)"></i>
+                        </div>
+                    </div>
+
+                    <div class="item-content">
+                        <div class="item-header">
+                            <h3 class="room-name">
+                                <i class="fas fa-door-open"></i>
+                                {{ booking.tenPhong }}
+                            </h3>
+                            <div class="booking-meta">
+                                <span class="booking-id">#{{ booking.maDangKy }}</span>
+                                <span class="room-type">{{ booking.tenLoaiPhong }}</span>
+                            </div>
+                        </div>
+
+                        <div class="item-details">
+                            <div class="detail-row">
+                                <i class="fas fa-clock"></i>
+                                <span>{{ formatDateTime(booking.thoiGianBatDau) }} - {{
+                                    formatDateTime(booking.thoiGianKetThuc) }}</span>
+                            </div>
+                            @if (booking.soLuong) {
+                            <div class="detail-row">
+                                <i class="fas fa-users"></i>
+                                <span>{{ booking.soLuong }} người</span>
+                            </div>
+                            }
+                            @if (booking.lyDo) {
+                            <div class="detail-row">
+                                <i class="fas fa-file-alt"></i>
+                                <span>{{ booking.lyDo }}</span>
+                            </div>
+                            }
+                            @if (booking.ghiChu || booking.ghiChuSuDung) {
+                            <div class="detail-row note-row">
+                                <i class="fas fa-comment"></i>
+                                <span>{{ booking.ghiChu || booking.ghiChuSuDung }}</span>
+                            </div>
+                            }
+                        </div>
+
+                        <div class="item-meta">
+                            <span class="status-text">{{ booking.tenTrangThai }}</span>
+                            <span class="date-text">{{ formatDateTime(booking.ngayMuon) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="item-actions">
+                        <button class="detail-btn"
+                            (click)="viewBookingDetail(booking.maDangKy); $event.stopPropagation()"
+                            title="Xem chi tiết">
+                            <i class="fas fa-eye"></i>
+                            Chi tiết
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Pagination Section -->
+            <div class="pagination-section">
+                <div class="pagination-left">
+                    <button class="btn-back-home" (click)="navigateToDashboard()" type="button"
+                        title="Quay lại trang chủ">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lại</span>
+                    </button>
+                </div>
+
+                <div class="pagination-center">
+                    <button class="btn-pagination" (click)="prev()" [disabled]="pageNumber() <= 1" type="button"
+                        aria-label="Trang trước">
+                        <i class="fas fa-chevron-left"></i>
+                        <span>Trang trước</span>
+                    </button>
+
+                    <div class="pagination-info" aria-live="polite">
+                        <span class="current-page">{{ pageNumber() }}</span>
+                        <span class="separator">/</span>
+                        <span class="total-pages">{{ totalPages() }}</span>
+                    </div>
+
+                    <button class="btn-pagination" (click)="next()" [disabled]="pageNumber() >= totalPages()"
+                        type="button" aria-label="Trang sau">
+                        <span>Trang sau</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="pagination-right">
+                    <div class="section-badge">{{ totalItems() || bookings().length }} bản ghi</div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-}
+        }
 
 
         <!-- Empty State -->

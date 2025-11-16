@@ -156,4 +156,13 @@ export class BookingHistoryComponent implements OnInit {
   navigateToDashboard(): void {
     this.router.navigate(['/dashboard']);
   }
+
+  navigateToBooking(): void {
+    this.router.navigate(['/booking/create']);
+  }
+
+  viewBookingDetail(bookingId: number): void {
+    // Navigate to booking detail page
+    this.router.navigate(['/booking/detail', bookingId]);
+  }
 }

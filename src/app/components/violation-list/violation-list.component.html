@@ -1,0 +1,118 @@
+@if (!loading() && violations().length > 0) {
+<div class="violation-list-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-container">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Danh sách vi phạm
+                    </h1>
+                    <p>Booking #{{ bookingId() }} - {{ violations().length }} vi phạm</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-back" (click)="goBack()" type="button">
+                        <i class="fas fa-arrow-left"></i>
+                        Quay lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Violations List -->
+    <div class="violations-container">
+        <div class="violations-grid">
+            @for (violation of violations(); track violation.maViPham) {
+            <div class="violation-card" [ngClass]="'status-' + violation.trangThaiXuLy.toLowerCase().replace(' ', '-')"
+                (click)="viewViolationDetail(violation.maViPham)">
+
+                <div class="violation-header">
+                    <div class="violation-icon">
+                        <i class="fas" [ngClass]="getViolationStatusIcon(violation.trangThaiXuLy)"
+                            [style.color]="getViolationStatusColor(violation.trangThaiXuLy)">
+                        </i>
+                    </div>
+                    <div class="violation-id">
+                        <span>Vi phạm #{{ violation.maViPham }}</span>
+                    </div>
+                </div>
+
+                <div class="violation-content">
+                    <h3 class="violation-title">{{ violation.tenViPham }}</h3>
+                    <p class="violation-description">{{ violation.moTaNgan }}</p>
+
+                    <div class="violation-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ formatViolationDate(violation.ngayLap) }}</span>
+                        </div>
+                        <div class="meta-item status">
+                            <i class="fas fa-info-circle"></i>
+                            <span [style.color]="getViolationStatusColor(violation.trangThaiXuLy)">
+                                {{ violation.trangThaiXuLy }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="violation-actions">
+                    <button class="btn-view-detail"
+                        (click)="viewViolationDetail(violation.maViPham); $event.stopPropagation()">
+                        <i class="fas fa-eye"></i>
+                        Xem chi tiết
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+}
+
+<!-- Loading State -->
+@if (loading()) {
+<div class="loading-state">
+    <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <p>Đang tải danh sách vi phạm...</p>
+    </div>
+</div>
+}
+
+<!-- Error State -->
+@if (error()) {
+<div class="error-state">
+    <div class="error-content">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h2>Không thể tải danh sách vi phạm</h2>
+        <p>{{ error() }}</p>
+        <div class="error-actions">
+            <button class="btn-retry" (click)="loadViolations(bookingId())">
+                <i class="fas fa-redo"></i>
+                Thử lại
+            </button>
+            <button class="btn-back" (click)="goToDashboard()">
+                <i class="fas fa-home"></i>
+                Về trang chủ
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Empty State -->
+@if (!loading() && violations().length === 0 && !error()) {
+<div class="empty-state">
+    <div class="empty-content">
+        <i class="fas fa-check-circle"></i>
+        <h2>Không có vi phạm</h2>
+        <p>Booking này không có vi phạm nào được ghi nhận.</p>
+        <button class="btn-back" (click)="goBack()">
+            <i class="fas fa-arrow-left"></i>
+            Quay lại
+        </button>
+    </div>
+</div>
+}

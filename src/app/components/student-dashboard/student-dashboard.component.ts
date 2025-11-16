@@ -9,6 +9,11 @@ import {
   Notification,
   NotificationListResponse,
 } from '../../services/notification.service';
+import {
+  BookingService,
+  CurrentBooking,
+  CurrentBookingsResponse,
+} from '../../services/booking.service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -22,11 +27,15 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   notificationService = inject(NotificationService);
   statisticsService = inject(StatisticsService);
   newsService = inject(NewsService);
+  bookingService = inject(BookingService);
   router = inject(Router);
 
   notifications = signal<Notification[]>([]);
   isLoadingNotifications = signal<boolean>(false);
   statistics = signal<StatisticsOverview | null>(null);
+  // Booking signals
+  currentBookings = signal<CurrentBooking[]>([]);
+  isLoadingCurrentBookings = signal<boolean>(false);
 
   // News signals
   newsList = signal<NewsItem[]>([]);
@@ -60,6 +69,7 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     this.loadLatestNotifications();
     this.loadStatistics();
     this.loadNews();
+    this.loadCurrentBookings();
     this.recordVisit();
     this.setOnlineStatus(true);
     this.startCarousel();
@@ -75,6 +85,28 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     }
     // Set offline khi rời khỏi trang
     this.setOnlineStatus(false);
+  }
+
+  loadCurrentBookings(): void {
+    // Only load if user is logged in
+    if (!this.authService.isLoggedIn()) {
+      return;
+    }
+
+    this.isLoadingCurrentBookings.set(true);
+    this.bookingService.getCurrentBookingsV2().subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.currentBookings.set(response.data);
+          console.log('Current bookings loaded:', response.data);
+        }
+        this.isLoadingCurrentBookings.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading current bookings:', error);
+        this.isLoadingCurrentBookings.set(false);
+      },
+    });
   }
 
   loadLatestNotifications(): void {
@@ -411,6 +443,35 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   truncateText(text: string, maxLength: number): string {
     if (!text) return '';
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+  }
+
+  navigateToBookingDetail(maDangKy: number): void {
+    this.router.navigate(['/booking/detail', maDangKy]);
+  }
+
+  viewViolations(maDangKy: number): void {
+    this.router.navigate(['/violations', maDangKy]);
+  }
+
+  navigateToIncidentReport(maDangKy: number): void {
+    // Điều hướng đến trang xem biên bản vi phạm
+    this.router.navigate(['/bookings/incident-report', maDangKy]);
+  }
+
+  formatDateTime(dateTimeString: string): string {
+    if (!dateTimeString) return '';
+    try {
+      const date = new Date(dateTimeString);
+      return date.toLocaleString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch (e) {
+      return '';
+    }
   }
 
   logout(): void {

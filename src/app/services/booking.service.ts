@@ -43,6 +43,8 @@ export interface CurrentBooking {
   statusDescription: string;
   minutesUntilStart: number;
   minutesRemaining: number;
+  coBienBan: boolean;
+  soLuongBienBan: number;
 }
 
 export interface CurrentBookingsResponse {
@@ -137,6 +139,13 @@ export class BookingService {
 
   getCurrentBookings(): Observable<CurrentBookingsResponse> {
     return this.http.get<CurrentBookingsResponse>(`${environment.appUrl}/api/Booking/current`);
+  }
+
+  /** Get current bookings from API v2 with incident report info */
+  getCurrentBookingsV2(): Observable<CurrentBookingsResponse> {
+    return this.http.get<CurrentBookingsResponse>(
+      `${environment.appUrl}/api/v2/BookingView/current`
+    );
   }
 
   /** Get booking history (used / canceled / rejected) with pagination */

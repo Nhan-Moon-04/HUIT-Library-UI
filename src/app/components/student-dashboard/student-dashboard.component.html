@@ -28,22 +28,26 @@
                         <h1>HỆ THỐNG QUẢN LÝ PHÒNG THÔNG MINH</h1>
                         <p>Đặt phòng dễ dàng - Quản lý hiệu quả</p>
                         <div class="hero-actions">
-                            <button class="btn btn-primary" *ngIf="!authService.isLoggedIn()"
-                                (click)="navigateToLogin()">
+                            @if (!authService.isLoggedIn()) {
+                            <button class="btn btn-primary" (click)="navigateToLogin()">
                                 <i class="fas fa-sign-in-alt"></i> Đăng nhập
                             </button>
-                            <button class="btn btn-outline" *ngIf="!authService.isLoggedIn()"
-                                (click)="navigateToRegister()">
+                            }
+                            @if (!authService.isLoggedIn()) {
+                            <button class="btn btn-outline" (click)="navigateToRegister()">
                                 <i class="fas fa-user-plus"></i> Đăng ký
                             </button>
-                            <button class="btn btn-primary" *ngIf="authService.isLoggedIn()"
-                                (click)="navigateToProfile()">
+                            }
+                            @if (authService.isLoggedIn()) {
+                            <button class="btn btn-primary" (click)="navigateToProfile()">
                                 <i class="fas fa-user"></i> Hồ sơ cá nhân
                             </button>
-                            <button class="btn btn-outline" *ngIf="authService.isLoggedIn()"
-                                (click)="navigateToBooking()">
+                            }
+                            @if (authService.isLoggedIn()) {
+                            <button class="btn btn-outline" (click)="navigateToBooking()">
                                 <i class="fas fa-calendar-plus"></i> Đặt phòng mới
                             </button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -130,6 +134,99 @@
     </div>
 </section>
 
+<!-- Current Booking Section (only show if user is logged in and has current bookings) -->
+@if (authService.isLoggedIn() && currentBookings().length > 0) {
+<section class="current-booking-section">
+    <div class="container">
+        <div class="section-header">
+            <h3>
+                <i class="fas fa-clock text-primary"></i>
+                PHÒNG ĐANG SỬ DỤNG
+            </h3>
+            <span class="booking-count">{{ currentBookings().length }} phòng</span>
+        </div>
+
+        <div class="current-bookings-grid">
+            @for (booking of currentBookings(); track booking.maDangKy) {
+            <div class="current-booking-card" [ngClass]="{ 'has-incident': booking.coBienBan }">
+
+                <!-- Violation Alert -->
+                @if (booking.coBienBan) {
+                <div class="violation-alert">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>CẢNH BÁO VI PHẠM:</strong> Phòng này có {{ booking.soLuongBienBan }} biên bản vi phạm
+                    <button class="btn-violation-link" (click)="viewViolations(booking.maDangKy)">
+                        <i class="fas fa-external-link-alt"></i>
+                        Xem chi tiết
+                    </button>
+                </div>
+                }
+
+                <!-- Booking Info -->
+                <div class="booking-header">
+                    <h4 class="room-name">
+                        <i class="fas fa-door-open"></i>
+                        {{ booking.tenPhong }}
+                    </h4>
+                    <div class="booking-status">
+                        <span class="status-badge active">{{ booking.tenTrangThai }}</span>
+                    </div>
+                </div>
+
+                <div class="booking-details">
+                    <div class="detail-row">
+                        <i class="fas fa-clock"></i>
+                        <span>{{ formatDateTime(booking.thoiGianBatDau) }} - {{ formatDateTime(booking.thoiGianKetThuc)
+                            }}</span>
+                    </div>
+
+                    <div class="detail-row">
+                        <i class="fas fa-home"></i>
+                        <span>{{ booking.tenLoaiPhong }}</span>
+                    </div>
+
+                    @if (booking.soLuong) {
+                    <div class="detail-row">
+                        <i class="fas fa-users"></i>
+                        <span>{{ booking.soLuong }} người</span>
+                    </div>
+                    }
+
+
+
+                    <div class="detail-row time-remaining">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span>Còn {{ booking.minutesRemaining }} phút</span>
+                    </div>
+                </div>
+
+                <div class="booking-actions">
+                    <button class="btn-action primary" (click)="navigateToBookingDetail(booking.maDangKy)">
+                        <i class="fas fa-eye"></i>
+                        Chi tiết
+                    </button>
+
+                    @if (booking.coBienBan) {
+                    <button class="btn-action warning" (click)="viewViolations(booking.maDangKy)">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Xem vi phạm
+                    </button>
+                    }
+
+                    @if (booking.canExtend) {
+                    <button class="btn-action secondary">
+                        <i class="fas fa-plus-circle"></i>
+                        Gia hạn
+                    </button>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+}
+
 <!-- Main Content Grid -->
 <section class="main-content">
     <div class="container">
@@ -156,11 +253,14 @@
                         </div>
                     </div>
                     <div class="news-carousel">
-                        <div class="news-item featured" *ngIf="currentNews(); else loadingNews">
+                        @if (currentNews()) {
+                        <div class="news-item featured">
                             <div class="news-image">
                                 <img [src]="getNewsImage(currentNews()!)" [alt]="currentNews()!.TITLE"
                                     onerror="this.src='https://via.placeholder.com/400x250/2196F3/FFFFFF?text=Tin+tức+HUIT'">
-                                <div class="news-badge" *ngIf="isHotNews(currentNews()!)">HOT</div>
+                                @if (isHotNews(currentNews()!)) {
+                                <div class="news-badge">HOT</div>
+                                }
                                 <div class="news-category-badge">{{ getNewsCategory(currentNews()!) }}</div>
                             </div>
                             <div class="news-content">
@@ -176,29 +276,34 @@
                                         {{ currentNews()!.VIEWCOUNT }} lượt xem
                                     </span>
                                 </div>
-                                <div class="news-author" *ngIf="currentNews()!.STRAUTHOR_NAME">
+                                @if (currentNews()!.STRAUTHOR_NAME) {
+                                <div class="news-author">
                                     <i class="fas fa-user"></i>
                                     {{ currentNews()!.STRAUTHOR_NAME }}
                                 </div>
+                                }
                                 <button class="btn-read-more" (click)="readNewsDetail(currentNews()!)">
                                     <i class="fas fa-arrow-right"></i>
                                     Xem chi tiết
                                 </button>
                             </div>
                         </div>
-
-                        <ng-template #loadingNews>
-                            <div class="news-loading">
-                                <div class="loading-spinner" *ngIf="isLoadingNews()">
-                                    <i class="fas fa-spinner fa-spin"></i>
-                                    <p>Đang tải tin tức...</p>
-                                </div>
-                                <div class="no-news" *ngIf="!isLoadingNews() && newsList().length === 0">
-                                    <i class="fas fa-newspaper"></i>
-                                    <p>Hiện tại chưa có tin tức mới</p>
-                                </div>
+                        } @else {
+                        <div class="news-loading">
+                            @if (isLoadingNews()) {
+                            <div class="loading-spinner">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Đang tải tin tức...</p>
                             </div>
-                        </ng-template>
+                            }
+                            @if (!isLoadingNews() && newsList().length === 0) {
+                            <div class="no-news">
+                                <i class="fas fa-newspaper"></i>
+                                <p>Hiện tại chưa có tin tức mới</p>
+                            </div>
+                            }
+                        </div>
+                        }
                     </div>
                 </div>
 
@@ -214,9 +319,9 @@
                         </a>
                     </div>
                     <div class="announcements-list">
-                        <div class="announcement-item"
-                            *ngFor="let notification of notifications().slice(0, 5); let i = index"
-                            (click)="navigateToNotificationDetail(notification.maThongBao)">
+                        @for (notification of notifications().slice(0, 5); track notification.maThongBao; let i =
+                        $index) {
+                        <div class="announcement-item" (click)="navigateToNotificationDetail(notification.maThongBao)">
                             <div class="announcement-icon">
                                 <i class="fas fa-bell"></i>
                             </div>
@@ -231,11 +336,14 @@
                                 <i class="fas fa-chevron-right"></i>
                             </div>
                         </div>
+                        }
 
-                        <div class="no-announcements" *ngIf="notifications().length === 0">
+                        @if (notifications().length === 0) {
+                        <div class="no-announcements">
                             <i class="fas fa-info-circle"></i>
                             <p>Hiện tại chưa có thông báo mới</p>
                         </div>
+                        }
                     </div>
                 </div>
             </div>

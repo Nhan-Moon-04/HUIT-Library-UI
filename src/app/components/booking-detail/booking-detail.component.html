@@ -1,5 +1,6 @@
 <!-- Trang Chi Tiết Phiếu Đặt Phòng -->
-<div class="chi-tiet-phieu" *ngIf="!loading() && bookingDetail()">
+@if (!loading() && bookingDetail()) {
+<div class="chi-tiet-phieu">
     <!-- Đầu trang -->
     <div class="dau-trang">
         <div class="noi-dung-dau">
@@ -83,20 +84,25 @@
                 </div>
 
                 <!-- Thời gian thực tế -->
-                <div class="thoi-gian-thuc-te"
-                    *ngIf="bookingDetail()!.gioBatDauThucTe || bookingDetail()!.gioKetThucThucTe">
+                @if (bookingDetail()!.gioBatDauThucTe || bookingDetail()!.gioKetThucThucTe) {
+                <div class="thoi-gian-thuc-te">
                     <h3>Thời gian thực tế</h3>
                     <div class="thong-tin-thuc-te">
-                        <div class="muc-thuc-te" *ngIf="bookingDetail()!.gioBatDauThucTe">
+                        @if (bookingDetail()!.gioBatDauThucTe) {
+                        <div class="muc-thuc-te">
                             <label>Bắt đầu thực tế</label>
                             <span>{{ formatDateTime(bookingDetail()!.gioBatDauThucTe!) }}</span>
                         </div>
-                        <div class="muc-thuc-te" *ngIf="bookingDetail()!.gioKetThucThucTe">
+                        }
+                        @if (bookingDetail()!.gioKetThucThucTe) {
+                        <div class="muc-thuc-te">
                             <label>Kết thúc thực tế</label>
                             <span>{{ formatDateTime(bookingDetail()!.gioKetThucThucTe!) }}</span>
                         </div>
+                        }
                     </div>
                 </div>
+                }
             </div>
 
             <!-- Chi tiết đặt phòng -->
@@ -106,23 +112,30 @@
                     Chi tiết đặt phòng
                 </h2>
                 <div class="luoi-thong-tin">
-                    <div class="muc-thong-tin" *ngIf="bookingDetail()!.lyDo">
+                    @if (bookingDetail()!.lyDo) {
+                    <div class="muc-thong-tin">
                         <label>Mục đích</label>
                         <span class="gia-tri">{{ bookingDetail()!.lyDo }}</span>
                     </div>
-                    <div class="muc-thong-tin" *ngIf="bookingDetail()!.soLuong">
+                    }
+                    @if (bookingDetail()!.soLuong) {
+                    <div class="muc-thong-tin">
                         <label>Số lượng người</label>
                         <span class="gia-tri">{{ bookingDetail()!.soLuong }} người</span>
                     </div>
-                    <div class="muc-thong-tin full-width" *ngIf="bookingDetail()!.ghiChu">
+                    }
+                    @if (bookingDetail()!.ghiChu) {
+                    <div class="muc-thong-tin full-width">
                         <label>Ghi chú</label>
                         <span class="gia-tri">{{ bookingDetail()!.ghiChu }}</span>
                     </div>
+                    }
                 </div>
             </div>
 
             <!-- Thông tin duyệt -->
-            <div class="muc-chi-tiet" *ngIf="bookingDetail()!.ngayDuyet">
+            @if (bookingDetail()!.ngayDuyet) {
+            <div class="muc-chi-tiet">
                 <h2 class="tieu-de-muc">
                     <i class="material-icons">verified</i>
                     Thông tin duyệt
@@ -134,54 +147,114 @@
                     </div>
                 </div>
             </div>
+            }
 
             <!-- Tình trạng phòng -->
-            <div class="muc-chi-tiet" *ngIf="bookingDetail()!.tinhTrangPhong || bookingDetail()!.ghiChuSuDung">
+            @if (bookingDetail()!.tinhTrangPhong || bookingDetail()!.ghiChuSuDung) {
+            <div class="muc-chi-tiet">
                 <h2 class="tieu-de-muc">
                     <i class="material-icons">fact_check</i>
                     Tình trạng phòng
                 </h2>
                 <div class="luoi-thong-tin">
-                    <div class="muc-thong-tin" *ngIf="bookingDetail()!.tinhTrangPhong">
+                    @if (bookingDetail()!.tinhTrangPhong) {
+                    <div class="muc-thong-tin">
                         <label>Tình trạng</label>
                         <span class="gia-tri">{{ bookingDetail()!.tinhTrangPhong }}</span>
                     </div>
-                    <div class="muc-thong-tin full-width" *ngIf="bookingDetail()!.ghiChuSuDung">
+                    }
+                    @if (bookingDetail()!.ghiChuSuDung) {
+                    <div class="muc-thong-tin full-width">
                         <label>Ghi chú sử dụng</label>
                         <span class="gia-tri">{{ bookingDetail()!.ghiChuSuDung }}</span>
                     </div>
+                    }
                 </div>
             </div>
+            }
+
+            <!-- Biên bản vi phạm -->
+            @if (violations().length > 0) {
+            <div class="muc-chi-tiet">
+                <h2 class="tieu-de-muc violation-header">
+                    <i class="material-icons">warning</i>
+                    Biên bản vi phạm ({{ violations().length }})
+                </h2>
+                <div class="violation-list">
+                    @for (violation of violations(); track violation.maViPham) {
+                    <div class="violation-item" (click)="viewViolationDetail(violation.maViPham)">
+                        <div class="violation-icon">
+                            <i class="material-icons" [style.color]="getViolationStatusColor(violation.trangThaiXuLy)">
+                                {{ getViolationStatusIcon(violation.trangThaiXuLy) }}
+                            </i>
+                        </div>
+                        <div class="violation-content">
+                            <h4>{{ violation.tenViPham }}</h4>
+                            @if (violation.moTaNgan) {
+                            <p class="violation-note">{{ violation.moTaNgan }}</p>
+                            }
+                            <div class="violation-meta">
+                                <span class="violation-date">{{ formatViolationDate(violation.ngayLap) }}</span>
+                                <span class="violation-status"
+                                    [style.color]="getViolationStatusColor(violation.trangThaiXuLy)">
+                                    {{ violation.trangThaiXuLy }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="violation-action">
+                            <i class="material-icons">chevron_right</i>
+                        </div>
+                    </div>
+                    }
+                </div>
+                @if (loadingViolations()) {
+                <div class="violation-loading">
+                    <div class="vong-quay-nho"></div>
+                    <span>Đang tải biên bản...</span>
+                </div>
+                }
+            </div>
+            }
 
             <!-- Các hành động -->
-            <div class="cac-hanh-dong" *ngIf="canShowActions()">
+            @if (canShowActions()) {
+            <div class="cac-hanh-dong">
                 <button class="nut-hanh-dong ke-ngoai" (click)="router.navigate(['/bookings'])">
                     <i class="material-icons">list</i>
                     Về danh sách
                 </button>
-                <button class="nut-hanh-dong chinh" *ngIf="canExtend()">
+                @if (canExtend()) {
+                <button class="nut-hanh-dong chinh">
                     <i class="material-icons">access_time</i>
                     Gia hạn
                 </button>
-                <button class="nut-hanh-dong nguy-hiem" *ngIf="canCancel()">
+                }
+                @if (canCancel()) {
+                <button class="nut-hanh-dong nguy-hiem">
                     <i class="material-icons">cancel</i>
                     Hủy đặt phòng
                 </button>
+                }
             </div>
+            }
         </div>
     </div>
 </div>
+}
 
 <!-- Trạng thái đang tải -->
-<div class="trang-thai-tai" *ngIf="loading()">
+@if (loading()) {
+<div class="trang-thai-tai">
     <div class="noi-dung-tai">
         <div class="vong-quay"></div>
         <p>Đang tải chi tiết phiếu đặt phòng...</p>
     </div>
 </div>
+}
 
 <!-- Trạng thái lỗi -->
-<div class="trang-thai-loi" *ngIf="error()">
+@if (error()) {
+<div class="trang-thai-loi">
     <div class="noi-dung-loi">
         <i class="material-icons">error</i>
         <h2>Không thể tải chi tiết</h2>
@@ -198,3 +271,4 @@
         </div>
     </div>
 </div>
+}

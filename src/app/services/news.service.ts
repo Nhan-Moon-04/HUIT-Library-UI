@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
@@ -61,11 +61,18 @@ export class NewsService {
     };
 
     console.log('GetOverViews payload:', body);
+    console.log('Calling URL:', `${this.newsApiUrl}/News/GetOverViews`);
     return this.http
       .post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers })
       .pipe(
         catchError((error) => {
           console.error('News API error:', error);
+          console.error('Error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+            message: error.message,
+          });
           // Return demo data as fallback
           return this.getDemoNewsData();
         })
@@ -88,11 +95,18 @@ export class NewsService {
     };
 
     console.log('GetFeaturedNews payload:', body);
+    console.log('Calling URL:', `${this.newsApiUrl}/News/GetOverViews`);
     return this.http
       .post<NewsResponse>(`${this.newsApiUrl}/News/GetOverViews`, body, { headers })
       .pipe(
         catchError((error) => {
           console.error('Featured News API error:', error);
+          console.error('Error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+            message: error.message,
+          });
           // Return demo data as fallback
           return this.getDemoNewsData();
         })

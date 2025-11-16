@@ -1,0 +1,11 @@
+{
+  "/news-proxy/**": {
+    "target": "https://thuvien.huit.edu.vn",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/news-proxy": ""
+    }
+  }
+}

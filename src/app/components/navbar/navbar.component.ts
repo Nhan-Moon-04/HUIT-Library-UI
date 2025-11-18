@@ -1,6 +1,6 @@
 import { Component, inject, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import {
   NotificationService,
@@ -8,7 +8,7 @@ import {
   NotificationListResponse,
 } from '../../services/notification.service';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -27,8 +27,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isNotificationOpen = false;
   unreadCount = 0;
   notifications: Notification[] = [];
+  currentRoute = '';
 
   ngOnInit(): void {
+    // Track current route for better active state management
+    this.currentRoute = this.router.url;
+
+    // Subscribe to router events to update current route
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((event: NavigationEnd) => {
+        this.currentRoute = event.urlAfterRedirects;
+      });
+
     this.loadUnreadCount();
     this.loadNotifications();
 
@@ -117,7 +131,52 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   isActiveRoute(route: string): boolean {
-    return this.router.url.includes(route);
+    const currentUrl = this.currentRoute || this.router.url;
+
+    // Remove query parameters and fragments for cleaner comparison
+    const cleanCurrentUrl = currentUrl.split('?')[0].split('#')[0];
+    const cleanRoute = route.split('?')[0].split('#')[0];
+
+    // Handle exact matches for specific routes
+    if (cleanRoute === '/booking') {
+      return (
+        cleanCurrentUrl === '/booking/create' ||
+        cleanCurrentUrl === '/booking-request' ||
+        cleanCurrentUrl === '/booking'
+      );
+    }
+
+    if (cleanRoute === '/bookings') {
+      return (
+        cleanCurrentUrl === '/bookings' ||
+        (cleanCurrentUrl.startsWith('/booking/') &&
+          !cleanCurrentUrl.includes('/history') &&
+          !cleanCurrentUrl.includes('/create'))
+      );
+    }
+
+    if (cleanRoute === '/bookings/history') {
+      return (
+        cleanCurrentUrl === '/bookings/history' ||
+        cleanCurrentUrl === '/booking-history' ||
+        cleanCurrentUrl.startsWith('/booking/history')
+      );
+    }
+
+    if (cleanRoute === '/room-search') {
+      return cleanCurrentUrl === '/room-search';
+    }
+
+    // For dashboard routes, check exact match
+    if (cleanRoute.includes('dashboard')) {
+      return cleanCurrentUrl === cleanRoute;
+    }
+
+    // For other routes, use exact match or check if it's a sub-route
+    return (
+      cleanCurrentUrl === cleanRoute ||
+      (cleanCurrentUrl.startsWith(cleanRoute + '/') && cleanRoute !== '/')
+    );
   }
 
   getHomeLink(): string {

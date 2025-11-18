@@ -1,230 +1,230 @@
 <!-- Hero Section with Background Images -->
 <section class="hero-section">
-    <div class="hero-carousel">
-        <div class="hero-slide" [class.active]="activeSlideIndex() === 0"
-            style="background-image: url('assets/images/bg1.jpg')">
-            <div class="hero-overlay">
-                <div class="container">
-                    <div class="hero-content">
-                        <h1>THƯ VIỆN TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h1>
-                        <p>Nơi tri thức hội tụ - Tương lai khởi nguồn</p>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary" (click)="navigateToRoomSearch()">
-                                <i class="fas fa-search"></i> Tìm kiếm phòng
-                            </button>
-                            <button class="btn btn-outline" (click)="navigateToBooking()">
-                                <i class="fas fa-calendar-plus"></i> Đăng ký phòng
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  <div class="hero-carousel">
+    <div class="hero-slide" [class.active]="activeSlideIndex() === 0"
+      style="background-image: url('assets/images/bg1.jpg')">
+      <div class="hero-overlay">
+        <div class="container">
+          <div class="hero-content">
+            <h1>THƯ VIỆN TRƯỜNG ĐẠI HỌC CÔNG THƯƠNG TP.HCM</h1>
+            <p>Nơi tri thức hội tụ - Tương lai khởi nguồn</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" (click)="navigateToRoomSearch()">
+                <i class="fas fa-search"></i> Tìm kiếm phòng
+              </button>
+              <button class="btn btn-outline" (click)="navigateToBooking()">
+                <i class="fas fa-calendar-plus"></i> Đăng ký phòng
+              </button>
             </div>
+          </div>
         </div>
-        <div class="hero-slide" [class.active]="activeSlideIndex() === 1"
-            style="background-image: url('assets/images/bg2.jpg')">
-            <div class="hero-overlay">
-                <div class="container">
-                    <div class="hero-content">
-                        <h1>HỆ THỐNG QUẢN LÝ PHÒNG THÔNG MINH</h1>
-                        <p>Đặt phòng dễ dàng - Quản lý hiệu quả</p>
-                        <div class="hero-actions">
-                            @if (!authService.isLoggedIn()) {
-                            <button class="btn btn-primary" (click)="navigateToLogin()">
-                                <i class="fas fa-sign-in-alt"></i> Đăng nhập
-                            </button>
-                            }
-                            @if (!authService.isLoggedIn()) {
-                            <button class="btn btn-outline" (click)="navigateToRegister()">
-                                <i class="fas fa-user-plus"></i> Đăng ký
-                            </button>
-                            }
-                            @if (authService.isLoggedIn()) {
-                            <button class="btn btn-primary" (click)="navigateToProfile()">
-                                <i class="fas fa-user"></i> Hồ sơ cá nhân
-                            </button>
-                            }
-                            @if (authService.isLoggedIn()) {
-                            <button class="btn btn-outline" (click)="navigateToBooking()">
-                                <i class="fas fa-calendar-plus"></i> Đặt phòng mới
-                            </button>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="hero-slide" [class.active]="activeSlideIndex() === 2"
-            style="background-image: url('assets/images/bg3.jpg')">
-            <div class="hero-overlay">
-                <div class="container">
-                    <div class="hero-content">
-                        <h1>TIN TỨC & THÔNG BÁO</h1>
-                        <p>Cập nhật thông tin mới nhất từ thư viện</p>
-                        <div class="hero-actions">
-                            <button class="btn btn-primary" (click)="navigateToNotifications()">
-                                <i class="fas fa-bell"></i> Xem thông báo
-                            </button>
-                            <button class="btn btn-outline" (click)="navigateToChat()">
-                                <i class="fas fa-comments"></i> Hỗ trợ trực tuyến
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="hero-slide" [class.active]="activeSlideIndex() === 1"
+      style="background-image: url('assets/images/bg2.jpg')">
+      <div class="hero-overlay">
+        <div class="container">
+          <div class="hero-content">
+            <h1>HỆ THỐNG QUẢN LÝ PHÒNG THÔNG MINH</h1>
+            <p>Đặt phòng dễ dàng - Quản lý hiệu quả</p>
+            <div class="hero-actions">
+              @if (!authService.isLoggedIn()) {
+              <button class="btn btn-primary" (click)="navigateToLogin()">
+                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+              </button>
+              }
+              @if (!authService.isLoggedIn()) {
+              <button class="btn btn-outline" (click)="navigateToRegister()">
+                <i class="fas fa-user-plus"></i> Đăng ký
+              </button>
+              }
+              @if (authService.isLoggedIn()) {
+              <button class="btn btn-primary" (click)="navigateToProfile()">
+                <i class="fas fa-user"></i> Hồ sơ cá nhân
+              </button>
+              }
+              @if (authService.isLoggedIn()) {
+              <button class="btn btn-outline" (click)="navigateToBooking()">
+                <i class="fas fa-calendar-plus"></i> Đặt phòng mới
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-slide" [class.active]="activeSlideIndex() === 2"
+      style="background-image: url('assets/images/bg3.jpg')">
+      <div class="hero-overlay">
+        <div class="container">
+          <div class="hero-content">
+            <h1>TIN TỨC & THÔNG BÁO</h1>
+            <p>Cập nhật thông tin mới nhất từ thư viện</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" (click)="navigateToNotifications()">
+                <i class="fas fa-bell"></i> Xem thông báo
+              </button>
+              <button class="btn btn-outline" (click)="navigateToChat()">
+                <i class="fas fa-comments"></i> Hỗ trợ trực tuyến
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!-- Hero Navigation -->
-    <div class="hero-nav">
-        <button class="nav-dot" [class.active]="activeSlideIndex() === 0" (click)="setActiveSlide(0)"></button>
-        <button class="nav-dot" [class.active]="activeSlideIndex() === 1" (click)="setActiveSlide(1)"></button>
-        <button class="nav-dot" [class.active]="activeSlideIndex() === 2" (click)="setActiveSlide(2)"></button>
-    </div>
+  <!-- Hero Navigation -->
+  <div class="hero-nav">
+    <button class="nav-dot" [class.active]="activeSlideIndex() === 0" (click)="setActiveSlide(0)"></button>
+    <button class="nav-dot" [class.active]="activeSlideIndex() === 1" (click)="setActiveSlide(1)"></button>
+    <button class="nav-dot" [class.active]="activeSlideIndex() === 2" (click)="setActiveSlide(2)"></button>
+  </div>
 </section>
 
 <!-- Statistics Section -->
 <section class="statistics-section">
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-icon online">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ statistics()?.soLuongOnline || 0 }}</h3>
-                    <p>Đang truy cập</p>
-                    <small>Thành viên: {{ statistics()?.thanhVienOnline || 0 }} | Khách: {{ statistics()?.khachOnline ||
-                        0 }}</small>
-                </div>
-            </div>
-
-            <div class="stat-item">
-                <div class="stat-icon today">
-                    <i class="fas fa-calendar-day"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ statistics()?.trongNgay || 0 }}</h3>
-                    <p>Lượt truy cập hôm nay</p>
-                    <small>Hôm qua: {{ statistics()?.homQua || 0 }} lượt</small>
-                </div>
-            </div>
-
-            <div class="stat-item">
-                <div class="stat-icon month">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>{{ statistics()?.trongThang || 0 }}</h3>
-                    <p>Lượt truy cập tháng này</p>
-                    <small>Tổng cộng: {{ statistics()?.tongLuotTruyCap || 0 }} lượt</small>
-                </div>
-            </div>
-
-            <div class="stat-item">
-                <div class="stat-icon rooms">
-                    <i class="fas fa-door-open"></i>
-                </div>
-                <div class="stat-content">
-                    <h3>24</h3>
-                    <p>Phòng có sẵn</p>
-                    <small>Tổng: 30 phòng</small>
-                </div>
-            </div>
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-icon online">
+          <i class="fas fa-users"></i>
         </div>
+        <div class="stat-content">
+          <h3>{{ statistics()?.soLuongOnline || 0 }}</h3>
+          <p>Đang truy cập</p>
+          <small>Thành viên: {{ statistics()?.thanhVienOnline || 0 }} | Khách: {{ statistics()?.khachOnline ||
+            0 }}</small>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon today">
+          <i class="fas fa-calendar-day"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ statistics()?.trongNgay || 0 }}</h3>
+          <p>Lượt truy cập hôm nay</p>
+          <small>Hôm qua: {{ statistics()?.homQua || 0 }} lượt</small>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon month">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ statistics()?.trongThang || 0 }}</h3>
+          <p>Lượt truy cập tháng này</p>
+          <small>Tổng cộng: {{ statistics()?.tongLuotTruyCap || 0 }} lượt</small>
+        </div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon rooms">
+          <i class="fas fa-door-open"></i>
+        </div>
+        <div class="stat-content">
+          <h3>24</h3>
+          <p>Phòng có sẵn</p>
+          <small>Tổng: 30 phòng</small>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
 
 <!-- Current Booking Section (only show if user is logged in and has current bookings) -->
 @if (authService.isLoggedIn() && currentBookings().length > 0) {
 <section class="current-booking-section">
-    <div class="container">
-        <div class="section-header">
-            <h3>
-                <i class="fa-solid fa-building-circle-check text-primary"></i>
-                     PHÒNG ĐANG SỬ DỤNG
-            </h3>
+  <div class="container">
+    <div class="section-header">
+      <h3>
+        <i class="fa-solid fa-building-circle-check text-primary"></i>
+        PHÒNG ĐANG SỬ DỤNG
+      </h3>
 
-            <span class="booking-count">{{ currentBookings().length }} phòng</span>
-        </div>
-
-        <div class="current-bookings-grid">
-            @for (booking of currentBookings(); track booking.maDangKy) {
-            <div class="current-booking-card" [ngClass]="{ 'has-incident': booking.coBienBan }">
-
-                <!-- Violation Alert -->
-                @if (booking.coBienBan) {
-                <div class="violation-alert">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <strong>CẢNH BÁO VI PHẠM:</strong> Phòng này có {{ booking.soLuongBienBan }} biên bản vi phạm
-                    <button class="btn-violation-link" (click)="viewViolations(booking.maDangKy)">
-                        <i class="fas fa-external-link-alt"></i>
-                        Xem chi tiết
-                    </button>
-                </div>
-                }
-
-                <!-- Booking Info -->
-                <div class="booking-header">
-                    <h4 class="room-name">
-                        <i class="fas fa-door-open"></i>
-                        {{ booking.tenPhong }}
-                    </h4>
-                    <div class="booking-status">
-                        <span class="status-badge active">{{ booking.tenTrangThai }}</span>
-                    </div>
-                </div>
-
-                <div class="booking-details">
-                    <div class="detail-row">
-                        <i class="fas fa-clock"></i>
-                        <span>{{ formatDateTime(booking.thoiGianBatDau) }} - {{ formatDateTime(booking.thoiGianKetThuc)
-                            }}</span>
-                    </div>
-
-                    <div class="detail-row">
-                        <i class="fas fa-home"></i>
-                        <span>{{ booking.tenLoaiPhong }}</span>
-                    </div>
-
-                    @if (booking.soLuong) {
-                    <div class="detail-row">
-                        <i class="fas fa-users"></i>
-                        <span>{{ booking.soLuong }} người</span>
-                    </div>
-                    }
-
-
-
-                    <div class="detail-row time-remaining">
-                        <i class="fas fa-hourglass-half"></i>
-                        <span>Còn {{ booking.minutesRemaining }} phút</span>
-                    </div>
-                </div>
-
-                <div class="booking-actions">
-                    <button class="btn-action primary" (click)="navigateToBookingDetail(booking.maDangKy)">
-                        <i class="fas fa-eye"></i>
-                        Chi tiết
-                    </button>
-
-                    @if (booking.coBienBan) {
-                    <button class="btn-action warning" (click)="viewViolations(booking.maDangKy)">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Xem vi phạm
-                    </button>
-                    }
-
-                    @if (booking.canExtend) {
-                    <button class="btn-action secondary">
-                        <i class="fas fa-plus-circle"></i>
-                        Gia hạn
-                    </button>
-                    }
-                </div>
-            </div>
-            }
-        </div>
+      <span class="booking-count">{{ currentBookings().length }} phòng</span>
     </div>
+
+    <div class="current-bookings-grid">
+      @for (booking of currentBookings(); track booking.maDangKy) {
+      <div class="current-booking-card" [ngClass]="{ 'has-incident': booking.coBienBan }">
+
+        <!-- Violation Alert -->
+        @if (booking.coBienBan) {
+        <div class="violation-alert">
+          <i class="fas fa-exclamation-triangle"></i>
+          <strong>CẢNH BÁO VI PHẠM:</strong> Phòng này có {{ booking.soLuongBienBan }} biên bản vi phạm
+          <button class="btn-violation-link" (click)="viewViolations(booking.maDangKy)">
+            <i class="fas fa-external-link-alt"></i>
+            Xem chi tiết
+          </button>
+        </div>
+        }
+
+        <!-- Booking Info -->
+        <div class="booking-header">
+          <h4 class="room-name">
+            <i class="fas fa-door-open"></i>
+            {{ booking.tenPhong }}
+          </h4>
+          <div class="booking-status">
+            <span class="status-badge active">{{ booking.tenTrangThai }}</span>
+          </div>
+        </div>
+
+        <div class="booking-details">
+          <div class="detail-row">
+            <i class="fas fa-clock"></i>
+            <span>{{ formatDateTime(booking.thoiGianBatDau) }} - {{ formatDateTime(booking.thoiGianKetThuc)
+              }}</span>
+          </div>
+
+          <div class="detail-row">
+            <i class="fas fa-home"></i>
+            <span>{{ booking.tenLoaiPhong }}</span>
+          </div>
+
+          @if (booking.soLuong) {
+          <div class="detail-row">
+            <i class="fas fa-users"></i>
+            <span>{{ booking.soLuong }} người</span>
+          </div>
+          }
+
+
+
+          <div class="detail-row time-remaining">
+            <i class="fas fa-hourglass-half"></i>
+            <span>Còn {{ booking.minutesRemaining }} phút</span>
+          </div>
+        </div>
+
+        <div class="booking-actions">
+          <button class="btn-action primary" (click)="navigateToBookingDetail(booking.maDangKy)">
+            <i class="fas fa-eye"></i>
+            Chi tiết
+          </button>
+
+          @if (booking.coBienBan) {
+          <button class="btn-action warning" (click)="viewViolations(booking.maDangKy)">
+            <i class="fas fa-exclamation-triangle"></i>
+            Xem vi phạm
+          </button>
+          }
+
+          @if (booking.canExtend) {
+          <button class="btn-action secondary">
+            <i class="fas fa-plus-circle"></i>
+            Gia hạn
+          </button>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
 </section>
 }
 
@@ -232,60 +232,72 @@
 <section class="main-content">
   <div class="container">
     <div class="content-grid-horizontal">
-      
+
       <!-- Tin tức sự kiện -->
       <div class="section-card news-section">
         <div class="section-header">
           <h3><i class="fas fa-fire text-danger"></i> TIN TỨC SỰ KIỆN</h3>
+          <!-- Navigation Controls -->
+          @if (newsList().length > 1) {
+          <div class="news-navigation">
+            <button class="nav-btn prev" (click)="previousNews()" [disabled]="currentNewsIndex() === 0">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <span class="news-counter">{{ currentNewsIndex() + 1 }}/{{ newsList().length }}</span>
+            <button class="nav-btn next" (click)="nextNews()" [disabled]="currentNewsIndex() === newsList().length - 1">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+          }
         </div>
         <div class="news-carousel">
           @if (currentNews()) {
-            <div class="news-item featured">
-              <div class="news-image">
-                <img [src]="getNewsImage(currentNews()!)" [alt]="currentNews()!.TITLE"
-                  onerror="this.src='https://via.placeholder.com/400x250/2196F3/FFFFFF?text=Tin+tức+HUIT'">
-                @if (isHotNews(currentNews()!)) {
-                  <div class="news-badge">HOT</div>
-                }
-                <div class="news-category-badge">{{ getNewsCategory(currentNews()!) }}</div>
-              </div>
-              <div class="news-content">
-                <h4 [title]="currentNews()!.TITLE">{{ currentNews()!.TITLE }}</h4>
-                <p>{{ getNewsExcerpt(currentNews()!) }}</p>
-                <div class="news-meta">
-                  <span class="news-date">
-                    <i class="fas fa-calendar"></i>
-                    {{ formatNewsDate(currentNews()!.PUBLISHDATE) }}
-                  </span>
-                  <span class="news-views">
-                    <i class="fas fa-eye"></i>
-                    {{ currentNews()!.VIEWCOUNT }} lượt xem
-                  </span>
-                </div>
-                @if (currentNews()!.STRAUTHOR_NAME) {
-                  <div class="news-author">
-                    <i class="fas fa-user"></i>
-                    {{ currentNews()!.STRAUTHOR_NAME }}
-                  </div>
-                }
-                
-              </div>
+          <div class="news-item featured">
+            <div class="news-image">
+              <img [src]="getNewsImage(currentNews()!)" [alt]="currentNews()!.TITLE"
+                onerror="this.src='https://via.placeholder.com/400x250/2196F3/FFFFFF?text=Tin+tức+HUIT'">
+              @if (isHotNews(currentNews()!)) {
+              <div class="news-badge">HOT</div>
+              }
+              <div class="news-category-badge">{{ getNewsCategory(currentNews()!) }}</div>
             </div>
+            <div class="news-content">
+              <h4 [title]="currentNews()!.TITLE">{{ currentNews()!.TITLE }}</h4>
+              <p>{{ getNewsExcerpt(currentNews()!) }}</p>
+              <div class="news-meta">
+                <span class="news-date">
+                  <i class="fas fa-calendar"></i>
+                  {{ formatNewsDate(currentNews()!.PUBLISHDATE) }}
+                </span>
+                <span class="news-views">
+                  <i class="fas fa-eye"></i>
+                  {{ currentNews()!.VIEWCOUNT }} lượt xem
+                </span>
+              </div>
+              @if (currentNews()!.STRAUTHOR_NAME) {
+              <div class="news-author">
+                <i class="fas fa-user"></i>
+                {{ currentNews()!.STRAUTHOR_NAME }}
+              </div>
+              }
+
+            </div>
+          </div>
           } @else {
-            <div class="news-loading">
-              @if (isLoadingNews()) {
-                <div class="loading-spinner">
-                  <i class="fas fa-spinner fa-spin"></i>
-                  <p>Đang tải tin tức...</p>
-                </div>
-              }
-              @if (!isLoadingNews() && newsList().length === 0) {
-                <div class="no-news">
-                  <i class="fas fa-newspaper"></i>
-                  <p>Hiện tại chưa có tin tức mới</p>
-                </div>
-              }
+          <div class="news-loading">
+            @if (isLoadingNews()) {
+            <div class="loading-spinner">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>Đang tải tin tức...</p>
             </div>
+            }
+            @if (!isLoadingNews() && newsList().length === 0) {
+            <div class="no-news">
+              <i class="fas fa-newspaper"></i>
+              <p>Hiện tại chưa có tin tức mới</p>
+            </div>
+            }
+          </div>
           }
         </div>
       </div>
@@ -297,23 +309,31 @@
         </div>
         <div class="announcements-list">
           @for (notification of notifications().slice(0, 5); track notification.maThongBao; let i = $index) {
-            <div class="announcement-item" (click)="navigateToNotificationDetail(notification.maThongBao)">
-              <div class="announcement-icon"><i class="fas fa-bell"></i></div>
-              <div class="announcement-content">
-                <h5>{{ notification.tieuDe }}</h5>
-                <p>{{ truncateText(notification.noiDung, 100) }}</p>
-                <span class="announcement-date">{{ formatDate(notification.ngayTao) }}</span>
-              </div>
-              <div class="announcement-arrow"><i class="fas fa-chevron-right"></i></div>
+          <div class="announcement-item" (click)="navigateToNotificationDetail(notification.maThongBao)">
+            <div class="announcement-icon"><i class="fas fa-bell"></i></div>
+            <div class="announcement-content">
+              <h5>{{ notification.tieuDe }}</h5>
+              <p>{{ truncateText(notification.noiDung, 100) }}</p>
+              <span class="announcement-date">{{ formatDate(notification.ngayTao) }}</span>
             </div>
+            <div class="announcement-arrow"><i class="fas fa-chevron-right"></i></div>
+          </div>
           }
           @if (notifications().length === 0) {
-            <div class="no-announcements">
-              <i class="fas fa-info-circle"></i>
-              <p>Hiện tại chưa có thông báo mới</p>
-            </div>
+          <div class="no-announcements">
+            <i class="fas fa-info-circle"></i>
+            <p>Hiện tại chưa có thông báo mới</p>
+          </div>
           }
         </div>
+        @if (notifications().length > 0) {
+        <div class="view-all-section">
+          <button class="view-all-btn" (click)="navigateToNotifications()">
+            <i class="fas fa-list"></i>
+            Xem tất cả thông báo
+          </button>
+        </div>
+        }
       </div>
 
       <!-- Truy cập nhanh -->
@@ -324,27 +344,45 @@
         <div class="quick-actions">
           <div class="action-item" (click)="navigateToRoomSearch()">
             <div class="action-icon search"><i class="fas fa-search"></i></div>
-            <div class="action-content"><h5>Tìm kiếm phòng</h5><p>Tìm phòng phù hợp với nhu cầu</p></div>
+            <div class="action-content">
+              <h5>Tìm kiếm phòng</h5>
+              <p>Tìm phòng phù hợp với nhu cầu</p>
+            </div>
           </div>
           <div class="action-item" (click)="navigateToBooking()">
             <div class="action-icon booking"><i class="fas fa-calendar-plus"></i></div>
-            <div class="action-content"><h5>Đặt phòng</h5><p>Đăng ký sử dụng phòng học</p></div>
+            <div class="action-content">
+              <h5>Đặt phòng</h5>
+              <p>Đăng ký sử dụng phòng học</p>
+            </div>
           </div>
           <div class="action-item" (click)="navigateToProfile()">
             <div class="action-icon profile"><i class="fas fa-user"></i></div>
-            <div class="action-content"><h5>Hồ sơ cá nhân</h5><p>Quản lý thông tin tài khoản</p></div>
+            <div class="action-content">
+              <h5>Hồ sơ cá nhân</h5>
+              <p>Quản lý thông tin tài khoản</p>
+            </div>
           </div>
           <div class="action-item" (click)="navigateToHistory()">
             <div class="action-icon history"><i class="fas fa-history"></i></div>
-            <div class="action-content"><h5>Lịch sử đặt phòng</h5><p>Xem các lần đặt phòng trước</p></div>
+            <div class="action-content">
+              <h5>Lịch sử đặt phòng</h5>
+              <p>Xem các lần đặt phòng trước</p>
+            </div>
           </div>
           <div class="action-item" (click)="navigateToChat()">
             <div class="action-icon support"><i class="fas fa-headset"></i></div>
-            <div class="action-content"><h5>Hỗ trợ trực tuyến</h5><p>Chat với trợ lý thư viện</p></div>
+            <div class="action-content">
+              <h5>Hỗ trợ trực tuyến</h5>
+              <p>Chat với trợ lý thư viện</p>
+            </div>
           </div>
           <div class="action-item" (click)="navigateToRegulations()">
             <div class="action-icon rules"><i class="fas fa-file-contract"></i></div>
-            <div class="action-content"><h5>Nội quy thư viện</h5><p>Quy định sử dụng dịch vụ</p></div>
+            <div class="action-content">
+              <h5>Nội quy thư viện</h5>
+              <p>Quy định sử dụng dịch vụ</p>
+            </div>
           </div>
         </div>
       </div>
@@ -353,50 +391,50 @@
   </div>
 </section>
 <div class="history-page">
-    <footer class="footer-links">
-        <div class="container">
-            <div class="links-grid">
+  <footer class="footer-links">
+    <div class="container">
+      <div class="links-grid">
 
-                <div class="link-column"> 
-                    <h4>TRUNG TÂM THÔNG TIN - THƯ VIỆN</h4>
-                    <p>ĐẠI HỌC CÔNG THƯƠNG TP.HCM</p>
-                    <div class="contact-info">
-                        <p><i class="fas fa-map-marker-alt"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</p>
-                        <p><i class="fas fa-phone"></i> ĐT: (028) 3816 1673 - 137</p>
-                        <p><i class="fas fa-envelope"></i> Email: thuvien@huit.edu.vn</p>
-                        <p><i class="fas fa-globe"></i> Website: MT: 1F.3627</p>
-                    </div>
-                </div>
-
-                <div class="link-column"> 
-                    <h5>THỐNG KÊ TRUY CẬP</h5>
-                    <div class="stats-info">
-                        <p>Tổng lượt truy cập: <strong>{{ statistics()?.tongLuotTruyCap || 0 }}</strong></p>
-                        <p>Số lượt truy cập hôm nay: <strong>{{ statistics()?.trongNgay || 0 }}</strong></p>
-                        <p>Thành viên online: <strong>{{ statistics()?.thanhVienOnline || 0 }}</strong></p>
-                        <p>Khách online: <strong>{{ statistics()?.khachOnline || 0 }}</strong></p>
-                    </div>
-                </div>
-
-                <div class="link-column"> 
-                    <h5>LIÊN KẾT</h5>
-                    <div class="external-links">
-                        <a href="https://huit.edu.vn" target="_blank"><i class="fas fa-external-link-alt"></i> Website HUIT</a>
-                        <a href="#" class="facebook-link"><i class="fab fa-facebook"></i> Facebook</a>
-                        <a href="#" class="youtube-link"><i class="fab fa-youtube"></i> YouTube</a>
-                    </div>
-                    <div class="help-section">
-                        <h6>Hỗ trợ gặp lỗi?</h6>
-                        <a href="#" class="help-link" (click)="navigateToChat()">
-                            <i class="fas fa-question-circle"></i> Trợ giúp
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-            <div class="footer-bottom text-center"> 
-                <p>&copy; 2025 TRUNG TÂM THÔNG TIN - THƯ VIỆN | Đại học Công Thương TP.HCM. All rights reserved.</p>
-            </div>
+        <div class="link-column">
+          <h4>TRUNG TÂM THÔNG TIN - THƯ VIỆN</h4>
+          <p>ĐẠI HỌC CÔNG THƯƠNG TP.HCM</p>
+          <div class="contact-info">
+            <p><i class="fas fa-map-marker-alt"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</p>
+            <p><i class="fas fa-phone"></i> ĐT: (028) 3816 1673 - 137</p>
+            <p><i class="fas fa-envelope"></i> Email: thuvien@huit.edu.vn</p>
+            <p><i class="fas fa-globe"></i> Website: MT: 1F.3627</p>
+          </div>
         </div>
-    </footer>
+
+        <div class="link-column">
+          <h5>THỐNG KÊ TRUY CẬP</h5>
+          <div class="stats-info">
+            <p>Tổng lượt truy cập: <strong>{{ statistics()?.tongLuotTruyCap || 0 }}</strong></p>
+            <p>Số lượt truy cập hôm nay: <strong>{{ statistics()?.trongNgay || 0 }}</strong></p>
+            <p>Thành viên online: <strong>{{ statistics()?.thanhVienOnline || 0 }}</strong></p>
+            <p>Khách online: <strong>{{ statistics()?.khachOnline || 0 }}</strong></p>
+          </div>
+        </div>
+
+        <div class="link-column">
+          <h5>LIÊN KẾT</h5>
+          <div class="external-links">
+            <a href="https://huit.edu.vn" target="_blank"><i class="fas fa-external-link-alt"></i> Website HUIT</a>
+            <a href="#" class="facebook-link"><i class="fab fa-facebook"></i> Facebook</a>
+            <a href="#" class="youtube-link"><i class="fab fa-youtube"></i> YouTube</a>
+          </div>
+          <div class="help-section">
+            <h6>Hỗ trợ gặp lỗi?</h6>
+            <a href="#" class="help-link" (click)="navigateToChat()">
+              <i class="fas fa-question-circle"></i> Trợ giúp
+            </a>
+          </div>
+        </div>
+
+      </div>
+      <div class="footer-bottom text-center">
+        <p>&copy; 2025 TRUNG TÂM THÔNG TIN - THƯ VIỆN | Đại học Công Thương TP.HCM. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 </div>

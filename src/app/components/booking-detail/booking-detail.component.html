@@ -1,274 +1,308 @@
-<!-- Trang Chi Tiết Phiếu Đặt Phòng -->
-@if (!loading() && bookingDetail()) {
-<div class="chi-tiet-phieu">
-    <!-- Đầu trang -->
-    <div class="dau-trang">
-        <div class="noi-dung-dau">
-            <div class="duong-dan">
-                <button class="nut-quay-lai" (click)="router.navigate(['/bookings'])">
-                    <i class="material-icons">arrow_back</i>
-                    Danh sách phiếu đặt
-                </button>
-                <span class="phan-cach">/</span>
-                <span class="trang-hien-tai">Chi tiết phiếu #{{ bookingDetail()!.maDangKy }}</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Nội dung chính -->
-    <div class="noi-dung-chinh">
-        <div class="the-chi-tiet">
-            <!-- Đầu trạng thái -->
-            <div class="dau-trang-thai" [ngClass]="getStatusClass(bookingDetail()!.maTrangThai)">
-                <div class="thong-tin-trang-thai">
-                    <div class="bieu-tuong-trang-thai">
-                        <i class="material-icons">{{ getStatusIcon(bookingDetail()!.maTrangThai) }}</i>
-                    </div>
-                    <div class="chu-trang-thai">
-                        <h1>{{ bookingDetail()!.tenTrangThai }}</h1>
-                        <p>Phiếu đặt phòng #{{ bookingDetail()!.maDangKy }}</p>
-                    </div>
-                </div>
-                <div class="ngay-tao">
-                    <span>Ngày tạo: {{ formatDate(bookingDetail()!.ngayMuon) }}</span>
-                </div>
-            </div>
-
-            <!-- Thông tin phòng -->
-            <div class="muc-chi-tiet">
-                <h2 class="tieu-de-muc">
-                    <i class="material-icons">meeting_room</i>
-                    Thông tin phòng
-                </h2>
-                <div class="luoi-thong-tin">
-                    <div class="muc-thong-tin">
-                        <label>Tên phòng</label>
-                        <span class="gia-tri">{{ bookingDetail()!.tenPhong }}</span>
-                    </div>
-                    <div class="muc-thong-tin">
-                        <label>Loại phòng</label>
-                        <span class="gia-tri">{{ bookingDetail()!.tenLoaiPhong }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Thời gian sử dụng -->
-            <div class="muc-chi-tiet">
-                <h2 class="tieu-de-muc">
-                    <i class="material-icons">schedule</i>
-                    Thời gian sử dụng
-                </h2>
-                <div class="thong-tin-thoi-gian">
-                    <div class="muc-thoi-gian">
-                        <div class="bieu-tuong-thoi-gian bat-dau">
-                            <i class="material-icons">play_arrow</i>
-                        </div>
-                        <div class="chi-tiet-thoi-gian">
-                            <label>Bắt đầu</label>
-                            <span class="gia-tri-thoi-gian">{{ formatDateTime(bookingDetail()!.thoiGianBatDau) }}</span>
-                        </div>
-                    </div>
-                    <div class="phan-chia-thoi-gian">
-                        <i class="material-icons">arrow_forward</i>
-                    </div>
-                    <div class="muc-thoi-gian">
-                        <div class="bieu-tuong-thoi-gian ket-thuc">
-                            <i class="material-icons">stop</i>
-                        </div>
-                        <div class="chi-tiet-thoi-gian">
-                            <label>Kết thúc</label>
-                            <span class="gia-tri-thoi-gian">{{ formatDateTime(bookingDetail()!.thoiGianKetThuc)
-                                }}</span>
-                        </div>
-                    </div>
+<!-- Modern Booking Detail Page -->
+<div class="modern-booking-detail">
+    <!-- Header Section -->
+    <div class="detail-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb">
+                    <button class="back-btn" (click)="router.navigate(['/booking/history'])">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Lịch sử mượn phòng</span>
+                    </button>
+                    <i class="fas fa-chevron-right separator"></i>
+                    <span class="current-page">Chi tiết đặt phòng</span>
                 </div>
 
-                <!-- Thời gian thực tế -->
-                @if (bookingDetail()!.gioBatDauThucTe || bookingDetail()!.gioKetThucThucTe) {
-                <div class="thoi-gian-thuc-te">
-                    <h3>Thời gian thực tế</h3>
-                    <div class="thong-tin-thuc-te">
-                        @if (bookingDetail()!.gioBatDauThucTe) {
-                        <div class="muc-thuc-te">
-                            <label>Bắt đầu thực tế</label>
-                            <span>{{ formatDateTime(bookingDetail()!.gioBatDauThucTe!) }}</span>
+                @if (!loading() && bookingDetail()) {
+                <div class="header-info">
+                    <div class="booking-title">
+                        <h1>{{ bookingDetail()!.tenPhong }}</h1>
+                        <span class="booking-id">#{{ bookingDetail()!.maDangKy }}</span>
+                    </div>
+                    <div class="status-section">
+                        <div class="status-badge" [ngClass]="getStatusClass(bookingDetail()!.maTrangThai)">
+                            <i class="fas" [ngClass]="getStatusIcon(bookingDetail()!.maTrangThai)"></i>
+                            <span>{{ bookingDetail()!.tenTrangThai }}</span>
                         </div>
-                        }
-                        @if (bookingDetail()!.gioKetThucThucTe) {
-                        <div class="muc-thuc-te">
-                            <label>Kết thúc thực tế</label>
-                            <span>{{ formatDateTime(bookingDetail()!.gioKetThucThucTe!) }}</span>
+                        @if (hasViolations()) {
+                        <div class="violation-indicator">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>{{ violations().length }} vi phạm</span>
                         </div>
                         }
                     </div>
                 </div>
                 }
             </div>
+        </div>
+    </div>
 
-            <!-- Chi tiết đặt phòng -->
-            <div class="muc-chi-tiet">
-                <h2 class="tieu-de-muc">
-                    <i class="material-icons">description</i>
-                    Chi tiết đặt phòng
-                </h2>
-                <div class="luoi-thong-tin">
-                    @if (bookingDetail()!.lyDo) {
-                    <div class="muc-thong-tin">
-                        <label>Mục đích</label>
-                        <span class="gia-tri">{{ bookingDetail()!.lyDo }}</span>
-                    </div>
-                    }
-                    @if (bookingDetail()!.soLuong) {
-                    <div class="muc-thong-tin">
-                        <label>Số lượng người</label>
-                        <span class="gia-tri">{{ bookingDetail()!.soLuong }} người</span>
-                    </div>
-                    }
-                    @if (bookingDetail()!.ghiChu) {
-                    <div class="muc-thong-tin full-width">
-                        <label>Ghi chú</label>
-                        <span class="gia-tri">{{ bookingDetail()!.ghiChu }}</span>
-                    </div>
-                    }
-                </div>
-            </div>
-
-            <!-- Thông tin duyệt -->
-            @if (bookingDetail()!.ngayDuyet) {
-            <div class="muc-chi-tiet">
-                <h2 class="tieu-de-muc">
-                    <i class="material-icons">verified</i>
-                    Thông tin duyệt
-                </h2>
-                <div class="luoi-thong-tin">
-                    <div class="muc-thong-tin">
-                        <label>Ngày duyệt</label>
-                        <span class="gia-tri">{{ formatDateTime(bookingDetail()!.ngayDuyet!) }}</span>
-                    </div>
-                </div>
-            </div>
-            }
-
-            <!-- Tình trạng phòng -->
-            @if (bookingDetail()!.tinhTrangPhong || bookingDetail()!.ghiChuSuDung) {
-            <div class="muc-chi-tiet">
-                <h2 class="tieu-de-muc">
-                    <i class="material-icons">fact_check</i>
-                    Tình trạng phòng
-                </h2>
-                <div class="luoi-thong-tin">
-                    @if (bookingDetail()!.tinhTrangPhong) {
-                    <div class="muc-thong-tin">
-                        <label>Tình trạng</label>
-                        <span class="gia-tri">{{ bookingDetail()!.tinhTrangPhong }}</span>
-                    </div>
-                    }
-                    @if (bookingDetail()!.ghiChuSuDung) {
-                    <div class="muc-thong-tin full-width">
-                        <label>Ghi chú sử dụng</label>
-                        <span class="gia-tri">{{ bookingDetail()!.ghiChuSuDung }}</span>
-                    </div>
-                    }
-                </div>
-            </div>
-            }
-
-            <!-- Biên bản vi phạm -->
-            @if (violations().length > 0) {
-            <div class="muc-chi-tiet">
-                <h2 class="tieu-de-muc violation-header">
-                    <i class="material-icons">warning</i>
-                    Biên bản vi phạm ({{ violations().length }})
-                </h2>
-                <div class="violation-list">
-                    @for (violation of violations(); track violation.maViPham) {
-                    <div class="violation-item" (click)="viewViolationDetail(violation.maViPham)">
-                        <div class="violation-icon">
-                            <i class="material-icons" [style.color]="getViolationStatusColor(violation.trangThaiXuLy)">
-                                {{ getViolationStatusIcon(violation.trangThaiXuLy) }}
-                            </i>
+    <!-- Main Content -->
+    @if (!loading() && bookingDetail()) {
+    <div class="detail-content">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Room Information Card -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-door-open"></i>
+                            <h3>Thông tin phòng</h3>
                         </div>
-                        <div class="violation-content">
-                            <h4>{{ violation.tenViPham }}</h4>
-                            @if (violation.moTaNgan) {
-                            <p class="violation-note">{{ violation.moTaNgan }}</p>
-                            }
-                            <div class="violation-meta">
-                                <span class="violation-date">{{ formatViolationDate(violation.ngayLap) }}</span>
-                                <span class="violation-status"
-                                    [style.color]="getViolationStatusColor(violation.trangThaiXuLy)">
-                                    {{ violation.trangThaiXuLy }}
-                                </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tên phòng</label>
+                                <span class="value primary">{{ bookingDetail()!.tenPhong }}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Loại phòng</label>
+                                <span class="value">{{ bookingDetail()!.tenLoaiPhong }}</span>
                             </div>
                         </div>
-                        <div class="violation-action">
-                            <i class="material-icons">chevron_right</i>
+                    </div>
+                </div>
+
+                <!-- Schedule Information Card -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>Thời gian sử dụng</h3>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <div class="time-schedule">
+                            <div class="time-block start">
+                                <div class="time-icon">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="time-info">
+                                    <label>Bắt đầu</label>
+                                    <span class="time-value">{{ formatDateTime(bookingDetail()!.thoiGianBatDau)
+                                        }}</span>
+                                </div>
+                            </div>
+                            <div class="time-separator">
+                                <i class="fas fa-long-arrow-alt-right"></i>
+                            </div>
+                            <div class="time-block end">
+                                <div class="time-icon">
+                                    <i class="fas fa-stop"></i>
+                                </div>
+                                <div class="time-info">
+                                    <label>Kết thúc</label>
+                                    <span class="time-value">{{ formatDateTime(bookingDetail()!.thoiGianKetThuc)
+                                        }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (bookingDetail()!.gioBatDauThucTe || bookingDetail()!.gioKetThucThucTe) {
+                        <div class="actual-time">
+                            <h4>Thời gian thực tế</h4>
+                            <div class="actual-info">
+                                @if (bookingDetail()!.gioBatDauThucTe) {
+                                <div class="actual-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Bắt đầu: {{ formatDateTime(bookingDetail()!.gioBatDauThucTe!) }}</span>
+                                </div>
+                                }
+                                @if (bookingDetail()!.gioKetThucThucTe) {
+                                <div class="actual-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Kết thúc: {{ formatDateTime(bookingDetail()!.gioKetThucThucTe!) }}</span>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Booking Details Card -->
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h3>Chi tiết đặt phòng</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-grid">
+                            @if (bookingDetail()!.lyDo) {
+                            <div class="info-item">
+                                <label>Mục đích</label>
+                                <span class="value">{{ bookingDetail()!.lyDo }}</span>
+                            </div>
+                            }
+                            @if (bookingDetail()!.soLuong) {
+                            <div class="info-item">
+                                <label>Số lượng người</label>
+                                <span class="value">{{ bookingDetail()!.soLuong }} người</span>
+                            </div>
+                            }
+                            @if (bookingDetail()!.ngayDuyet) {
+                            <div class="info-item">
+                                <label>Ngày duyệt</label>
+                                <span class="value">{{ formatDateTime(bookingDetail()!.ngayDuyet!) }}</span>
+                            </div>
+                            }
+                            <div class="info-item">
+                                <label>Ngày tạo</label>
+                                <span class="value">{{ formatDate(bookingDetail()!.ngayMuon) }}</span>
+                            </div>
+                        </div>
+
+                        @if (bookingDetail()!.ghiChu) {
+                        <div class="note-section">
+                            <label>Ghi chú</label>
+                            <p class="note-content">{{ bookingDetail()!.ghiChu }}</p>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Room Condition Card -->
+                @if (bookingDetail()!.tinhTrangPhong || bookingDetail()!.ghiChuSuDung) {
+                <div class="detail-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-clipboard-check"></i>
+                            <h3>Tình trạng phòng</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (bookingDetail()!.tinhTrangPhong) {
+                        <div class="room-status">
+                            <label>Tình trạng</label>
+                            <span class="status-value" [class]="getRoomStatusClass(bookingDetail()!.tinhTrangPhong!)">{{
+                                bookingDetail()!.tinhTrangPhong }}</span>
+                        </div>
+                        }
+                        @if (bookingDetail()!.ghiChuSuDung) {
+                        <div class="usage-note">
+                            <label>Ghi chú sử dụng</label>
+                            <p class="note-content">{{ bookingDetail()!.ghiChuSuDung }}</p>
+                        </div>
+                        }
+                    </div>
+                </div>
+                }
+
+                <!-- Violations Card -->
+                @if (violations().length > 0) {
+                <div class="detail-card violation-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Biên bản vi phạm ({{ violations().length }})</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="violation-list">
+                            @for (violation of violations(); track violation.maViPham) {
+                            <div class="violation-item" (click)="viewViolationDetail(violation.maViPham)">
+                                <div class="violation-icon" [class]="getViolationStatusClass(violation.trangThaiXuLy)">
+                                    <i class="fas" [ngClass]="getViolationStatusIcon(violation.trangThaiXuLy)"></i>
+                                </div>
+                                <div class="violation-content">
+                                    <h5>{{ violation.tenViPham }}</h5>
+                                    @if (violation.moTaNgan) {
+                                    <p class="violation-description">{{ violation.moTaNgan }}</p>
+                                    }
+                                    <div class="violation-meta">
+                                        <span class="violation-date">
+                                            <i class="fas fa-calendar"></i>
+                                            {{ formatViolationDate(violation.ngayLap) }}
+                                        </span>
+                                        <span class="violation-status"
+                                            [class]="getViolationStatusClass(violation.trangThaiXuLy)">
+                                            {{ violation.trangThaiXuLy }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="violation-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            }
+                        </div>
+
+                        @if (loadingViolations()) {
+                        <div class="loading-violations">
+                            <div class="spinner"></div>
+                            <span>Đang tải biên bản...</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+
+            <!-- Action Buttons -->
+            @if (canShowActions()) {
+            <div class="action-section">
+                <div class="action-buttons">
+                    <button class="action-btn secondary" (click)="router.navigate(['/booking/history'])">
+                        <i class="fas fa-list"></i>
+                        <span>Về danh sách</span>
+                    </button>
+                    @if (canExtend()) {
+                    <button class="action-btn primary">
+                        <i class="fas fa-clock"></i>
+                        <span>Gia hạn</span>
+                    </button>
+                    }
+                    @if (canCancel()) {
+                    <button class="action-btn danger">
+                        <i class="fas fa-times"></i>
+                        <span>Hủy đặt phòng</span>
+                    </button>
                     }
                 </div>
-                @if (loadingViolations()) {
-                <div class="violation-loading">
-                    <div class="vong-quay-nho"></div>
-                    <span>Đang tải biên bản...</span>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+    <!-- Loading State -->
+    @if (loading()) {
+    <div class="loading-state">
+        <div class="container">
+            <div class="loading-content">
+                <div class="spinner large"></div>
+                <h3>Đang tải chi tiết đặt phòng...</h3>
+                <p>Vui lòng đợi trong giây lát</p>
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+    <div class="error-state">
+        <div class="container">
+            <div class="error-content">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
-                }
+                <h3>Không thể tải chi tiết</h3>
+                <p>{{ error() }}</p>
+                <div class="error-actions">
+                    <button class="action-btn secondary" (click)="loadBookingDetail()">
+                        <i class="fas fa-refresh"></i>
+                        <span>Thử lại</span>
+                    </button>
+                    <button class="action-btn primary" (click)="router.navigate(['/booking/history'])">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Quay lại</span>
+                    </button>
+                </div>
             </div>
-            }
-
-            <!-- Các hành động -->
-            @if (canShowActions()) {
-            <div class="cac-hanh-dong">
-                <button class="nut-hanh-dong ke-ngoai" (click)="router.navigate(['/bookings'])">
-                    <i class="material-icons">list</i>
-                    Về danh sách
-                </button>
-                @if (canExtend()) {
-                <button class="nut-hanh-dong chinh">
-                    <i class="material-icons">access_time</i>
-                    Gia hạn
-                </button>
-                }
-                @if (canCancel()) {
-                <button class="nut-hanh-dong nguy-hiem">
-                    <i class="material-icons">cancel</i>
-                    Hủy đặt phòng
-                </button>
-                }
-            </div>
-            }
         </div>
     </div>
+    }
 </div>
-}
-
-<!-- Trạng thái đang tải -->
-@if (loading()) {
-<div class="trang-thai-tai">
-    <div class="noi-dung-tai">
-        <div class="vong-quay"></div>
-        <p>Đang tải chi tiết phiếu đặt phòng...</p>
-    </div>
-</div>
-}
-
-<!-- Trạng thái lỗi -->
-@if (error()) {
-<div class="trang-thai-loi">
-    <div class="noi-dung-loi">
-        <i class="material-icons">error</i>
-        <h2>Không thể tải chi tiết</h2>
-        <p>{{ error() }}</p>
-        <div class="hanh-dong-loi">
-            <button class="nut-hanh-dong ke-ngoai" (click)="loadBookingDetail()">
-                <i class="material-icons">refresh</i>
-                Thử lại
-            </button>
-            <button class="nut-hanh-dong chinh" (click)="router.navigate(['/bookings'])">
-                <i class="material-icons">list</i>
-                Về danh sách
-            </button>
-        </div>
-    </div>
-</div>
-}

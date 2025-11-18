@@ -94,38 +94,8 @@ export class BookingDetailComponent implements OnInit {
   }
 
   viewViolationDetail(maViPham: number): void {
-    // Navigate to violation detail or open modal
-    this.violationService.getViolationDetail(maViPham).subscribe({
-      next: (response: ViolationDetailResponse) => {
-        if (response.success) {
-          // Could open a modal or navigate to detail page
-          console.log('Violation detail:', response.data);
-          // For now, you could implement a modal or alert
-          this.showViolationDetail(response.data);
-        }
-      },
-      error: (err) => {
-        console.error('Error loading violation detail:', err);
-      },
-    });
-  }
-
-  private showViolationDetail(violation: any): void {
-    // Better UI for violation detail - could be replaced with a proper modal
-    const formattedDetails = `
-📋 BIÊN BẢN VI PHẠM
-
-🚫 Loại vi phạm: ${violation.tenViPham}
-📝 Mô tả: ${violation.moTa}
-📅 Thời gian vi phạm: ${this.violationService.formatViolationDate(violation.thoiGianViPham)}
-📋 Ngày lập biên bản: ${this.violationService.formatViolationDate(violation.ngayLap)}
-👤 Người lập: ${violation.nguoiLapBienBan}
-📊 Trạng thái xử lý: ${violation.trangThaiXuLy}
-🏠 Phòng: ${violation.tenPhong}
-💭 Ghi chú: ${violation.ghiChu || 'Không có ghi chú'}
-    `.trim();
-    
-    alert(formattedDetails);
+    // Navigate to violation detail page
+    this.router.navigate(['/violation/detail', maViPham]);
   }
 
   getViolationStatusColor = this.violationService.getViolationStatusColor;
@@ -143,6 +113,7 @@ export class BookingDetailComponent implements OnInit {
       case 4:
         return 'status-using';
       case 5:
+      case 6:
         return 'status-completed';
       default:
         return 'status-default';
@@ -152,17 +123,51 @@ export class BookingDetailComponent implements OnInit {
   getStatusIcon(status: number): string {
     switch (status) {
       case 1:
-        return 'schedule';
+        return 'fa-clock';
       case 2:
-        return 'check_circle';
+        return 'fa-check-circle';
       case 3:
-        return 'cancel';
+        return 'fa-times-circle';
       case 4:
-        return 'play_circle';
+        return 'fa-play-circle';
       case 5:
-        return 'done_all';
+      case 6:
+        return 'fa-flag-checkered';
       default:
-        return 'help';
+        return 'fa-question-circle';
+    }
+  }
+
+  hasViolations(): boolean {
+    return this.violations().length > 0;
+  }
+
+  getRoomStatusClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'tốt':
+      case 'bình thường':
+        return 'status-good';
+      case 'đang sử dụng':
+        return 'status-using';
+      case 'đã trả':
+        return 'status-returned';
+      case 'có vấn đề':
+        return 'status-issue';
+      default:
+        return 'status-neutral';
+    }
+  }
+
+  getViolationStatusClass(status: string): string {
+    switch (status.toLowerCase()) {
+      case 'chưa xử lý':
+        return 'status-pending';
+      case 'đang xử lý':
+        return 'status-processing';
+      case 'đã xử lý':
+        return 'status-resolved';
+      default:
+        return 'status-unknown';
     }
   }
 

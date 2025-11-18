@@ -60,34 +60,8 @@ export class ViolationListComponent implements OnInit {
   }
 
   viewViolationDetail(maViPham: number): void {
-    this.violationService.getViolationDetail(maViPham).subscribe({
-      next: (response: ViolationDetailResponse) => {
-        if (response.success) {
-          this.showViolationDetail(response.data);
-        }
-      },
-      error: (err) => {
-        console.error('Error loading violation detail:', err);
-        alert('Không thể tải chi tiết vi phạm');
-      },
-    });
-  }
-
-  private showViolationDetail(violation: any): void {
-    const formattedDetails = `
-📋 BIÊN BẢN VI PHẠM CHI TIẾT
-
-🚫 Loại vi phạm: ${violation.tenViPham}
-📝 Mô tả: ${violation.moTa}
-📅 Thời gian vi phạm: ${this.violationService.formatViolationDate(violation.thoiGianViPham)}
-📋 Ngày lập biên bản: ${this.violationService.formatViolationDate(violation.ngayLap)}
-👤 Người lập: ${violation.nguoiLapBienBan}
-📊 Trạng thái xử lý: ${violation.trangThaiXuLy}
-🏠 Phòng: ${violation.tenPhong}
-💭 Ghi chú: ${violation.ghiChu || 'Không có ghi chú'}
-    `.trim();
-
-    alert(formattedDetails);
+    // Navigate to violation detail page
+    this.router.navigate(['/violation/detail', maViPham]);
   }
 
   goBack(): void {

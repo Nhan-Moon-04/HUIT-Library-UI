@@ -1034,90 +1034,93 @@
 
 /* Container căn giữa và căn chữ lề trái */
 .footer-links .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: left; /* Đảm bảo chữ căn lề trái */
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: left; /* Đảm bảo chữ căn lề trái */
 }
 
 /* KHỐI CÁC CỘT (Links Grid) */
 .links-grid {
-    display: flex;
-    gap: 80px; /* Tăng khoảng cách giữa các cột (ví dụ 80px, có thể điều chỉnh) */
-    
-    /* CĂN CHỈNH QUAN TRỌNG: Đẩy các cột về lề trái */
-    justify-content: flex-start; 
-    
-    flex-wrap: wrap;
+  display: flex;
+  gap: 80px; /* Tăng khoảng cách giữa các cột (ví dụ 80px, có thể điều chỉnh) */
+
+  /* CĂN CHỈNH QUAN TRỌNG: Đẩy các cột về lề trái */
+  justify-content: flex-start;
+
+  flex-wrap: wrap;
 }
 
 /* Cột nội dung riêng lẻ */
 .footer-column {
-    /* Cho các cột co giãn, nhưng ưu tiên căn lề trái */
-    /* Có thể đặt width cứng nếu bạn muốn các cột có độ rộng bằng nhau: */
-    /* width: 30%; */
-    
-    text-align: left; /* Đảm bảo nội dung (text, icon) bên trong cột căn trái */
+  /* Cho các cột co giãn, nhưng ưu tiên căn lề trái */
+  /* Có thể đặt width cứng nếu bạn muốn các cột có độ rộng bằng nhau: */
+  /* width: 30%; */
+
+  text-align: left; /* Đảm bảo nội dung (text, icon) bên trong cột căn trái */
 }
 /* Footer chung */
 .footer {
-    background-color: #214354; /* Màu nền xanh đậm hiện tại */
-    color: #f0f0f0; /* Màu chữ trắng sáng hơn */
-    padding: 40px 0 20px;
+  background-color: #214354; /* Màu nền xanh đậm hiện tại */
+  color: #f0f0f0; /* Màu chữ trắng sáng hơn */
+  padding: 40px 0 20px;
 }
 
 /* Tiêu đề các cột */
-.footer-column h3, .footer-column h2 { /* Giả sử tiêu đề là h3 hoặc h2 */
-    font-size: 16px;
-    font-weight: 700;
-    color: #ffffff; /* Màu trắng thuần khiết để nổi bật */
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.footer-column h3,
+.footer-column h2 {
+  /* Giả sử tiêu đề là h3 hoặc h2 */
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff; /* Màu trắng thuần khiết để nổi bật */
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Nội dung chung */
-.footer-column p, .footer-column li {
-    font-size: 14px;
-    line-height: 1.8;
-    color: #cccccc; /* Màu xám sáng để dịu mắt hơn */
+.footer-column p,
+.footer-column li {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #cccccc; /* Màu xám sáng để dịu mắt hơn */
 }
 
 /* Liên kết (Đặc biệt là phần LIÊN KẾT) */
 .footer-links a {
-    color: #ADD8E6; /* Màu xanh nhạt (Light Blue) để nổi bật hơn */
-    text-decoration: none;
-    transition: color 0.3s;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
+  color: #add8e6; /* Màu xanh nhạt (Light Blue) để nổi bật hơn */
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .footer-links a:hover {
-    color: #ffffff;
-    text-decoration: underline;
+  color: #ffffff;
+  text-decoration: underline;
 }
 
 /* Nút Trợ giúp (Làm nó trông giống như một nút) */
-.help-button { 
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 15px;
-    margin-top: 10px;
-    background-color: #e57373; /* Màu cam/đỏ tươi sáng */
-    color: white;
-    border-radius: 6px;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 13px;
-    box-shadow: 0 4px 8px rgba(229, 115, 115, 0.4);
-    transition: all 0.3s;
+.help-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  margin-top: 10px;
+  background-color: #e57373; /* Màu cam/đỏ tươi sáng */
+  color: white;
+  border-radius: 6px;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 13px;
+  box-shadow: 0 4px 8px rgba(229, 115, 115, 0.4);
+  transition: all 0.3s;
 }
 
 .help-button:hover {
-    background-color: #c62828;
-    transform: translateY(-1px);
+  background-color: #c62828;
+  transform: translateY(-1px);
 }
 /* Contact info */
 .contact-info p {
@@ -1180,7 +1183,6 @@
     gap: 25px;
   }
 }
-
 
 @media (max-width: 768px) {
   .hero-content h1 {
@@ -1546,7 +1548,6 @@
   max-width: 1200px;
   margin: 0 auto;
 }
-
 
 /* Override inline styles for better image display */
 .hero-slide[style*='background-image'] {
@@ -2001,7 +2002,7 @@
   background: #fff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
 }
 
@@ -2027,7 +2028,7 @@
   background: #fff;
   border-radius: 8px;
   padding: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Các quick actions nằm dọc trong card */
@@ -2048,4 +2049,309 @@
   width: 50px;
   text-align: center;
   margin-right: 10px;
+}
+
+/* ==================================== */
+/* Equal Heights & Improved Layout      */
+/* ==================================== */
+
+/* Fix equal heights for all section cards */
+.content-grid-horizontal {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: stretch; /* Make all cards same height */
+}
+
+.content-grid-horizontal .section-card {
+  flex: 1;
+  min-width: 300px;
+  min-height: 450px; /* Fixed minimum height */
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* News Navigation Controls */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.news-navigation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-btn {
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #495057;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: #007bff;
+  border-color: #007bff;
+  color: white;
+  transform: scale(1.1);
+}
+
+.nav-btn:disabled {
+  background: #e9ecef;
+  border-color: #dee2e6;
+  color: #adb5bd;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.news-counter {
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* News Section Improvements */
+.news-carousel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-item.featured {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.news-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+.news-content h4 {
+  margin-bottom: 10px;
+  line-height: 1.4;
+  color: #212529;
+  font-weight: 600;
+}
+
+.news-content p {
+  flex: 1;
+  margin-bottom: 15px;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+/* Announcements Section Improvements */
+.announcements-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.announcements-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+  min-height: 350px; /* Set minimum height instead of max-height */
+}
+
+.announcements-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.announcements-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.announcements-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.announcements-list::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.announcement-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.announcement-item:hover {
+  background: #f8f9fa;
+  border-color: #dee2e6;
+  transform: translateX(2px);
+}
+
+.announcement-content h5 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.3;
+}
+
+.announcement-content p {
+  margin: 0 0 5px 0;
+  font-size: 13px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+/* View All Button */
+.view-all-section {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #dee2e6;
+  text-align: center;
+}
+
+.view-all-btn {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-all-btn:hover {
+  background: linear-gradient(45deg, #0056b3, #004085);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Quick Access Section */
+.quick-actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.action-item:hover {
+  background: #f8f9fa;
+  border-color: #dee2e6;
+  transform: translateX(2px);
+}
+
+.action-icon {
+  font-size: 20px;
+  width: 45px;
+  text-align: center;
+  margin-right: 15px;
+  border-radius: 8px;
+  padding: 8px;
+  color: white;
+}
+
+.action-icon.search {
+  background: linear-gradient(45deg, #17a2b8, #138496);
+}
+.action-icon.booking {
+  background: linear-gradient(45deg, #28a745, #1e7e34);
+}
+.action-icon.profile {
+  background: linear-gradient(45deg, #fd7e14, #dc6502);
+}
+.action-icon.history {
+  background: linear-gradient(45deg, #6f42c1, #5a32a3);
+}
+.action-icon.support {
+  background: linear-gradient(45deg, #dc3545, #b21f2d);
+}
+.action-icon.rules {
+  background: linear-gradient(45deg, #6c757d, #545b62);
+}
+
+.action-content h5 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.action-content p {
+  margin: 0;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+/* Responsive Improvements */
+@media (max-width: 992px) {
+  .content-grid-horizontal .section-card {
+    min-width: 280px;
+    min-height: 400px;
+  }
+
+  .announcements-list {
+    min-height: 300px; /* Use min-height instead of max-height */
+  }
+}
+
+@media (max-width: 768px) {
+  .content-grid-horizontal {
+    flex-direction: column;
+  }
+
+  .content-grid-horizontal .section-card {
+    min-height: 350px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .news-navigation {
+    align-self: flex-end;
+  }
 }

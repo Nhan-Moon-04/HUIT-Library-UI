@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, catchError, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface ViolationDetail {
@@ -43,16 +43,53 @@ export class ViolationService {
 
   /** Get violation details by maViPham */
   getViolationDetail(maViPham: number): Observable<ViolationDetailResponse> {
-    return this.http.get<ViolationDetailResponse>(
-      `${environment.appUrl}/api/v2/Violation/details/${maViPham}`
-    );
+    const headers = this.getAuthHeaders();
+
+    return this.http
+      .get<ViolationDetailResponse>(`${environment.appUrl}/api/v2/Violation/details/${maViPham}`, {
+        headers,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Error fetching violation detail:', error);
+          let errorMessage = 'Có lỗi xảy ra khi lấy thông tin vi phạm';
+
+          if (error.status === 404) {
+            errorMessage = 'Không tìm thấy thông tin vi phạm';
+          } else if (error.status === 401) {
+            errorMessage = 'Không có quyền truy cập thông tin vi phạm';
+          } else if (error.status === 500) {
+            errorMessage = 'Lỗi hệ thống, vui lòng thử lại sau';
+          }
+
+          return of({
+            success: false,
+            data: {} as ViolationDetail,
+            message: errorMessage,
+          });
+        })
+      );
   }
 
   /** Get violations by booking ID */
   getViolationsByBooking(maDangKy: number): Observable<ViolationListResponse> {
-    return this.http.get<ViolationListResponse>(
-      `${environment.appUrl}/api/v2/Violation/booking/${maDangKy}`
-    );
+    const headers = this.getAuthHeaders();
+
+    return this.http
+      .get<ViolationListResponse>(`${environment.appUrl}/api/v2/Violation/booking/${maDangKy}`, {
+        headers,
+      })
+      .pipe(
+        catchError((error) => {
+          console.error('Error fetching violations:', error);
+          return of({
+            success: false,
+            data: [],
+            count: 0,
+            message: 'Không thể tải danh sách vi phạm',
+          });
+        })
+      );
   }
 
   /** Format violation date for display */
@@ -98,5 +135,45 @@ export class ViolationService {
       default:
         return 'fa-info-circle';
     }
+  }
+
+  /** Get severity based on violation type */
+  getViolationSeverity(violationType: string): string {
+    const lowerType = violationType.toLowerCase();
+
+    if (
+      lowerType.includes('mất') ||
+      lowerType.includes('phá hoại') ||
+      lowerType.includes('hư hỏng')
+    ) {
+      return 'Nghiêm trọng';
+    } else if (lowerType.includes('mang') && lowerType.includes('ra khỏi')) {
+      return 'Trung bình';
+    } else {
+      return 'Nhẹ';
+    }
+  }
+
+  /** Get severity color */
+  getSeverityColor(severity: string): string {
+    switch (severity.toLowerCase()) {
+      case 'nghiêm trọng':
+        return '#d32f2f'; // Red
+      case 'trung bình':
+        return '#f57c00'; // Orange
+      case 'nhẹ':
+        return '#388e3c'; // Green
+      default:
+        return '#616161'; // Gray
+    }
+  }
+
+  /** Get auth headers */
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    });
   }
 }

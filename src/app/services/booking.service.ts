@@ -53,6 +53,13 @@ export interface CurrentBookingsResponse {
   message: string;
 }
 
+export interface Violation {
+  maViPham: number;
+  tenViPham: string;
+  ngayLap: string;
+  trangThaiXuLy: string;
+}
+
 export interface HistoryBooking {
   maDangKy: number;
   maPhong: number;
@@ -71,6 +78,9 @@ export interface HistoryBooking {
   ngayMuon: string;
   tinhTrangPhong: string | null;
   ghiChuSuDung: string | null;
+  coBienBan: boolean;
+  soLuongBienBan: number;
+  danhSachViPham: Violation[];
 }
 
 export interface HistoryResponse {

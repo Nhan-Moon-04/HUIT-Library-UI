@@ -1,0 +1,156 @@
+<div class="modern-evaluation-modal" [class.show]="isVisible()" (click)="onBackdropClick($event)">
+    <div class="modal-container" [class.show]="isVisible()">
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <div class="header-content">
+                <div class="title-section">
+                    <i class="fas fa-star"></i>
+                    <h2>
+                        @if (mode() === 'view') {
+                        Xem đánh giá
+                        } @else {
+                        Đánh giá phòng học
+                        }
+                    </h2>
+                </div>
+                <button class="close-btn" (click)="close()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+            @if (loading()) {
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Đang tải thông tin đánh giá...</span>
+            </div>
+            } @else {
+            <!-- Room Information -->
+            <div class="room-info-card">
+                <div class="room-header">
+                    <i class="fas fa-door-open"></i>
+                    <h3>Thông tin phòng đã sử dụng</h3>
+                </div>
+                <div class="room-details">
+                    <div class="detail-row">
+                        <span class="label">Tên phòng:</span>
+                        <span class="value">{{ booking()?.tenPhong }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Loại phòng:</span>
+                        <span class="value">{{ booking()?.tenLoaiPhong }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Thời gian:</span>
+                        <span class="value">
+                            {{ formatDateTime(booking()?.thoiGianBatDau) }} -
+                            {{ formatDateTime(booking()?.thoiGianKetThuc) }}
+                        </span>
+                    </div>
+                    @if (booking()?.lyDo) {
+                    <div class="detail-row">
+                        <span class="label">Lý do sử dụng:</span>
+                        <span class="value">{{ booking()?.lyDo }}</span>
+                    </div>
+                    }
+                </div>
+            </div>
+
+            @if (error()) {
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>{{ error() }}</span>
+            </div>
+            }
+
+            <!-- Evaluation Form -->
+            <div class="evaluation-form">
+                <!-- Star Rating -->
+                <div class="rating-section">
+                    <label class="section-label">
+                        <i class="fas fa-star"></i>
+                        <span>Đánh giá mức độ hài lòng</span>
+                    </label>
+                    <div class="star-rating" [class.readonly]="mode() === 'view'">
+                        @for (star of [1, 2, 3, 4, 5]; track star) {
+                        <button type="button" class="star" [class.filled]="star <= rating()"
+                            [class.hoverable]="mode() !== 'view'" (click)="setRating(star)"
+                            (mouseover)="mode() !== 'view' && setHoverRating(star)"
+                            (mouseleave)="mode() !== 'view' && setHoverRating(0)" [disabled]="mode() === 'view'">
+                            <i class="fas fa-star"></i>
+                        </button>
+                        }
+                    </div>
+                    <div class="rating-text">
+                        <span class="rating-value">{{ rating() }}/5 sao</span>
+                        <span class="rating-description">{{ getRatingDescription(rating()) }}</span>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comment-section">
+                    <label class="section-label">
+                        <i class="fas fa-comment-alt"></i>
+                        <span>Nhận xét (Tùy chọn)</span>
+                    </label>
+                    @if (mode() === 'view') {
+                    <div class="comment-display">
+                        @if (comment().trim()) {
+                        <p>{{ comment() }}</p>
+                        } @else {
+                        <p class="no-comment">Không có nhận xét</p>
+                        }
+                    </div>
+                    } @else {
+                    <textarea class="comment-input" [(ngModel)]="comment"
+                        placeholder="Chia sẻ trải nghiệm của bạn về phòng học này..." maxlength="500"
+                        rows="4"></textarea>
+                    <div class="character-count">
+                        {{ comment().length }}/500 ký tự
+                    </div>
+                    }
+                </div>
+
+                @if (mode() === 'view' && evaluation()) {
+                <div class="evaluation-info">
+                    <div class="info-row">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Đánh giá vào: {{ formatDateTime(evaluation()?.ngayDanhGia) }}</span>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+            @if (mode() === 'view') {
+            <div class="view-actions">
+                <button class="modern-btn secondary" (click)="close()">
+                    <i class="fas fa-times"></i>
+                    <span>Đóng</span>
+                </button>
+            </div>
+            } @else {
+            <div class="form-actions">
+                <button class="modern-btn secondary" (click)="close()" [disabled]="submitting()">
+                    <i class="fas fa-times"></i>
+                    <span>Hủy</span>
+                </button>
+                <button class="modern-btn primary" (click)="submitEvaluation()" [disabled]="!rating() || submitting()">
+                    @if (submitting()) {
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>Đang xử lý...</span>
+                    } @else {
+                    <i class="fas fa-check"></i>
+                    <span>Gửi đánh giá</span>
+                    }
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+</div>

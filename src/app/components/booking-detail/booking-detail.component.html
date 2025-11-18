@@ -256,7 +256,7 @@
                     </button>
                     }
                     @if (canCancel()) {
-                    <button class="action-btn danger">
+                    <button class="action-btn danger" (click)="openCancelModal()">
                         <i class="fas fa-times"></i>
                         <span>Hủy đặt phòng</span>
                     </button>
@@ -306,3 +306,53 @@
     </div>
     }
 </div>
+
+<!-- Cancel Booking Modal -->
+@if (showCancelModal()) {
+<div class="modal-overlay" (click)="closeCancelModal()">
+    <div class="cancel-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Hủy đặt phòng</h3>
+            <button class="close-btn" (click)="closeCancelModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <p class="warning-text">
+                <i class="fas fa-exclamation-triangle"></i>
+                Bạn có chắc chắn muốn hủy đặt phòng này không? Hành động này không thể hoàn tác.
+            </p>
+
+            <div class="form-group">
+                <label for="cancelReason">Lý do hủy <span class="required">*</span></label>
+                <textarea id="cancelReason" [(ngModel)]="cancelReason" placeholder="Nhập lý do hủy đặt phòng..."
+                    rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cancelNote">Ghi chú thêm (tùy chọn)</label>
+                <textarea id="cancelNote" [(ngModel)]="cancelNote" placeholder="Thêm ghi chú nếu cần..."
+                    rows="2"></textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn secondary" (click)="closeCancelModal()" [disabled]="cancelSubmitting()">
+                <i class="fas fa-times"></i>
+                Hủy
+            </button>
+            <button class="btn danger" (click)="submitCancelBooking()"
+                [disabled]="!cancelReason().trim() || cancelSubmitting()">
+                @if (cancelSubmitting()) {
+                <i class="fas fa-spinner fa-spin"></i>
+                Đang xử lý...
+                } @else {
+                <i class="fas fa-check"></i>
+                Xác nhận hủy
+                }
+            </button>
+        </div>
+    </div>
+</div>
+}

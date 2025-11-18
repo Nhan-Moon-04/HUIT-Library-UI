@@ -81,6 +81,12 @@ export interface HistoryBooking {
   coBienBan: boolean;
   soLuongBienBan: number;
   danhSachViPham: Violation[];
+  daDanhGia: boolean;
+  maDanhGia: number | null;
+  diemDanhGia: number | null;
+  coTheDanhGia: boolean;
+  trangThaiDanhGia: string;
+  soNgayConLaiDeDanhGia: number;
 }
 
 export interface HistoryResponse {

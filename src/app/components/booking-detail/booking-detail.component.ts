@@ -1,10 +1,13 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
   BookingService,
   BookingDetail as BookingDetailData,
   BookingDetailResponse,
+  CancelBookingPayload,
+  CancelBookingResponse,
 } from '../../services/booking.service';
 import {
   ViolationService,
@@ -16,7 +19,7 @@ import { DateTimeUtils } from '../../utils/datetime.utils';
 @Component({
   selector: 'app-booking-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './booking-detail.component.html',
   styleUrl: './booking-detail.component.css',
 })
@@ -31,6 +34,12 @@ export class BookingDetailComponent implements OnInit {
   loading = signal(true);
   loadingViolations = signal(false);
   error = signal<string | null>(null);
+
+  // Cancel modal state
+  showCancelModal = signal(false);
+  cancelReason = signal('');
+  cancelNote = signal('');
+  cancelSubmitting = signal(false);
 
   ngOnInit(): void {
     // Get booking ID from route parameters
@@ -191,4 +200,50 @@ export class BookingDetailComponent implements OnInit {
 
   formatDateTime = DateTimeUtils.formatDateTime;
   formatDate = DateTimeUtils.formatDate;
+
+  // Cancel booking functionality
+  openCancelModal(): void {
+    this.showCancelModal.set(true);
+    this.cancelReason.set('');
+    this.cancelNote.set('');
+  }
+
+  closeCancelModal(): void {
+    this.showCancelModal.set(false);
+    this.cancelReason.set('');
+    this.cancelNote.set('');
+  }
+
+  submitCancelBooking(): void {
+    const detail = this.bookingDetail();
+    const reason = this.cancelReason().trim();
+
+    if (!detail || !reason) {
+      return;
+    }
+
+    this.cancelSubmitting.set(true);
+
+    const payload: CancelBookingPayload = {
+      lyDoHuy: reason,
+      ghiChu: this.cancelNote().trim() || undefined,
+    };
+
+    this.bookingService.cancelBooking(detail.maDangKy, payload).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Reload booking detail to get updated status
+          this.loadBookingDetail();
+          this.closeCancelModal();
+        } else {
+          alert('Không thể hủy đặt phòng: ' + response.message);
+        }
+        this.cancelSubmitting.set(false);
+      },
+      error: (err) => {
+        alert('Đã xảy ra lỗi khi hủy đặt phòng: ' + (err.error?.message || err.message));
+        this.cancelSubmitting.set(false);
+      },
+    });
+  }
 }

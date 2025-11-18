@@ -4,11 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BookingService, HistoryBooking, Violation } from '../../services/booking.service';
 import { DateTimeUtils } from '../../utils/datetime.utils';
+import {
+  EvaluationModalComponent,
+  EvaluationMode,
+} from '../evaluation-modal/evaluation-modal.component';
 
 @Component({
   selector: 'app-booking-history',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EvaluationModalComponent],
   templateUrl: './booking-history.component.html',
   styleUrls: ['./booking-history.component.css'],
 })
@@ -25,6 +29,11 @@ export class BookingHistoryComponent implements OnInit {
   totalItems = signal(0);
   searchTerm = signal('');
   isSearchMode = signal(false);
+
+  // Evaluation modal state
+  showEvaluationModal = signal(false);
+  evaluationMode = signal<EvaluationMode>('create');
+  selectedBookingForEvaluation = signal<HistoryBooking | null>(null);
 
   ngOnInit(): void {
     this.load(this.pageNumber());
@@ -261,5 +270,32 @@ export class BookingHistoryComponent implements OnInit {
     }
 
     return `Hiển thị ${start}-${end} trong tổng số ${total} bản ghi`;
+  }
+
+  // Evaluation methods
+  openEvaluationModal(booking: HistoryBooking, mode: EvaluationMode): void {
+    this.selectedBookingForEvaluation.set(booking);
+    this.evaluationMode.set(mode);
+    this.showEvaluationModal.set(true);
+  }
+
+  closeEvaluationModal(): void {
+    this.showEvaluationModal.set(false);
+    this.selectedBookingForEvaluation.set(null);
+  }
+
+  onEvaluationSaved(): void {
+    // Reload the current page to get updated data
+    this.load(this.pageNumber());
+  }
+
+  handleEvaluationAction(booking: HistoryBooking): void {
+    if (booking.daDanhGia) {
+      // View existing evaluation
+      this.openEvaluationModal(booking, 'view');
+    } else if (booking.coTheDanhGia) {
+      // Create new evaluation
+      this.openEvaluationModal(booking, 'create');
+    }
   }
 }

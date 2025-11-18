@@ -202,11 +202,28 @@
                             <span class="date-info">{{ formatDateTime(booking.ngayMuon) }}</span>
                         </div>
 
-                        <button class="view-detail-btn"
-                            (click)="viewBookingDetail(booking.maDangKy); $event.stopPropagation()">
-                            <i class="fas fa-eye"></i>
-                            <span>Xem chi tiết</span>
-                        </button>
+                        <div class="action-buttons">
+                            <!-- Evaluation Button -->
+                            @if (booking.coTheDanhGia || booking.daDanhGia) {
+                            <button class="evaluation-btn" [ngClass]="booking.daDanhGia ? 'evaluated' : 'can-evaluate'"
+                                (click)="handleEvaluationAction(booking); $event.stopPropagation()"
+                                [title]="booking.trangThaiDanhGia">
+                                @if (booking.daDanhGia) {
+                                <i class="fas fa-star"></i>
+                                <span>Xem đánh giá</span>
+                                } @else {
+                                <i class="fas fa-star"></i>
+                                <span>Đánh giá</span>
+                                }
+                            </button>
+                            }
+
+                            <button class="view-detail-btn"
+                                (click)="viewBookingDetail(booking.maDangKy); $event.stopPropagation()">
+                                <i class="fas fa-eye"></i>
+                                <span>Chi tiết</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 }
@@ -283,3 +300,8 @@
         </div>
     </div>
 </div>
+
+<!-- Evaluation Modal -->
+<app-evaluation-modal [isVisible]="showEvaluationModal()" [mode]="evaluationMode()"
+    [booking]="selectedBookingForEvaluation()" (closeModal)="closeEvaluationModal()"
+    (evaluationSaved)="onEvaluationSaved()"></app-evaluation-modal>

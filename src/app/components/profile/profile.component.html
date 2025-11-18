@@ -1,93 +1,103 @@
 <div class="profile-page">
+    <!-- Hero -->
     <header class="profile-hero">
         <div class="hero-inner">
-            <div class="hero-title">
-                <h1>Hồ sơ cá nhân</h1>
-                <p>Quản lý thông tin tài khoản thư viện của bạn</p>
-            </div>
+            <h1>Hồ sơ cá nhân</h1>
+            <p>Quản lý thông tin tài khoản thư viện của bạn</p>
         </div>
     </header>
 
     <main class="profile-main">
+
         <div *ngIf="loading()" class="loading">Đang tải...</div>
 
-        <div *ngIf="!loading() && profile()" class="profile-card">
-            <div class="profile-left">
-                <div class="avatar">
+        <div *ngIf="!loading() && profile()" class="profile-container">
+
+            <!-- LEFT -->
+            <div class="profile-left-card">
+                <div class="avatar-wrapper">
                     <ng-container *ngIf="profile().avatar; else initials">
                         <img [src]="profile().avatar" alt="Avatar" />
                     </ng-container>
                     <ng-template #initials>
-                        <div class="initials">{{ (profile().hoTen || '') | slice:0:1 }}</div>
+                        <div class="initials">
+                            {{ (profile().hoTen || '') | slice:0:1 }}
+                        </div>
                     </ng-template>
                 </div>
-                <div class="name-section">
-                    <h2 class="name">{{ profile().hoTen }}</h2>
-                    <div class="meta">
-                        <span class="code">{{ profile().maDangNhap }}</span>
-                        <span class="role">{{ profile().maVaiTro ? profile().maVaiTro : (auth.currentUser()?.vaiTro ||
-                            '') }}</span>
-                    </div>
+
+                <h2 class="user-name">{{ profile().hoTen }}</h2>
+                <div class="user-meta">
+                    <span class="code">{{ profile().maDangNhap }}</span>
+                    <span class="role">{{ profile().maVaiTro || auth.currentUser()?.vaiTro }}</span>
                 </div>
+
+                <button class="btn full primary" (click)="editProfile()">Chỉnh sửa hồ sơ</button>
+                <button class="btn full outline" (click)="router.navigate(['/change-password'])">
+                    Đổi mật khẩu
+                </button>
             </div>
 
-            <div class="profile-right">
+            <!-- RIGHT -->
+            <div class="profile-right-card">
                 <ng-container *ngIf="!editMode(); else editForm">
-                    <div class="info-grid">
-                        <div class="info-item"><label>Email</label>
-                            <div>{{ profile().email || '-' }}</div>
-                        </div>
-                        <div class="info-item"><label>Điện thoại</label>
-                            <div>{{ profile().soDienThoai || '-' }}</div>
-                        </div>
-                        <div class="info-item"><label>Mã người dùng</label>
-                            <div>{{ profile().maNguoiDung }}</div>
-                        </div>
-                        <div class="info-item"><label>Vai trò</label>
-                            <div>{{ profile().maVaiTro || profile().vaiTro || '-' }}</div>
-                        </div>
-                    </div>
 
-                    <div class="actions">
-                        <button class="btn primary" (click)="editProfile()">Chỉnh sửa hồ sơ</button>
-                        <button class="btn outline" (click)="router.navigate(['/change-password'])">Đổi mật
-                            khẩu</button>
+                    <div class="info-grid">
+
+                        <div class="info-item">
+                            <label>Email</label>
+                            <p>{{ profile().email || '-' }}</p>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Số điện thoại</label>
+                            <p>{{ profile().soDienThoai || '-' }}</p>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Mã người dùng</label>
+                            <p>{{ profile().maNguoiDung }}</p>
+                        </div>
+
+                        <div class="info-item">
+                            <label>Vai trò</label>
+                            <p>{{ profile().maVaiTro || profile().vaiTro || '-' }}</p>
+                        </div>
+
                     </div>
                 </ng-container>
 
+                <!-- EDIT MODE -->
                 <ng-template #editForm>
-                    <form [formGroup]="form" (ngSubmit)="saveProfile()" novalidate>
+                    <form [formGroup]="form" (ngSubmit)="saveProfile()">
+
                         <div class="form-row">
                             <label>Họ và tên</label>
                             <input formControlName="fullName" />
-                            <div class="error" *ngIf="form.get('fullName')?.touched && form.get('fullName')?.invalid">
-                                Bắt buộc</div>
                         </div>
 
                         <div class="form-row">
                             <label>Email</label>
                             <input formControlName="email" type="email" />
-                            <div class="error" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">Email
-                                không hợp lệ</div>
                         </div>
 
                         <div class="form-row">
                             <label>Số điện thoại</label>
                             <input formControlName="phoneNumber" />
-                            <div class="error"
-                                *ngIf="form.get('phoneNumber')?.touched && form.get('phoneNumber')?.invalid">Bắt buộc
-                            </div>
                         </div>
 
-                        <div class="actions">
-                            <button type="submit" class="btn primary">Lưu</button>
-                            <button type="button" class="btn outline" (click)="cancelEdit()">Hủy</button>
+                        <div class="form-actions">
+                            <button class="btn primary">Lưu</button>
+                            <button class="btn outline" type="button" (click)="cancelEdit()">Hủy</button>
                         </div>
                     </form>
                 </ng-template>
             </div>
         </div>
 
-        <div *ngIf="!loading() && !profile()" class="no-data">Không có dữ liệu hồ sơ.</div>
+        <div *ngIf="!loading() && !profile()" class="no-data">
+            Không có dữ liệu hồ sơ.
+        </div>
+
     </main>
 </div>

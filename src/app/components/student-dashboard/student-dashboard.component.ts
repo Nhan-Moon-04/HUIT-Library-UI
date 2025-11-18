@@ -309,6 +309,10 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   navigateToHistory(): void {
     this.router.navigate(['/bookings/history']);
   }
+navigateToViolations() {
+  this.router.navigate(['/violations']);
+}
+
 
   navigateToChat(): void {
     // Điều hướng tới trang chat

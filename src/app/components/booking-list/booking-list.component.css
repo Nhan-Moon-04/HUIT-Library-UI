@@ -7,75 +7,152 @@
 
 /* Root Variables */
 .library-dashboard {
-  --primary-color: #1976d2;
-  --primary-dark: #1565c0;
-  --secondary-color: #424242;
-  --success-color: #388e3c;
-  --warning-color: #f57c00;
-  --error-color: #d32f2f;
-  --surface-color: #ffffff;
-  --background-color: #fafafa;
-  --text-primary: #212121;
-  --text-secondary: #757575;
-  --border-color: #e0e0e0;
-  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
-  --border-radius: 8px;
-  --border-radius-lg: 16px;
-  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Đã tối ưu */
+    --primary-color: #2196F3; /* Xanh tươi sáng hơn (Material Blue 500) */
+    --primary-dark: #1976d2;
+    --secondary-color: #424242;
+    --success-color: #4CAF50; /* Sáng hơn */
+    --warning-color: #FFC107; /* Sáng hơn */
+    --error-color: #F44336; /* Sáng hơn */
+    --surface-color: #ffffff;
+    --background-color: #fafafa;
+    --text-primary: #212121;
+    --text-secondary: #5f5f5f; /* Hơi đậm hơn để dễ đọc */
+    --border-color: #e0e0e0;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bóng sâu hơn */
+    --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.2); /* Bóng rất nổi bật */
+    --border-radius: 12px; /* Tăng nhẹ độ bo góc */
+    --border-radius-lg: 20px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+
+
 .library-dashboard {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: var(--text-primary);
+    min-height: 100vh;
+    /* Nền Xanh Da Trời mới: Từ xanh mây nhạt đến xanh trời tươi */
+    background: linear-gradient(135deg, #E0F2F7 0%, #f3fafd 100%); 
+    /* #E0F2F7: Very Light Blue (Cloudy Sky) */
+    /* #B3E0F2: Brighter Sky Blue */
+    
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--text-primary);
 }
 
 /* Header Section */
 .dashboard-header {
-  background: var(--surface-color);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--shadow);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+    /* LÀM NỔI BẬT: Áp dụng hiệu ứng mờ (Glassmorphism Light) */
+    background: rgba(255, 255, 255, 0.95); /* Hơi trong suốt */
+    backdrop-filter: blur(10px); /* Hiệu ứng làm mờ nền phía sau */
+    
+    /* Đường viền dưới màu chủ đạo để tạo điểm nhấn */
+    border-bottom: 3px solid var(--primary-color); 
+    
+    /* Tăng cường bóng đổ để Header nổi lên hẳn so với nền */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18); 
+    
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .header-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 24px; /* Tăng nhẹ padding */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
+/* Breadcrumb và Nút Quay Lại */
 .breadcrumb-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px; /* Tăng nhẹ font */
+    font-weight: 500;
+}
+/* ==================================== */
+/* Cập nhật Stat Cards Section */
+/* ==================================== */
+
+.stats-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px 0;
+    margin-top: 30px;
 }
 
+.stat-card {
+    flex: 1;
+    padding: 25px;
+    background: var(--surface-color); 
+    border-radius: 16px; 
+    text-align: center;
+    cursor: default;
+    
+    /* 1. HIỆU ỨNG NỔI BẬT MẶC ĐỊNH */
+    /* Nâng thẻ lên 4px và tạo bóng đổ SÂU */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.18); /* Bóng đổ sâu hơn */
+    transform: translateY(-4px); /* Luôn nâng nhẹ thẻ lên */
+    outline: 1px solid rgba(0, 0, 0, 0.05); /* Viền mờ để tách biệt */
+    
+    /* Đảm bảo border màu trạng thái dày */
+    border-bottom: 5px solid; 
+    transition: var(--transition);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. HIỆU ỨNG NỔI BẬT KHI HOVER */
+.stat-card:hover {
+    /* Nâng thẻ lên cao hơn và tạo bóng đổ RẤT SÂU */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3); 
+    transform: translateY(-10px); /* Nâng thẻ lên cao hơn nữa */
+}
+
+/* Giữ nguyên các định dạng số/label */
+.stat-number {
+    font-size: 42px; 
+    font-weight: 700;
+    margin-bottom: 8px; 
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 15px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+/* Giữ nguyên màu trạng thái */
+/* .stat-card.active, .stat-card.pending, .stat-card.total ... */
 .nav-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  border-radius: var(--border-radius);
-  transition: var(--transition);
-  text-decoration: none;
-  font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    text-decoration: none;
+    font-size: 15px;
 }
 
 .nav-btn:hover {
-  background: rgba(25, 118, 210, 0.04);
-  color: var(--primary-color);
+    /* Sử dụng màu primary đã được chỉnh sửa */
+    background: rgba(33, 150, 243, 0.1); 
+    color: var(--primary-color);
+    transform: translateY(-1px); /* Hiệu ứng bay nhẹ */
 }
 
 .separator {
@@ -143,57 +220,157 @@
     transform: rotate(360deg);
   }
 }
-
-/* Page Title Section */
+/* Mục tiêu: Làm nổi bật tiêu đề "Phiếu Đặt Phòng" */
+/* Mục tiêu: Làm nổi bật tiêu đề "Phiếu Đặt Phòng" */
 .page-title-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px 24px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 24px;
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.title-content {
+    text-align: left;
+    /* ĐIỀU CHỈNH: Đảm bảo khoảng cách dưới tiêu đề */
+    margin-bottom: 24px; /* Dùng 24px để tạo khoảng cách tiêu chuẩn */
+    
+    /* Bỏ border-bottom cũ nếu không muốn đường kẻ ngang */
+    border-bottom: none; 
+    padding-bottom: 0;
+}
+.bookings-section.upcoming-section {
+    /* ĐIỀU CHỈNH: Đảm bảo không có khoảng trống thừa phía trên */
+    margin-top: 0; 
+    margin-bottom: 0;
 }
 
-.title-content h1.page-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 8px 0;
-  font-size: 32px;
-  font-weight: 700;
-  color: var(--text-primary);
+/* TIÊU ĐỀ BÊN TRONG KHỐI NÀY */
+.bookings-section.upcoming-section .section-header {
+    /* ĐIỀU CHỈNH: Loại bỏ margin-bottom cũ và chỉ dùng padding */
+    margin-bottom: 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color); /* Giữ đường kẻ nếu cần phân chia tiêu đề và list */
+}
+/* THAY ĐỔI: TẠO KHU VỰC NỔI CHO TIÊU ĐỀ VÀ STATS */
+.page-title-section-container {
+    background: var(--surface-color); /* Nền trắng */
+    border-radius: var(--border-radius-lg); /* Bo góc lớn */
+    box-shadow: var(--shadow); /* Bóng đổ nhẹ */
+    padding: 24px; /* Padding bên trong */
+    margin-bottom: 24px; /* Khoảng cách với phần nội dung bên dưới */
+    /* THAY ĐỔI: Sử dụng một container mới để bao bọc tiêu đề và stats */
 }
 
-.page-title .material-icons {
-  font-size: 36px;
-  color: var(--primary-color);
+/* Cập nhật lại các khối con bên trong container mới */
+.title-content {
+    padding-bottom: 15px; /* Thêm khoảng cách nếu cần */
+    border-bottom: 1px solid var(--border-color); /* Đường kẻ phân chia nhẹ */
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Đảm bảo Title nổi bật bằng màu chủ đạo và text-shadow */
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 8px rgba(216, 226, 161, 0.849);
+    margin: 0;
 }
 
 .page-subtitle {
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: 16px;
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin: 0;
+    padding-left: 52px;
 }
 
-/* Stats Cards */
+/* Điều chỉnh lại stats-cards vì giờ nó nằm trong container trắng */
 .stats-cards {
-  display: flex;
-  gap: 16px;
+    /* Giữ nguyên flex/gap */
+    padding: 0; /* Bỏ padding cũ vì đã có padding của container */
+    margin-top: 0; /* Bỏ margin-top cũ vì đã có khoảng cách phân chia */
 }
-
 .stat-card {
-  background: var(--surface-color);
-  padding: 20px 24px;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow);
-  text-align: center;
-  min-width: 120px;
-  border: 2px solid transparent;
-  transition: var(--transition);
+    flex: 1;
+    padding: 25px; /* Tăng padding để thẻ trông lớn hơn, nổi bật hơn */
+    background: var(--surface-color); 
+    border-radius: 16px; /* Bo góc lớn hơn, hiện đại hơn */
+    text-align: center;
+    cursor: default;
+    
+    /* 1. Luôn nổi bật ngay cả khi không hover */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1); /* Bóng đổ sâu hơn */
+    transform: translateY(-4px); /* Luôn nâng nhẹ thẻ lên 4px */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Sử dụng biến transition */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
+/* 2. Hiệu ứng nổi bật mạnh mẽ hơn khi di chuột */
+.stat-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); /* Bóng đổ cực kỳ sâu khi hover */
+    transform: translateY(-8px); /* Nâng thẻ lên cao hơn nữa */
+}
+
+.stat-number {
+    font-size: 42px; /* Tăng kích thước số */
+    font-weight: 700;
+    margin-bottom: 8px; /* Tăng khoảng cách với label */
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 15px; /* Tăng nhẹ kích thước label */
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+/* Các đường viền màu trạng thái vẫn giữ nguyên để tạo điểm nhấn */
+.stat-card.active {
+    border-bottom: 5px solid var(--success-color); /* Đường viền dày hơn */
+}
+.stat-card.active .stat-number {
+    color: var(--success-color);
+}
+
+.stat-card.pending {
+    border-bottom: 5px solid var(--warning-color); /* Đường viền dày hơn */
+}
+.stat-card.pending .stat-number {
+    color: var(--warning-color);
+}
+
+.stat-card.total {
+    border-bottom: 5px solid var(--primary-color); /* Đường viền dày hơn */
+}
+.stat-card.total .stat-number {
+    color: var(--primary-color);
+}
+
+/* Responsive (giữ nguyên hoặc tinh chỉnh nếu cần) */
+@media (max-width: 768px) {
+    .stats-cards {
+        flex-direction: column; 
+    }
+    .stat-card {
+        margin-bottom: 15px; /* Tăng khoảng cách khi xếp cột */
+        transform: none; /* Bỏ hiệu ứng nổi trên mobile để tránh che lấp */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    .stat-card:hover {
+        transform: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+}
 .stat-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
@@ -265,12 +442,6 @@
   border: 1px solid rgba(211, 47, 47, 0.2);
 }
 
-/* Content Area */
-.content-area {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px 48px;
-}
 
 /* Empty State */
 .empty-state {
@@ -375,19 +546,26 @@
   gap: 24px;
 }
 
+/* Active Bookings Grid */
+/* ... (giữ nguyên bookings-grid) ... */
+
 .booking-card.active-booking {
-  background: var(--surface-color);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  transition: var(--transition);
-  border: 2px solid var(--success-color);
-  cursor: pointer;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    /* TĂNG CƯỜNG HIỆU ỨNG NỔI BẬT */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Bóng đổ sâu hơn */
+    /* THÊM ĐƯỜNG VIỀN MỜ DÙNG MÀU CHỦ ĐẠO */
+    border: 2px solid var(--success-color); /* Giữ viền màu trạng thái dày */
+    outline: 1px solid rgba(0, 0, 0, 0.05); /* Thêm viền mờ */
+
+    overflow: hidden;
+    transition: var(--transition);
+    cursor: pointer;
 }
 
 .booking-card.active-booking:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+    transform: translateY(-4px); /* Tăng nhẹ hiệu ứng bay lên */
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.25); /* Bóng đổ cực kỳ sâu khi hover */
 }
 
 .booking-card .card-header {
@@ -543,20 +721,23 @@
 }
 
 .booking-item {
-  background: var(--surface-color);
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow);
-  padding: 20px 24px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  transition: var(--transition);
-  cursor: pointer;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    /* TĂNG CƯỜNG HIỆU ỨNG NỔI BẬT */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Bóng đổ sâu hơn */
+    outline: 1px solid rgba(0, 0, 0, 0.05); /* Thêm viền mờ */
+
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: var(--transition);
+    cursor: pointer;
 }
 
 .booking-item:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-lg);
+    transform: translateY(-2px); /* Tăng nhẹ hiệu ứng bay lên */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.18); /* Bóng đổ sâu hơn khi hover */
 }
 
 .booking-item.status-1 {
@@ -997,9 +1178,71 @@
     padding: 16px 12px;
   }
 
-  .content-area {
-    padding: 0 16px 48px;
-  }
+/* ================================================= */
+/* KHỐI NỘI DUNG CHÍNH (Sắp Tới & Lịch Sử) */
+/* ================================================= */
+
+.content-area {
+    max-width: 1200px; /* **QUAN TRỌNG: Cùng max-width với khối trên** */
+    margin: 24px auto 48px; /* Margin trên 24px để tách biệt với khối trên, căn giữa */
+    
+    /* TẠO HIỆU ỨNG NỔI */
+    background: var(--surface-color); /* Nền trắng */
+    border-radius: var(--border-radius-lg); /* Bo góc tương đương */
+    
+    /* BÓNG ĐỔ VÀ HIỆU ỨNG NÂNG LÊN TƯƠNG ĐƯƠNG */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    transition: var(--transition); 
+    outline: 1px solid rgba(0, 0, 0, 0.03); 
+
+    padding: 24px; /* Padding bên trong */
+}
+
+/* Tùy chọn: Thêm hiệu ứng hover */
+.content-area:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-6px); 
+}
+/* Bookings Section */
+.bookings-section {
+    margin-bottom: 48px;
+}
+
+/* CẬP NHẬT: Thêm đường kẻ phân chia rõ ràng sau tiêu đề */
+.section-header {
+    margin-bottom: 24px; /* Khoảng cách với nội dung (list/grid) bên dưới */
+    padding-bottom: 12px; /* Thêm padding dưới tiêu đề */
+    border-bottom: 1px solid var(--border-color); /* ĐƯỜNG KẺ PHÂN CHIA */
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+}
+
+.section-title h2 {
+    margin: 0;
+    font-size: 24px; /* Tăng kích thước font */
+    font-weight: 700; /* Tăng độ đậm */
+    color: var(--text-primary); /* Màu chữ chính */
+    /* CÓ THỂ THÊM MÀU CHỦ ĐẠO CHO TIÊU ĐỀ */
+    /* color: var(--primary-color); */
+}
+
+.section-title .material-icons {
+    font-size: 28px; /* Tăng kích thước icon */
+    color: var(--primary-color);
+}
+
+
+/* Thêm hiệu ứng hover (tùy chọn) */
+.content-area:hover {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-6px); 
+}
 
   .bookings-grid {
     grid-template-columns: 1fr;

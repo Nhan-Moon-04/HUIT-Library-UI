@@ -3,9 +3,9 @@
     <header class="booking-header">
         <div class="header-container">
             <button class="back-button" (click)="goBack()" aria-label="Quay lại">
-                <i class="fas fa-arrow-left"></i>
-                <span>Quay lại</span>
-            </button>
+            <i class="fas fa-arrow-left"></i>
+            <span>Quay lại</span>
+        </button>
 
             <div class="header-content">
                 <div class="header-title">
@@ -76,8 +76,8 @@
             <div class="alert-container" *ngIf="loading() || success() || error()">
                 <div class="alert alert-loading" *ngIf="loading()">
                     <div class="alert-icon">
-                        <i class="fas fa-spinner fa-spin"></i>
-                    </div>
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
                     <div class="alert-content">
                         <h4>Đang xử lý</h4>
                         <p>Vui lòng đợi trong giây lát...</p>
@@ -86,7 +86,7 @@
 
                 <div class="alert alert-success" *ngIf="success()">
                     <div class="alert-icon">
-                        <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="alert-content">
                         <h4>Thành công</h4>
@@ -145,11 +145,11 @@
                             <small class="text-muted">Khoảng cách 30 phút (08:00, 08:30, ...) - Thời lượng mặc định: 2
                                 giờ</small>
                             <div *ngIf="isDateTimeInPast()" class="text-danger mt-2">
-                                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-circle"></i>
                                 Thời gian phải lớn hơn thời điểm hiện tại
                             </div>
-                        </div>
-                    </div>
+            </div>
+        </div>
 
                     <div class="step-actions mt-4">
                         <button type="button" class="btn btn-primary"
@@ -175,7 +175,7 @@
                                 <h3>{{ roomType.tenLoaiPhong }}</h3>
                                 <div class="room-specs">
                                     <div class="spec-item">
-                                        <i class="fas fa-users"></i>
+                                            <i class="fas fa-users"></i>
                                         <span>{{ roomType.soLuongChoNgoi }} chỗ</span>
                                     </div>
                                     <div class="spec-item">
@@ -193,7 +193,7 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
-                    </div>
+                                    </div>
 
                     <div class="step-actions">
                         <button type="button" class="btn btn-back" (click)="previousStep()">
@@ -205,15 +205,15 @@
                             Tiếp tục
                             <i class="fas fa-arrow-right"></i>
                         </button>
-                    </div>
-                </div>
+                                    </div>
+                                </div>
 
                 <!-- Step 3: User Information -->
                 <div class="step-content" *ngIf="currentStep() === 3">
                     <div class="step-header">
                         <h2>Thông tin sử dụng</h2>
                         <p>Cung cấp thông tin chi tiết về mục đích sử dụng</p>
-                    </div>
+                                    </div>
 
                     <div class="info-form">
                         <div class="form-row">
@@ -236,171 +236,136 @@
                                     {{getCapacityErrorMessage() || 'Số người không hợp lệ'}}
                                 </div>
                             </div>
+
+                            <div class="time-note">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Thời gian sử dụng mặc định: <strong>2 giờ</strong> (tự động tính từ thời gian bắt
+                                    đầu)</span>
+                            </div>
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-field full-width">
-                                <label class="field-label">
-                                    <i class="fas fa-clipboard-list"></i>
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-clipboard-list"></i>
+                                THÔNG TIN SỬ DỤNG
+                            </h3>
+
+                            <div class="form-group">
+                                <label class="form-label">
                                     Mục đích sử dụng
-                                    <span class="required">*</span>
+                                    <span class="required"
+                                        *ngIf="form.get('lyDo')?.hasError('required') && form.get('lyDo')?.touched">*</span>
                                 </label>
-                                <textarea formControlName="lyDo" class="form-textarea"
+                                <textarea formControlName="lyDo"
                                     [class.error]="form.get('lyDo')?.invalid && form.get('lyDo')?.touched"
-                                    placeholder="Mô tả chi tiết mục đích sử dụng phòng (học nhóm, ôn thi, thảo luận dự án...)"></textarea>
-                                <div class="field-error" *ngIf="form.get('lyDo')?.invalid && form.get('lyDo')?.touched">
-                                    <i class="fas fa-exclamation-circle"></i>
+                                    class="form-textarea"
+                                    placeholder="Vui lòng mô tả mục đích sử dụng phòng (ví dụ: Học nhóm môn Toán, làm bài tập nhóm, ôn thi cuối kỳ...)"></textarea>
+                                <div class="error-message"
+                                    *ngIf="form.get('lyDo')?.invalid && form.get('lyDo')?.touched">
+                                    <i class="fas fa-exclamation-triangle"></i>
                                     Vui lòng nhập mục đích sử dụng
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-row">
-                            <div class="form-field full-width">
-                                <label class="field-label">
+                            <div class="form-group">
+                                <label class="form-label">
+                                    Số lượng người tham gia
+                                    <span class="required"
+                                        *ngIf="form.get('soLuong')?.hasError('required') && form.get('soLuong')?.touched">*</span>
+                                </label>
+                                <input type="number" formControlName="soLuong"
+                                    [class.error]="form.get('soLuong')?.invalid && form.get('soLuong')?.touched"
+                                    class="form-input" placeholder="Nhập số lượng người tham gia" min="1" max="50" />
+                                <div class="error-message"
+                                    *ngIf="form.get('soLuong')?.invalid && form.get('soLuong')?.touched">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Số lượng người tham gia phải từ 1 đến 50
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">
                                     <i class="fas fa-sticky-note"></i>
-                                    Ghi chú thêm
-                                    <span class="optional">(tùy chọn)</span>
+                                    Ghi chú thêm (tùy chọn)
                                 </label>
                                 <textarea formControlName="ghiChu" class="form-textarea"
-                                    placeholder="Yêu cầu đặc biệt, thiết bị cần thêm hoặc thông tin khác..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="step-actions">
-                        <button type="button" class="btn-back" (click)="previousStep()">
-                            <i class="fas fa-arrow-left"></i>
-                            Quay lại
-                        </button>
-                        <button type="button" class="btn-next btn-compact" [disabled]="!canProceedToStep4()"
-                            (click)="nextStep()">
-                            Tiếp tục
-                            <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Step 4: Confirmation -->
-                <div class="step-content" *ngIf="currentStep() === 4">
-                    <div class="step-header">
-                        <h2>Xác nhận đặt phòng</h2>
-                        <p>Vui lòng kiểm tra lại thông tin trước khi gửi yêu cầu</p>
-                    </div>
-
-                    <div class="confirmation-card">
-                        <div class="booking-summary">
-                            <h3>
-                                <i class="fas fa-file-contract"></i>
-                                Thông tin đặt phòng
-                            </h3>
-
-                            <div class="summary-grid">
-                                <div class="summary-item">
-                                    <div class="item-label">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        Thời gian
-                                    </div>
-                                    <div class="item-value">
-                                        <strong>{{ getFormattedDateTime() }}</strong>
-                                        <span class="duration">(2 giờ)</span>
-                                    </div>
-                                </div>
-
-                                <div class="summary-item">
-                                    <div class="item-label">
-                                        <i class="fas fa-door-open"></i>
-                                        Loại phòng
-                                    </div>
-                                    <div class="item-value">
-                                        <strong>{{ getSelectedRoomType()?.tenLoaiPhong }}</strong>
-                                        <span class="room-location">{{ getSelectedRoomType()?.viTri }}</span>
-                                    </div>
-                                </div>
-
-                                <div class="summary-item">
-                                    <div class="item-label">
-                                        <i class="fas fa-users"></i>
-                                        Số người
-                                    </div>
-                                    <div class="item-value">
-                                        <strong>{{ form.value.soLuong }} người</strong>
-                                    </div>
-                                </div>
-
-                                <div class="summary-item">
-                                    <div class="item-label">
-                                        <i class="fas fa-clipboard-list"></i>
-                                        Mục đích
-                                    </div>
-                                    <div class="item-value">
-                                        <span>{{ form.value.lyDo }}</span>
-                                    </div>
-                                </div>
-
-                                <div class="summary-item" *ngIf="form.value.ghiChu">
-                                    <div class="item-label">
-                                        <i class="fas fa-sticky-note"></i>
-                                        Ghi chú
-                                    </div>
-                                    <div class="item-value">
-                                        <span>{{ form.value.ghiChu }}</span>
-                                    </div>
+                                    placeholder="Yêu cầu đặc biệt, thiết bị cần thêm, hoặc thông tin khác..."></textarea>
+                                <div class="form-hint">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Ghi chú về trang thiết bị hoặc yêu cầu đặc biệt (nếu có)
                                 </div>
                             </div>
                         </div>
-
-                        <div class="terms-section">
-                            <h4>
-                                <i class="fas fa-exclamation-triangle"></i>
-                                Điều khoản và lưu ý
-                            </h4>
-                            <ul class="terms-list">
-                                <li>Yêu cầu đặt phòng sẽ được xem xét trong vòng 24 giờ</li>
-                                <li>Vui lòng đến sớm 15 phút trước giờ đã đặt</li>
-                                <li>Tuân thủ nghiêm túc nội quy sử dụng phòng của thư viện</li>
-                                <li>Thông báo kịp thời nếu có thay đổi lịch trình</li>
-                                <li>Giữ gìn vệ sinh và trang thiết bị trong phòng</li>
-                            </ul>
-                        </div>
                     </div>
 
-                    <div class="step-actions">
-                        <button type="button" class="btn-back" (click)="previousStep()">
-                            <i class="fas fa-arrow-left"></i>
-                            Quay lại
-                        </button>
-                        <button type="submit" class="btn-submit btn-compact" [disabled]="loading() || form.invalid">
-                            <i class="fas fa-paper-plane"></i>
-                            Gửi yêu cầu
-                        </button>
+                    <!-- Right Column - Summary -->
+                    <div class="summary-column">
+                        <div class="summary-card">
+                            <div class="summary-header">
+                                <h3>
+                                    <i class="fas fa-file-alt"></i>
+                                    TÓM TẮT YÊU CẦU
+                                </h3>
+                            </div>
+
+                            <div class="summary-content">
+                                <div class="summary-item">
+                                    <label>Loại phòng:</label>
+                                    <span class="value">{{ getSelectedRoomType()?.tenLoaiPhong || 'Chưa chọn' }}</span>
+                                </div>
+
+                                <div class="summary-item">
+                                    <label>Thời gian:</label>
+                                    <span class="value">{{ getFormattedDateTime() || 'Chưa chọn' }}</span>
+                                </div>
+
+                                <div class="summary-item">
+                                    <label>Thời lượng:</label>
+                                    <span class="value">2 giờ</span>
+                                </div>
+
+                                <div class="summary-item">
+                                    <label>Số người:</label>
+                                    <span class="value">{{ form.value.soLuong || 'Chưa nhập' }}</span>
+                                </div>
+
+                                <div class="summary-item">
+                                    <label>Mục đích:</label>
+                                    <span class="value purpose">{{ form.value.lyDo || 'Chưa nhập' }}</span>
+                                </div>
+
+                                <div *ngIf="form.value.ghiChu" class="summary-item">
+                                    <label>Ghi chú:</label>
+                                    <span class="value note">{{ form.value.ghiChu }}</span>
+                                </div>
+                            </div>
+
+                            <div class="summary-actions">
+                                <button type="submit" class="btn btn-primary" [disabled]="loading() || form.invalid">
+                                    <i class="fas fa-paper-plane"></i>
+                                    GỬI YÊU CẦU ĐẶT PHÒNG
+                                </button>
+
+                                <button type="button" class="btn btn-secondary" (click)="form.reset()">
+                                    <i class="fas fa-redo"></i>
+                                    ĐẶT LẠI
+                                </button>
+                            </div>
+
+                            <div class="summary-note">
+                                <h4>
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    LƯU Ý QUAN TRỌNG
+                                </h4>
+                                <ul>
+                                    <li>Yêu cầu sẽ được xét duyệt trong vòng 24 giờ</li>
+                                    <li>Vui lòng đến sớm 15 phút trước giờ đặt</li>
+                                    <li>Tuân thủ nội quy sử dụng phòng của thư viện</li>
+                                    <li>Liên hệ quầy thư viện nếu có thay đổi</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
-    </main>
-
-    <!-- Help Section -->
-    <aside class="help-section">
-        <div class="help-card">
-            <div class="help-header">
-                <i class="fas fa-question-circle"></i>
-                <h3>Cần hỗ trợ?</h3>
-            </div>
-            <div class="help-content">
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <span>Hotline: (028) 3816 1673</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>Email: thuvien@huit.edu.vn</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>Quầy dịch vụ - Tầng 1</span>
-                </div>
-            </div>
-        </div>
-    </aside>
-</div>

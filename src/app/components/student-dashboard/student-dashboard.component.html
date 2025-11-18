@@ -140,9 +140,10 @@
     <div class="container">
         <div class="section-header">
             <h3>
-                <i class="fas fa-clock text-primary"></i>
-                PHÒNG ĐANG SỬ DỤNG
+                <i class="fa-solid fa-building-circle-check text-primary"></i>
+                     PHÒNG ĐANG SỬ DỤNG
             </h3>
+
             <span class="booking-count">{{ currentBookings().length }} phòng</span>
         </div>
 
@@ -229,268 +230,173 @@
 
 <!-- Main Content Grid -->
 <section class="main-content">
-    <div class="container">
-        <div class="content-grid">
-            <!-- Left Column: News & Announcements -->
-            <div class="content-left">
-                <!-- Hot News Section -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3>
-                            <i class="fas fa-fire text-danger"></i>
-                            TIN TỨC SỰ KIỆN
-                            <small style="font-size: 12px; color: #666; margin-left: 10px;">
-                                ({{ currentNewsIndex() + 1 }}/{{ newsList().length }})
-                            </small>
-                        </h3>
-                        <div class="header-nav">
-                            <button class="nav-btn" (click)="previousNews()">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="nav-btn" (click)="nextNews()">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="news-carousel">
-                        @if (currentNews()) {
-                        <div class="news-item featured">
-                            <div class="news-image">
-                                <img [src]="getNewsImage(currentNews()!)" [alt]="currentNews()!.TITLE"
-                                    onerror="this.src='https://via.placeholder.com/400x250/2196F3/FFFFFF?text=Tin+tức+HUIT'">
-                                @if (isHotNews(currentNews()!)) {
-                                <div class="news-badge">HOT</div>
-                                }
-                                <div class="news-category-badge">{{ getNewsCategory(currentNews()!) }}</div>
-                            </div>
-                            <div class="news-content">
-                                <h4 [title]="currentNews()!.TITLE">{{ currentNews()!.TITLE }}</h4>
-                                <p>{{ getNewsExcerpt(currentNews()!) }}</p>
-                                <div class="news-meta">
-                                    <span class="news-date">
-                                        <i class="fas fa-calendar"></i>
-                                        {{ formatNewsDate(currentNews()!.PUBLISHDATE) }}
-                                    </span>
-                                    <span class="news-views">
-                                        <i class="fas fa-eye"></i>
-                                        {{ currentNews()!.VIEWCOUNT }} lượt xem
-                                    </span>
-                                </div>
-                                @if (currentNews()!.STRAUTHOR_NAME) {
-                                <div class="news-author">
-                                    <i class="fas fa-user"></i>
-                                    {{ currentNews()!.STRAUTHOR_NAME }}
-                                </div>
-                                }
-                                <button class="btn-read-more" (click)="readNewsDetail(currentNews()!)">
-                                    <i class="fas fa-arrow-right"></i>
-                                    Xem chi tiết
-                                </button>
-                            </div>
-                        </div>
-                        } @else {
-                        <div class="news-loading">
-                            @if (isLoadingNews()) {
-                            <div class="loading-spinner">
-                                <i class="fas fa-spinner fa-spin"></i>
-                                <p>Đang tải tin tức...</p>
-                            </div>
-                            }
-                            @if (!isLoadingNews() && newsList().length === 0) {
-                            <div class="no-news">
-                                <i class="fas fa-newspaper"></i>
-                                <p>Hiện tại chưa có tin tức mới</p>
-                            </div>
-                            }
-                        </div>
-                        }
+  <div class="container">
+    <div class="content-grid-horizontal">
+      
+      <!-- Tin tức sự kiện -->
+      <div class="section-card news-section">
+        <div class="section-header">
+          <h3><i class="fas fa-fire text-danger"></i> TIN TỨC SỰ KIỆN</h3>
+        </div>
+        <div class="news-carousel">
+          @if (currentNews()) {
+            <div class="news-item featured">
+              <div class="news-image">
+                <img [src]="getNewsImage(currentNews()!)" [alt]="currentNews()!.TITLE"
+                  onerror="this.src='https://via.placeholder.com/400x250/2196F3/FFFFFF?text=Tin+tức+HUIT'">
+                @if (isHotNews(currentNews()!)) {
+                  <div class="news-badge">HOT</div>
+                }
+                <div class="news-category-badge">{{ getNewsCategory(currentNews()!) }}</div>
+              </div>
+              <div class="news-content">
+                <h4 [title]="currentNews()!.TITLE">{{ currentNews()!.TITLE }}</h4>
+                <p>{{ getNewsExcerpt(currentNews()!) }}</p>
+                <div class="news-meta">
+                  <span class="news-date">
+                    <i class="fas fa-calendar"></i>
+                    {{ formatNewsDate(currentNews()!.PUBLISHDATE) }}
+                  </span>
+                  <span class="news-views">
+                    <i class="fas fa-eye"></i>
+                    {{ currentNews()!.VIEWCOUNT }} lượt xem
+                  </span>
+                </div>
+                @if (currentNews()!.STRAUTHOR_NAME) {
+                  <div class="news-author">
+                    <i class="fas fa-user"></i>
+                    {{ currentNews()!.STRAUTHOR_NAME }}
+                  </div>
+                }
+                
+              </div>
+            </div>
+          } @else {
+            <div class="news-loading">
+              @if (isLoadingNews()) {
+                <div class="loading-spinner">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <p>Đang tải tin tức...</p>
+                </div>
+              }
+              @if (!isLoadingNews() && newsList().length === 0) {
+                <div class="no-news">
+                  <i class="fas fa-newspaper"></i>
+                  <p>Hiện tại chưa có tin tức mới</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Thông báo -->
+      <div class="section-card announcements-section">
+        <div class="section-header">
+          <h3><i class="fas fa-bullhorn text-primary"></i> THÔNG BÁO</h3>
+        </div>
+        <div class="announcements-list">
+          @for (notification of notifications().slice(0, 5); track notification.maThongBao; let i = $index) {
+            <div class="announcement-item" (click)="navigateToNotificationDetail(notification.maThongBao)">
+              <div class="announcement-icon"><i class="fas fa-bell"></i></div>
+              <div class="announcement-content">
+                <h5>{{ notification.tieuDe }}</h5>
+                <p>{{ truncateText(notification.noiDung, 100) }}</p>
+                <span class="announcement-date">{{ formatDate(notification.ngayTao) }}</span>
+              </div>
+              <div class="announcement-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+          }
+          @if (notifications().length === 0) {
+            <div class="no-announcements">
+              <i class="fas fa-info-circle"></i>
+              <p>Hiện tại chưa có thông báo mới</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Truy cập nhanh -->
+      <div class="section-card quick-access-section">
+        <div class="section-header">
+          <h3><i class="fas fa-bolt text-warning"></i> TRUY CẬP NHANH</h3>
+        </div>
+        <div class="quick-actions">
+          <div class="action-item" (click)="navigateToRoomSearch()">
+            <div class="action-icon search"><i class="fas fa-search"></i></div>
+            <div class="action-content"><h5>Tìm kiếm phòng</h5><p>Tìm phòng phù hợp với nhu cầu</p></div>
+          </div>
+          <div class="action-item" (click)="navigateToBooking()">
+            <div class="action-icon booking"><i class="fas fa-calendar-plus"></i></div>
+            <div class="action-content"><h5>Đặt phòng</h5><p>Đăng ký sử dụng phòng học</p></div>
+          </div>
+          <div class="action-item" (click)="navigateToProfile()">
+            <div class="action-icon profile"><i class="fas fa-user"></i></div>
+            <div class="action-content"><h5>Hồ sơ cá nhân</h5><p>Quản lý thông tin tài khoản</p></div>
+          </div>
+          <div class="action-item" (click)="navigateToHistory()">
+            <div class="action-icon history"><i class="fas fa-history"></i></div>
+            <div class="action-content"><h5>Lịch sử đặt phòng</h5><p>Xem các lần đặt phòng trước</p></div>
+          </div>
+          <div class="action-item" (click)="navigateToChat()">
+            <div class="action-icon support"><i class="fas fa-headset"></i></div>
+            <div class="action-content"><h5>Hỗ trợ trực tuyến</h5><p>Chat với trợ lý thư viện</p></div>
+          </div>
+          <div class="action-item" (click)="navigateToRegulations()">
+            <div class="action-icon rules"><i class="fas fa-file-contract"></i></div>
+            <div class="action-content"><h5>Nội quy thư viện</h5><p>Quy định sử dụng dịch vụ</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<div class="history-page">
+    <footer class="footer-links">
+        <div class="container">
+            <div class="links-grid">
+
+                <div class="link-column"> 
+                    <h4>TRUNG TÂM THÔNG TIN - THƯ VIỆN</h4>
+                    <p>ĐẠI HỌC CÔNG THƯƠNG TP.HCM</p>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</p>
+                        <p><i class="fas fa-phone"></i> ĐT: (028) 3816 1673 - 137</p>
+                        <p><i class="fas fa-envelope"></i> Email: thuvien@huit.edu.vn</p>
+                        <p><i class="fas fa-globe"></i> Website: MT: 1F.3627</p>
                     </div>
                 </div>
 
-                <!-- Announcements Section -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3>
-                            <i class="fas fa-bullhorn text-primary"></i>
-                            THÔNG BÁO
-                        </h3>
-                        <a class="view-all-link" (click)="navigateToNotifications()">
-                            <i class="fas fa-chevron-right"></i>
+                <div class="link-column"> 
+                    <h5>THỐNG KÊ TRUY CẬP</h5>
+                    <div class="stats-info">
+                        <p>Tổng lượt truy cập: <strong>{{ statistics()?.tongLuotTruyCap || 0 }}</strong></p>
+                        <p>Số lượt truy cập hôm nay: <strong>{{ statistics()?.trongNgay || 0 }}</strong></p>
+                        <p>Thành viên online: <strong>{{ statistics()?.thanhVienOnline || 0 }}</strong></p>
+                        <p>Khách online: <strong>{{ statistics()?.khachOnline || 0 }}</strong></p>
+                    </div>
+                </div>
+
+                <div class="link-column"> 
+                    <h5>LIÊN KẾT</h5>
+                    <div class="external-links">
+                        <a href="https://huit.edu.vn" target="_blank"><i class="fas fa-external-link-alt"></i> Website HUIT</a>
+                        <a href="#" class="facebook-link"><i class="fab fa-facebook"></i> Facebook</a>
+                        <a href="#" class="youtube-link"><i class="fab fa-youtube"></i> YouTube</a>
+                    </div>
+                    <div class="help-section">
+                        <h6>Hỗ trợ gặp lỗi?</h6>
+                        <a href="#" class="help-link" (click)="navigateToChat()">
+                            <i class="fas fa-question-circle"></i> Trợ giúp
                         </a>
                     </div>
-                    <div class="announcements-list">
-                        @for (notification of notifications().slice(0, 5); track notification.maThongBao; let i =
-                        $index) {
-                        <div class="announcement-item" (click)="navigateToNotificationDetail(notification.maThongBao)">
-                            <div class="announcement-icon">
-                                <i class="fas fa-bell"></i>
-                            </div>
-                            <div class="announcement-content">
-                                <h5>{{ notification.tieuDe }}</h5>
-                                <p>{{ truncateText(notification.noiDung, 100) }}</p>
-                                <span class="announcement-date">
-                                    {{ formatDate(notification.ngayTao) }}
-                                </span>
-                            </div>
-                            <div class="announcement-arrow">
-                                <i class="fas fa-chevron-right"></i>
-                            </div>
-                        </div>
-                        }
-
-                        @if (notifications().length === 0) {
-                        <div class="no-announcements">
-                            <i class="fas fa-info-circle"></i>
-                            <p>Hiện tại chưa có thông báo mới</p>
-                        </div>
-                        }
-                    </div>
                 </div>
+
             </div>
-
-            <!-- Right Column: Quick Actions & Info -->
-            <div class="content-right">
-                <!-- Quick Actions -->
-                <div class="section-card">
-                    <div class="section-header">
-                        <h3>
-                            <i class="fas fa-bolt text-warning"></i>
-                            TRUY CẬP NHANH
-                        </h3>
-                    </div>
-                    <div class="quick-actions">
-                        <div class="action-item" (click)="navigateToRoomSearch()">
-                            <div class="action-icon search">
-                                <i class="fas fa-search"></i>
-                            </div>
-                            <div class="action-content">
-                                <h5>Tìm kiếm phòng</h5>
-                                <p>Tìm phòng phù hợp với nhu cầu</p>
-                            </div>
-                        </div>
-
-                        <div class="action-item" (click)="navigateToBooking()">
-                            <div class="action-icon booking">
-                                <i class="fas fa-calendar-plus"></i>
-                            </div>
-                            <div class="action-content">
-                                <h5>Đặt phòng</h5>
-                                <p>Đăng ký sử dụng phòng học</p>
-                            </div>
-                        </div>
-
-                        <div class="action-item" (click)="navigateToProfile()">
-                            <div class="action-icon profile">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="action-content">
-                                <h5>Hồ sơ cá nhân</h5>
-                                <p>Quản lý thông tin tài khoản</p>
-                            </div>
-                        </div>
-
-                        <div class="action-item" (click)="navigateToHistory()">
-                            <div class="action-icon history">
-                                <i class="fas fa-history"></i>
-                            </div>
-                            <div class="action-content">
-                                <h5>Lịch sử đặt phòng</h5>
-                                <p>Xem các lần đặt phòng trước</p>
-                            </div>
-                        </div>
-
-                        <div class="action-item" (click)="navigateToChat()">
-                            <div class="action-icon support">
-                                <i class="fas fa-headset"></i>
-                            </div>
-                            <div class="action-content">
-                                <h5>Hỗ trợ trực tuyến</h5>
-                                <p>Chat với trợ lý thư viện</p>
-                            </div>
-                        </div>
-
-                        <div class="action-item" (click)="navigateToRegulations()">
-                            <div class="action-icon rules">
-                                <i class="fas fa-file-contract"></i>
-                            </div>
-                            <div class="action-content">
-                                <h5>Nội quy thư viện</h5>
-                                <p>Quy định sử dụng dịch vụ</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="footer-bottom text-center"> 
+                <p>&copy; 2025 TRUNG TÂM THÔNG TIN - THƯ VIỆN | Đại học Công Thương TP.HCM. All rights reserved.</p>
             </div>
         </div>
-    </div>
-</section>
-<!-- New Books Section -->
-<section class="new-books-section">
-    <div class="container">
-        <div class="section-header">
-            <h3>
-                <i class="fas fa-book text-success"></i>
-                SÁCH MỚI
-            </h3>
-            <div class="header-nav">
-                <button class="nav-btn" (click)="previousBook()">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="nav-btn" (click)="nextBook()">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-
-
-    </div>
-</section>
-
-<!-- Footer Links -->
-<section class="footer-links">
-    <div class="container">
-        <div class="links-grid">
-            <div class="link-column">
-                <h4>TRUNG TÂM THÔNG TIN - THƯ VIỆN</h4>
-                <p>ĐẠI HỌC CÔNG THƯƠNG TP.HCM</p>
-                <div class="contact-info">
-                    <p><i class="fas fa-map-marker-alt"></i> 140 Lê Trọng Tấn, Tây Thạnh, Tân Phú, TP.HCM</p>
-                    <p><i class="fas fa-phone"></i> ĐT: (028) 3816 1673 - 137</p>
-                    <p><i class="fas fa-envelope"></i> Email: thuvien@huit.edu.vn</p>
-                    <p><i class="fas fa-globe"></i> Website: MT: 1F.3627</p>
-                </div>
-            </div>
-
-            <div class="link-column">
-                <h5>THỐNG KÊ TRUY CẬP</h5>
-                <div class="stats-info">
-                    <p>Tổng lượt truy cập: <strong>{{ statistics()?.tongLuotTruyCap || 0 }}</strong></p>
-                    <p>Số lượt truy cập: <strong>{{ statistics()?.trongNgay || 0 }}</strong></p>
-                    <p>Thành viên online: <strong>{{ statistics()?.thanhVienOnline || 0 }}</strong></p>
-                    <p>Khách online: <strong>{{ statistics()?.khachOnline || 0 }}</strong></p>
-                </div>
-            </div>
-
-            <div class="link-column">
-                <h5>LIÊN KẾT</h5>
-                <div class="external-links">
-                    <a href="https://huit.edu.vn" target="_blank">
-                        <i class="fas fa-external-link-alt"></i> Website HUIT
-                    </a>
-                    <a href="#" class="facebook-link">
-                        <i class="fab fa-facebook"></i> Facebook
-                    </a>
-                    <a href="#" class="youtube-link">
-                        <i class="fab fa-youtube"></i> YouTube
-                    </a>
-                </div>
-                <div class="help-section">
-                    <h6>Hỗ trợ gặp lỗi?</h6>
-                    <a href="#" class="help-link" (click)="navigateToChat()">
-                        <i class="fas fa-question-circle"></i> Trợ giúp
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </footer>
+</div>

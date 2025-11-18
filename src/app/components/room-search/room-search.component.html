@@ -1,194 +1,247 @@
-<div class="room-search-container">
-    <div class="search-header">
-        <h2>Tra cứu phòng trống</h2>
-        <p>Tìm kiếm phòng phù hợp với nhu cầu của bạn</p>
+<div class="room-search-page library-theme">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-inner">
+      <h1 class="page-title">
+        <i class="fas fa-magnifying-glass"></i>
+        TRA CỨU PHÒNG TRỐNG
+      </h1>
+      <button class="back-btn" type="button" (click)="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        <span>Quay lại</span>
+      </button>
+      <div class="header-spacer"></div>
     </div>
+  </div>
 
-    <!-- Search Form -->
-    <div class="search-form-container">
-        <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="search-form">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="maLoaiPhong">Loại phòng <span class="required">*</span></label>
-                    <select id="maLoaiPhong" formControlName="maLoaiPhong" class="form-control"
-                        [class.error]="getFieldError('maLoaiPhong')">
-                        <option value="">Chọn loại phòng</option>
-                        @for (roomType of roomTypes(); track roomType.maLoaiPhong) {
-                        <option [value]="roomType.maLoaiPhong">{{ roomType.tenLoaiPhong }}</option>
-                        }
-                    </select>
-                    @if (getFieldError('maLoaiPhong')) {
-                    <span class="error-message">{{ getFieldError('maLoaiPhong') }}</span>
-                    }
-                </div>
+  <div class="page-container">
+    <!-- Search Form Card -->
+    <div class="search-card">
+      <div class="card-header">
+        <h2 class="section-title">
+          <i class="fas fa-filter"></i>
+          Tiêu chí tìm kiếm
+        </h2>
+      </div>
 
-                <div class="form-group">
-                    <label for="thoiGianBatDau">Thời gian bắt đầu <span class="required">*</span></label>
-                    <input type="datetime-local" id="thoiGianBatDau" formControlName="thoiGianBatDau"
-                        class="form-control" [class.error]="getFieldError('thoiGianBatDau')">
-                    @if (getFieldError('thoiGianBatDau')) {
-                    <span class="error-message">{{ getFieldError('thoiGianBatDau') }}</span>
-                    }
-                </div>
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="card-body">
+        <div class="search-grid">
+          <!-- Loại phòng -->
+          <div class="form-group">
+            <label for="maLoaiPhong">Loại phòng <span class="required">*</span></label>
+            <div class="select-container">
+              <select id="maLoaiPhong" formControlName="maLoaiPhong" class="form-input">
+                <option value="">-- Chọn loại phòng --</option>
+                @for (roomType of roomTypes(); track roomType.maLoaiPhong) {
+                  <option [value]="roomType.maLoaiPhong">{{ roomType.tenLoaiPhong }}</option>
+                }
+              </select>
+              <i class="fas fa-chevron-down select-icon"></i>
             </div>
+            @if (getFieldError('maLoaiPhong')) {
+              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('maLoaiPhong') }}</span>
+            }
+          </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="thoiGianSuDung">Thời gian sử dụng (giờ) <span class="required">*</span></label>
-                    <input type="number" id="thoiGianSuDung" formControlName="thoiGianSuDung" min="1" max="8"
-                        class="form-control" [class.error]="getFieldError('thoiGianSuDung')">
-                    @if (getFieldError('thoiGianSuDung')) {
-                    <span class="error-message">{{ getFieldError('thoiGianSuDung') }}</span>
-                    }
-                </div>
-
-                <div class="form-group">
-                    <label for="sucChuaToiThieu">Sức chứa tối thiểu <span class="required">*</span></label>
-                    <input type="number" id="sucChuaToiThieu" formControlName="sucChuaToiThieu" min="1"
-                        class="form-control" [class.error]="getFieldError('sucChuaToiThieu')">
-                    @if (getFieldError('sucChuaToiThieu')) {
-                    <span class="error-message">{{ getFieldError('sucChuaToiThieu') }}</span>
-                    }
-                </div>
+          <!-- Thời gian bắt đầu -->
+          <div class="form-group">
+            <label for="thoiGianBatDau">Thời gian bắt đầu <span class="required">*</span></label>
+            <div class="input-group">
+              <i class="fas fa-calendar-alt input-icon"></i>
+              <input type="datetime-local" id="thoiGianBatDau" formControlName="thoiGianBatDau" class="form-input">
             </div>
+            @if (getFieldError('thoiGianBatDau')) {
+              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('thoiGianBatDau') }}</span>
+            }
+          </div>
 
-            <div class="search-actions">
-                <button type="submit" class="btn btn-primary" [disabled]="isSearching() || isLoading()">
-                    @if (isSearching()) {
-                    <i class="fas fa-spinner fa-spin"></i>
-                    } @else {
-                    <i class="fas fa-search"></i>
-                    }
-                    Tìm kiếm phòng
-                </button>
+          <!-- Thời gian sử dụng -->
+          <div class="form-group">
+            <label for="thoiGianSuDung">Thời gian sử dụng (giờ) <span class="required">*</span></label>
+            <div class="input-group">
+              <i class="fas fa-clock input-icon"></i>
+              <input type="number" id="thoiGianSuDung" formControlName="thoiGianSuDung" min="1" max="8" class="form-input" placeholder="1-8 giờ">
             </div>
-        </form>
+            @if (getFieldError('thoiGianSuDung')) {
+              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('thoiGianSuDung') }}</span>
+            }
+          </div>
+
+          <!-- Sức chứa tối thiểu -->
+          <div class="form-group">
+            <label for="sucChuaToiThieu">Sức chứa tối thiểu <span class="required">*</span></label>
+            <div class="input-group">
+              <i class="fas fa-door-open input-icon"></i>
+              <input type="number" id="sucChuaToiThieu" formControlName="sucChuaToiThieu" min="1" class="form-input" placeholder="Số người">
+            </div>
+            @if (getFieldError('sucChuaToiThieu')) {
+              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('sucChuaToiThieu') }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="search-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="isSearching() || isLoading()">
+            <i class="fas fa-search"></i>
+            <span>Tìm kiếm phòng</span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="resetSearch()"
+            [disabled]="isSearching() || isLoading()"
+          >
+            <i class="fas fa-redo"></i>
+            <span>Đặt lại</span>
+          </button>
+        </div>
+      </form>
     </div>
 
     <!-- Error Message -->
     @if (errorMessage()) {
-    <div class="alert alert-danger">
-        <i class="fas fa-exclamation-triangle"></i>
-        {{ errorMessage() }}
-    </div>
+      <div class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Loading State -->
+    @if (isLoading() || isSearching()) {
+      <div class="loading-state">
+        <div class="spinner">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        <p>{{ isSearching() ? 'Đang tìm kiếm...' : 'Đang tải...' }}</p>
+      </div>
     }
 
     <!-- Search Results -->
     @if (availableRooms().length > 0) {
-    <div class="search-results">
-        <h3>Kết quả tìm kiếm ({{ availableRooms().length }} phòng)</h3>
-        <div class="rooms-grid">
-            @for (room of availableRooms(); track room.maPhong) {
-            <div class="room-card" (click)="onRoomClick(room)">
-                <div class="room-card-header">
-                    <h4>{{ room.tenPhong }}</h4>
-                    <span class="room-type">{{ room.tenLoaiPhong }}</span>
-                </div>
-                <div class="room-card-body">
-                    <div class="room-info">
-                        <i class="fas fa-users"></i>
-                        <span>Sức chứa: {{ room.sucChua }} người</span>
-                    </div>
-                    @if (room.viTri) {
-                    <div class="room-info">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Vị trí: {{ room.viTri }}</span>
-                    </div>
-                    }
-                </div>
-                <div class="room-card-footer">
-                    <span class="view-detail">Xem chi tiết <i class="fas fa-arrow-right"></i></span>
-                </div>
-            </div>
-            }
+      <div class="results-card">
+        <div class="card-header">
+          <h2 class="section-title">
+            <i class="fas fa-th"></i>
+            Kết quả tìm kiếm
+            <span class="result-count">({{ availableRooms().length }} phòng)</span>
+          </h2>
         </div>
-    </div>
-    } @else if (!isSearching() && !isLoading() && !errorMessage()) {
-    <div class="no-search">
-        <div class="no-search-content">
-            <i class="fas fa-search"></i>
-            <h3>Tìm kiếm phòng trống</h3>
-            <p>Vui lòng nhập thông tin tìm kiếm để hiển thị kết quả</p>
-        </div>
-    </div>
-    }
 
-    <!-- Loading -->
-    @if (isLoading() || isSearching()) {
-    <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i>
-        <span>{{ isSearching() ? 'Đang tìm kiếm...' : 'Đang tải...' }}</span>
-    </div>
+        <div class="card-body">
+          <div class="rooms-grid">
+            @for (room of availableRooms(); track room.maPhong) {
+              <div class="room-card" (click)="onRoomClick(room)">
+                <div class="room-card-header">
+                  <div>
+                    <h3 class="room-name">{{ room.tenPhong }}</h3>
+                    <span class="room-type-badge">{{ room.tenLoaiPhong }}</span>
+                  </div>
+                </div>
+
+                <div class="room-card-body">
+                  <div class="room-feature">
+                    <i class="fas fa-users"></i>
+                    <span>Sức chứa: <strong>{{ room.sucChua }} người</strong></span>
+                  </div>
+                  @if (room.viTri) {
+                    <div class="room-feature">
+                      <i class="fas fa-map-marker-alt"></i>
+                      <span>Vị trí: <strong>{{ room.viTri }}</strong></span>
+                    </div>
+                  }
+                </div>
+
+                <div class="room-card-footer">
+                  <span class="view-link">
+                    Chi tiết
+                    <i class="fas fa-arrow-right"></i>
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    } @else if (!isSearching() && !isLoading() && !errorMessage()) {
+      <div class="empty-state">
+        <div class="empty-icon">
+          <i class="fas fa-search"></i>
+        </div>
+        <h3>Chưa có kết quả</h3>
+        <p>Vui lòng nhập tiêu chí tìm kiếm để xem danh sách phòng trống</p>
+      </div>
     }
+  </div>
 </div>
 
 <!-- Room Detail Modal -->
 @if (selectedRoomDetail()) {
-<div class="modal-overlay" (click)="closeRoomDetail()">
+  <div class="modal-overlay" (click)="closeRoomDetail()">
     <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>{{ selectedRoomDetail()!.tenPhong }}</h3>
-            <button type="button" class="close-btn" (click)="closeRoomDetail()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+      <!-- Header -->
+      <div class="modal-header">
+        <h3>{{ selectedRoomDetail()!.tenPhong }}</h3>
+        <button type="button" class="close-btn" (click)="closeRoomDetail()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
 
-        <div class="modal-body">
-            <div class="room-detail">
-                <div class="detail-section">
-                    <h4>Thông tin cơ bản</h4>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <strong>Loại phòng:</strong>
-                            <span>{{ selectedRoomDetail()!.tenLoaiPhong }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <strong>Sức chứa:</strong>
-                            <span>{{ selectedRoomDetail()!.sucChua }} người</span>
-                        </div>
-                        @if (selectedRoomDetail()!.viTri) {
-                        <div class="detail-item">
-                            <strong>Vị trí:</strong>
-                            <span>{{ selectedRoomDetail()!.viTri }}</span>
-                        </div>
-                        }
-                        @if (selectedRoomDetail()!.moTa) {
-                        <div class="detail-item description">
-                            <strong>Mô tả:</strong>
-                            <span>{{ selectedRoomDetail()!.moTa }}</span>
-                        </div>
-                        }
-                    </div>
-                </div>
-
-                @if (selectedRoomDetail()!.taiNguyen && selectedRoomDetail()!.taiNguyen.length > 0) {
-                <div class="detail-section">
-                    <h4>Trang thiết bị</h4>
-                    <div class="resources-grid">
-                        @for (resource of selectedRoomDetail()!.taiNguyen; track resource.tenTaiNguyen) {
-                        <div class="resource-item">
-                            <div class="resource-name">{{ resource.tenTaiNguyen }}</div>
-                            <div class="resource-quantity">Số lượng: {{ resource.soLuong }}</div>
-                            @if (resource.tinhTrang) {
-                            <div class="resource-status">Tình trạng: {{ resource.tinhTrang }}</div>
-                            }
-                        </div>
-                        }
-                    </div>
-                </div>
-                }
+      <!-- Body -->
+      <div class="modal-body">
+        <!-- Thông tin cơ bản -->
+        <div class="detail-section">
+          <h4>Thông tin cơ bản</h4>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <strong>Loại phòng:</strong>
+              <span>{{ selectedRoomDetail()!.tenLoaiPhong }}</span>
             </div>
+            <div class="detail-item">
+              <strong>Sức chứa:</strong>
+              <span>{{ selectedRoomDetail()!.sucChua }} người</span>
+            </div>
+            @if (selectedRoomDetail()!.viTri) {
+              <div class="detail-item">
+                <strong>Vị trí:</strong>
+                <span>{{ selectedRoomDetail()!.viTri }}</span>
+              </div>
+            }
+            @if (selectedRoomDetail()!.moTa) {
+              <div class="detail-item description">
+                <strong>Mô tả:</strong>
+                <span>{{ selectedRoomDetail()!.moTa }}</span>
+              </div>
+            }
+          </div>
         </div>
 
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="closeRoomDetail()">
-                Đóng
-            </button>
-            <button type="button" class="btn btn-primary" (click)="onBookRoom()">
-                <i class="fas fa-calendar-plus"></i>
-                Đặt phòng
-            </button>
-        </div>
+        <!-- Trang thiết bị -->
+        @if (selectedRoomDetail()!.taiNguyen && selectedRoomDetail()!.taiNguyen.length > 0) {
+          <div class="detail-section">
+            <h4>Trang thiết bị</h4>
+            <div class="resources-grid">
+              @for (resource of selectedRoomDetail()!.taiNguyen; track resource.tenTaiNguyen) {
+                <div class="resource-item">
+                  <div class="resource-name">{{ resource.tenTaiNguyen }}</div>
+                  <div class="resource-quantity">Số lượng: {{ resource.soLuong }}</div>
+                  @if (resource.tinhTrang) {
+                    <div class="resource-status">Tình trạng: {{ resource.tinhTrang }}</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeRoomDetail()">Đóng</button>
+        <button type="button" class="btn btn-primary" (click)="onBookRoom()">
+          <i class="fas fa-calendar-plus"></i>
+          Đặt phòng
+        </button>
+      </div>
     </div>
-</div>
+  </div>
 }

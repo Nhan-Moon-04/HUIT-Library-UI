@@ -155,4 +155,25 @@ export class RoomSearchComponent implements OnInit {
     }
     return null;
   }
+
+  resetSearch() {
+    this.searchForm.reset();
+    this.availableRooms.set([]);
+    this.selectedRoomDetail.set(null);
+    this.errorMessage.set(null);
+    
+    // Reset to default date and time
+    const now = new Date();
+    now.setHours(now.getHours() + 1);
+    const defaultDateTime = now.toISOString().slice(0, 16);
+    this.searchForm.patchValue({ 
+      thoiGianBatDau: defaultDateTime,
+      sucChuaToiThieu: 1,
+      thoiGianSuDung: 1
+    });
+  }
+
+  goBack(): void {
+    window.history.back();
+  }
 }

@@ -27,7 +27,7 @@
 
     <!-- Page Title & Stats -->
     <div class="page-title-section">
-        <div class="title-content">
+    <div class="page-title-section-container">  <div class="title-content">
             <h1 class="page-title">
                 <i class="material-icons">event_available</i>
                 Phiếu Đặt Phòng
@@ -169,6 +169,8 @@
 
         <!-- Upcoming & Other Bookings -->
         <div *ngIf="!loading() && otherBookings().length > 0" class="bookings-section upcoming-section">
+            <div class="content-area"> 
+            <div class="bookings-section">
             <div class="section-header">
                 <div class="section-title">
                     <i class="material-icons">upcoming</i>
@@ -176,7 +178,6 @@
                     <span class="count-badge">{{ otherBookings().length }}</span>
                 </div>
             </div>
-
             <div class="bookings-list">
                 <div class="booking-item" *ngFor="let booking of otherBookings()"
                     [ngClass]="'status-' + booking.maTrangThai" (click)="viewBookingDetail(booking.maDangKy)">

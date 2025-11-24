@@ -37,8 +37,8 @@ export class RoomSearchComponent implements OnInit {
     this.searchForm = this.fb.group({
       maLoaiPhong: [null, Validators.required],
       thoiGianBatDau: ['', Validators.required],
-      thoiGianSuDung: [1, [Validators.required, Validators.min(1), Validators.max(8)]],
-      sucChuaToiThieu: [1, [Validators.required, Validators.min(1)]],
+      thoiGianSuDung: [2, [Validators.required, Validators.min(1), Validators.max(8)]], // Default 2 hours
+      sucChuaToiThieu: [0, [Validators.required, Validators.min(0)]], // Default 0 capacity
     });
 
     // Set default date and time to current date + 1 hour
@@ -161,15 +161,15 @@ export class RoomSearchComponent implements OnInit {
     this.availableRooms.set([]);
     this.selectedRoomDetail.set(null);
     this.errorMessage.set(null);
-    
+
     // Reset to default date and time
     const now = new Date();
     now.setHours(now.getHours() + 1);
     const defaultDateTime = now.toISOString().slice(0, 16);
-    this.searchForm.patchValue({ 
+    this.searchForm.patchValue({
       thoiGianBatDau: defaultDateTime,
-      sucChuaToiThieu: 1,
-      thoiGianSuDung: 1
+      sucChuaToiThieu: 0, // Default 0 capacity
+      thoiGianSuDung: 2, // Default 2 hours
     });
   }
 

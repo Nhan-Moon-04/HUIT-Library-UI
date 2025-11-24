@@ -107,7 +107,7 @@ export class AuthService {
         this.router.navigate(['/student-dashboard']);
         break;
       case 'NHAN_VIEN':
-        this.router.navigate(['/staff-dashboard']);
+        this.router.navigate(['/admin-dashboard']);
         break;
       case 'GIANG_VIEN':
         this.router.navigate(['/staff-dashboard']);
@@ -116,7 +116,7 @@ export class AuthService {
         this.router.navigate(['/admin-dashboard']);
         break;
       default:
-        this.router.navigate(['/']);
+        this.router.navigate(['/student-dashboard']);
         break;
     }
   }

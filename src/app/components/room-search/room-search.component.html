@@ -33,13 +33,13 @@
               <select id="maLoaiPhong" formControlName="maLoaiPhong" class="form-input">
                 <option value="">-- Chọn loại phòng --</option>
                 @for (roomType of roomTypes(); track roomType.maLoaiPhong) {
-                  <option [value]="roomType.maLoaiPhong">{{ roomType.tenLoaiPhong }}</option>
+                <option [value]="roomType.maLoaiPhong">{{ roomType.tenLoaiPhong }}</option>
                 }
               </select>
               <i class="fas fa-chevron-down select-icon"></i>
             </div>
             @if (getFieldError('maLoaiPhong')) {
-              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('maLoaiPhong') }}</span>
+            <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('maLoaiPhong') }}</span>
             }
           </div>
 
@@ -51,32 +51,19 @@
               <input type="datetime-local" id="thoiGianBatDau" formControlName="thoiGianBatDau" class="form-input">
             </div>
             @if (getFieldError('thoiGianBatDau')) {
-              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('thoiGianBatDau') }}</span>
+            <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('thoiGianBatDau')
+              }}</span>
             }
           </div>
 
-          <!-- Thời gian sử dụng -->
-          <div class="form-group">
-            <label for="thoiGianSuDung">Thời gian sử dụng (giờ) <span class="required">*</span></label>
-            <div class="input-group">
-              <i class="fas fa-clock input-icon"></i>
-              <input type="number" id="thoiGianSuDung" formControlName="thoiGianSuDung" min="1" max="8" class="form-input" placeholder="1-8 giờ">
-            </div>
-            @if (getFieldError('thoiGianSuDung')) {
-              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('thoiGianSuDung') }}</span>
-            }
+          <!-- Thời gian sử dụng - Hidden field -->
+          <div class="form-group" style="display: none;">
+            <input type="hidden" formControlName="thoiGianSuDung">
           </div>
 
-          <!-- Sức chứa tối thiểu -->
-          <div class="form-group">
-            <label for="sucChuaToiThieu">Sức chứa tối thiểu <span class="required">*</span></label>
-            <div class="input-group">
-              <i class="fas fa-door-open input-icon"></i>
-              <input type="number" id="sucChuaToiThieu" formControlName="sucChuaToiThieu" min="1" class="form-input" placeholder="Số người">
-            </div>
-            @if (getFieldError('sucChuaToiThieu')) {
-              <span class="error-text"><i class="fas fa-exclamation-circle"></i> {{ getFieldError('sucChuaToiThieu') }}</span>
-            }
+          <!-- Sức chứa tối thiểu - Hidden field -->
+          <div class="form-group" style="display: none;">
+            <input type="hidden" formControlName="sucChuaToiThieu">
           </div>
         </div>
 
@@ -85,12 +72,8 @@
             <i class="fas fa-search"></i>
             <span>Tìm kiếm phòng</span>
           </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            (click)="resetSearch()"
-            [disabled]="isSearching() || isLoading()"
-          >
+          <button type="button" class="btn btn-secondary" (click)="resetSearch()"
+            [disabled]="isSearching() || isLoading()">
             <i class="fas fa-redo"></i>
             <span>Đặt lại</span>
           </button>
@@ -100,148 +83,148 @@
 
     <!-- Error Message -->
     @if (errorMessage()) {
-      <div class="alert alert-error">
-        <i class="fas fa-exclamation-circle"></i>
-        <span>{{ errorMessage() }}</span>
-      </div>
+    <div class="alert alert-error">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ errorMessage() }}</span>
+    </div>
     }
 
     <!-- Loading State -->
     @if (isLoading() || isSearching()) {
-      <div class="loading-state">
-        <div class="spinner">
-          <i class="fas fa-spinner fa-spin"></i>
-        </div>
-        <p>{{ isSearching() ? 'Đang tìm kiếm...' : 'Đang tải...' }}</p>
+    <div class="loading-state">
+      <div class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
       </div>
+      <p>{{ isSearching() ? 'Đang tìm kiếm...' : 'Đang tải...' }}</p>
+    </div>
     }
 
     <!-- Search Results -->
     @if (availableRooms().length > 0) {
-      <div class="results-card">
-        <div class="card-header">
-          <h2 class="section-title">
-            <i class="fas fa-th"></i>
-            Kết quả tìm kiếm
-            <span class="result-count">({{ availableRooms().length }} phòng)</span>
-          </h2>
-        </div>
+    <div class="results-card">
+      <div class="card-header">
+        <h2 class="section-title">
+          <i class="fas fa-th"></i>
+          Kết quả tìm kiếm
+          <span class="result-count">({{ availableRooms().length }} phòng)</span>
+        </h2>
+      </div>
 
-        <div class="card-body">
-          <div class="rooms-grid">
-            @for (room of availableRooms(); track room.maPhong) {
-              <div class="room-card" (click)="onRoomClick(room)">
-                <div class="room-card-header">
-                  <div>
-                    <h3 class="room-name">{{ room.tenPhong }}</h3>
-                    <span class="room-type-badge">{{ room.tenLoaiPhong }}</span>
-                  </div>
-                </div>
-
-                <div class="room-card-body">
-                  <div class="room-feature">
-                    <i class="fas fa-users"></i>
-                    <span>Sức chứa: <strong>{{ room.sucChua }} người</strong></span>
-                  </div>
-                  @if (room.viTri) {
-                    <div class="room-feature">
-                      <i class="fas fa-map-marker-alt"></i>
-                      <span>Vị trí: <strong>{{ room.viTri }}</strong></span>
-                    </div>
-                  }
-                </div>
-
-                <div class="room-card-footer">
-                  <span class="view-link">
-                    Chi tiết
-                    <i class="fas fa-arrow-right"></i>
-                  </span>
-                </div>
+      <div class="card-body">
+        <div class="rooms-grid">
+          @for (room of availableRooms(); track room.maPhong) {
+          <div class="room-card" (click)="onRoomClick(room)">
+            <div class="room-card-header">
+              <div>
+                <h3 class="room-name">{{ room.tenPhong }}</h3>
+                <span class="room-type-badge">{{ room.tenLoaiPhong }}</span>
               </div>
-            }
+            </div>
+
+            <div class="room-card-body">
+              <div class="room-feature">
+                <i class="fas fa-users"></i>
+                <span>Sức chứa: <strong>{{ room.sucChua }} người</strong></span>
+              </div>
+              @if (room.viTri) {
+              <div class="room-feature">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Vị trí: <strong>{{ room.viTri }}</strong></span>
+              </div>
+              }
+            </div>
+
+            <div class="room-card-footer">
+              <span class="view-link">
+                Chi tiết
+                <i class="fas fa-arrow-right"></i>
+              </span>
+            </div>
           </div>
+          }
         </div>
       </div>
+    </div>
     } @else if (!isSearching() && !isLoading() && !errorMessage()) {
-      <div class="empty-state">
-        <div class="empty-icon">
-          <i class="fas fa-search"></i>
-        </div>
-        <h3>Chưa có kết quả</h3>
-        <p>Vui lòng nhập tiêu chí tìm kiếm để xem danh sách phòng trống</p>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="fas fa-search"></i>
       </div>
+      <h3>Chưa có kết quả</h3>
+      <p>Vui lòng nhập tiêu chí tìm kiếm để xem danh sách phòng trống</p>
+    </div>
     }
   </div>
 </div>
 
 <!-- Room Detail Modal -->
 @if (selectedRoomDetail()) {
-  <div class="modal-overlay" (click)="closeRoomDetail()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <!-- Header -->
-      <div class="modal-header">
-        <h3>{{ selectedRoomDetail()!.tenPhong }}</h3>
-        <button type="button" class="close-btn" (click)="closeRoomDetail()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
+<div class="modal-overlay" (click)="closeRoomDetail()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <h3>{{ selectedRoomDetail()!.tenPhong }}</h3>
+      <button type="button" class="close-btn" (click)="closeRoomDetail()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
 
-      <!-- Body -->
-      <div class="modal-body">
-        <!-- Thông tin cơ bản -->
-        <div class="detail-section">
-          <h4>Thông tin cơ bản</h4>
-          <div class="detail-grid">
-            <div class="detail-item">
-              <strong>Loại phòng:</strong>
-              <span>{{ selectedRoomDetail()!.tenLoaiPhong }}</span>
-            </div>
-            <div class="detail-item">
-              <strong>Sức chứa:</strong>
-              <span>{{ selectedRoomDetail()!.sucChua }} người</span>
-            </div>
-            @if (selectedRoomDetail()!.viTri) {
-              <div class="detail-item">
-                <strong>Vị trí:</strong>
-                <span>{{ selectedRoomDetail()!.viTri }}</span>
-              </div>
-            }
-            @if (selectedRoomDetail()!.moTa) {
-              <div class="detail-item description">
-                <strong>Mô tả:</strong>
-                <span>{{ selectedRoomDetail()!.moTa }}</span>
-              </div>
-            }
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Thông tin cơ bản -->
+      <div class="detail-section">
+        <h4>Thông tin cơ bản</h4>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <strong>Loại phòng:</strong>
+            <span>{{ selectedRoomDetail()!.tenLoaiPhong }}</span>
           </div>
+          <div class="detail-item">
+            <strong>Sức chứa:</strong>
+            <span>{{ selectedRoomDetail()!.sucChua }} người</span>
+          </div>
+          @if (selectedRoomDetail()!.viTri) {
+          <div class="detail-item">
+            <strong>Vị trí:</strong>
+            <span>{{ selectedRoomDetail()!.viTri }}</span>
+          </div>
+          }
+          @if (selectedRoomDetail()!.moTa) {
+          <div class="detail-item description">
+            <strong>Mô tả:</strong>
+            <span>{{ selectedRoomDetail()!.moTa }}</span>
+          </div>
+          }
         </div>
+      </div>
 
-        <!-- Trang thiết bị -->
-        @if (selectedRoomDetail()!.taiNguyen && selectedRoomDetail()!.taiNguyen.length > 0) {
-          <div class="detail-section">
-            <h4>Trang thiết bị</h4>
-            <div class="resources-grid">
-              @for (resource of selectedRoomDetail()!.taiNguyen; track resource.tenTaiNguyen) {
-                <div class="resource-item">
-                  <div class="resource-name">{{ resource.tenTaiNguyen }}</div>
-                  <div class="resource-quantity">Số lượng: {{ resource.soLuong }}</div>
-                  @if (resource.tinhTrang) {
-                    <div class="resource-status">Tình trạng: {{ resource.tinhTrang }}</div>
-                  }
-                </div>
-              }
-            </div>
+      <!-- Trang thiết bị -->
+      @if (selectedRoomDetail()!.taiNguyen && selectedRoomDetail()!.taiNguyen.length > 0) {
+      <div class="detail-section">
+        <h4>Trang thiết bị</h4>
+        <div class="resources-grid">
+          @for (resource of selectedRoomDetail()!.taiNguyen; track resource.tenTaiNguyen) {
+          <div class="resource-item">
+            <div class="resource-name">{{ resource.tenTaiNguyen }}</div>
+            <div class="resource-quantity">Số lượng: {{ resource.soLuong }}</div>
+            @if (resource.tinhTrang) {
+            <div class="resource-status">Tình trạng: {{ resource.tinhTrang }}</div>
+            }
           </div>
-        }
+          }
+        </div>
       </div>
+      }
+    </div>
 
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeRoomDetail()">Đóng</button>
-        <button type="button" class="btn btn-primary" (click)="onBookRoom()">
-          <i class="fas fa-calendar-plus"></i>
-          Đặt phòng
-        </button>
-      </div>
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="closeRoomDetail()">Đóng</button>
+      <button type="button" class="btn btn-primary" (click)="onBookRoom()">
+        <i class="fas fa-calendar-plus"></i>
+        Đặt phòng
+      </button>
     </div>
   </div>
+</div>
 }

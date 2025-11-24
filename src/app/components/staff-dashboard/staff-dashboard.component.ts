@@ -14,7 +14,7 @@ import { AuthService } from '../../services/auth.service';
           <!-- Welcome Banner -->
           <div class="welcome-banner">
             <div class="banner-content">
-              <h2>Chào mừng, TS. {{ authService.currentUser()?.hoTen }}!</h2>
+              <h2>Chào mừng, {{ getGreetingTitle() }}{{ authService.currentUser()?.hoTen }}!</h2>
               <p>Chúc bạn một ngày làm việc hiệu quả tại thư viện HUIT.</p>
             </div>
             <div class="banner-icon">
@@ -363,6 +363,20 @@ import { AuthService } from '../../services/auth.service';
 export class StaffDashboardComponent {
   authService = inject(AuthService);
   router = inject(Router);
+
+  getGreetingTitle(): string {
+    const user = this.authService.currentUser();
+    if (!user) return '';
+
+    switch (user.vaiTro) {
+      case 'GIANG_VIEN':
+        return 'Th.S ';
+      case 'NHAN_VIEN':
+        return '';
+      default:
+        return '';
+    }
+  }
 
   logout(): void {
     this.authService.logout();

@@ -64,15 +64,13 @@
 
     <div class="chat-page-container">
         <div class="chat-page-body" #chatBody>
-            <div *ngFor="let m of messages()" class="message" [class.user-message]="!m.laBot"
-                [class.bot-message]="m.laBot">
+            <div *ngFor="let m of messages()" class="message" [class.user-message]="!m.laBot && isCurrentUserMessage(m)"
+                [class.bot-message]="m.laBot" [class.staff-message]="!m.laBot && !isCurrentUserMessage(m)">
                 <div class="message-wrapper">
                     <div class="avatar">
                         <i *ngIf="m.laBot" class="bot-icon">🤖</i>
-                        <i *ngIf="!m.laBot && !isStaffMode()" class="user-icon">👤</i>
-                        <i *ngIf="!m.laBot && isStaffMode()" class="user-icon">👨‍🎓</i>
-                        <i *ngIf="!m.laBot && isStaffMode() && m.maNguoiGui !== auth.currentUser()?.maNguoiDung"
-                            class="staff-icon">👨‍💼</i>
+                        <i *ngIf="!m.laBot && isCurrentUserMessage(m)" class="user-icon">👨‍🎓</i>
+                        <i *ngIf="!m.laBot && !isCurrentUserMessage(m)" class="staff-icon">👨‍💼</i>
                     </div>
                     <div class="message-content">
                         <div class="message-bubble">{{ m.noiDung }}</div>
@@ -152,15 +150,13 @@
         </div>
 
         <div class="chat-body" #chatBody>
-            <div *ngFor="let m of messages()" class="message" [class.user-message]="!m.laBot"
-                [class.bot-message]="m.laBot">
+            <div *ngFor="let m of messages()" class="message" [class.user-message]="!m.laBot && isCurrentUserMessage(m)"
+                [class.bot-message]="m.laBot" [class.staff-message]="!m.laBot && !isCurrentUserMessage(m)">
                 <div class="message-wrapper">
                     <div class="avatar">
                         <i *ngIf="m.laBot" class="bot-icon">🤖</i>
-                        <i *ngIf="!m.laBot && !isStaffMode()" class="user-icon">👤</i>
-                        <i *ngIf="!m.laBot && isStaffMode()" class="user-icon">👨‍🎓</i>
-                        <i *ngIf="!m.laBot && isStaffMode() && m.maNguoiGui !== auth.currentUser()?.maNguoiDung"
-                            class="staff-icon">👨‍💼</i>
+                        <i *ngIf="!m.laBot && isCurrentUserMessage(m)" class="user-icon">👨‍🎓</i>
+                        <i *ngIf="!m.laBot && !isCurrentUserMessage(m)" class="staff-icon">👨‍💼</i>
                     </div>
                     <div class="message-content">
                         <div class="message-bubble">{{ m.noiDung }}</div>

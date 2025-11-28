@@ -54,12 +54,6 @@ export class BookingHistoryComponent implements OnInit {
         this.pageSize.set(res.pagination?.pageSize || this.pageSize());
         this.totalItems.set(res.pagination?.totalItems || 0);
         this.loading.set(false);
-
-        if (this.isSearchMode() && res.data && res.data.length === 0) {
-          this.message.set(`Không tìm thấy kết quả cho từ khóa "${this.searchTerm()}"`);
-        } else {
-          this.message.set(null);
-        }
       },
       error: (err) => {
         this.error.set('Không thể tải lịch sử mượn phòng.');

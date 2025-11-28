@@ -51,6 +51,15 @@ import { AuthService } from '../../services/auth.service';
                 <p>Xem lại các hoạt động trước đây</p>
               </div>
             </div>
+            <div class="stat-card" (click)="router.navigate(['/violations'])">
+              <div class="stat-icon icon-violation">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Xem vi phạm</h3>
+                <p>Quản lý các vi phạm của sinh viên</p>
+              </div>
+            </div>
           </section>
 
           <!-- Features Grid -->
@@ -177,7 +186,7 @@ import { AuthService } from '../../services/auth.service';
       /* Quick Stats */
       .quick-stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1.5rem;
         margin-bottom: 3rem;
       }
@@ -214,6 +223,9 @@ import { AuthService } from '../../services/auth.service';
       }
       .stat-icon.icon-history {
         background: #9c27b0;
+      }
+      .stat-icon.icon-violation {
+        background: #f44336;
       }
 
       .stat-info h3 {
@@ -344,6 +356,16 @@ import { AuthService } from '../../services/auth.service';
         .container {
           padding: 1.5rem 1rem;
         }
+        .quick-stats {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+        }
+        .stat-card {
+          flex-direction: column;
+          text-align: center;
+          gap: 1rem;
+          padding: 1rem;
+        }
         .welcome-banner {
           flex-direction: column;
           text-align: center;
@@ -354,6 +376,12 @@ import { AuthService } from '../../services/auth.service';
           font-size: 1.5rem;
         }
         .footer-content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .quick-stats {
           grid-template-columns: 1fr;
         }
       }

@@ -85,10 +85,10 @@
             </div>
             }
 
-            @if (!loading() && message()) {
-            <div class="status-card info">
+            @if (!loading() && message() && isSearchMode() && totalItems() > 0) {
+            <div class="status-card search-result">
                 <div class="status-content">
-                    <i class="fas fa-info-circle"></i>
+                    <i class="fas fa-search"></i>
                     <span>{{ message() }}</span>
                 </div>
             </div>
@@ -96,27 +96,7 @@
 
             <!-- Results Header -->
             @if (!loading() && bookings().length > 0) {
-            <div class="results-header">
-                <div class="results-info">
-                    <h3>
-                        @if (isSearchMode()) {
-                        Kết quả tìm kiếm
-                        } @else {
-                        Lịch sử mượn phòng
-                        }
-                    </h3>
-                    <span class="result-count">{{ getPaginationInfo() }}</span>
-                </div>
-                @if (isSearchMode()) {
-                <div class="search-tag">
-                    <i class="fas fa-search"></i>
-                    <span>"{{ searchTerm() }}"</span>
-                    <button (click)="resetSearch()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                }
-            </div>
+
 
             <!-- Booking Cards -->
             <div class="booking-cards">
@@ -281,7 +261,7 @@
             }
 
             <!-- Empty State -->
-            @if (!loading() && bookings().length === 0) {
+            @if (!loading() && bookings().length === 0 && !isSearchMode()) {
             <div class="empty-state">
                 <div class="empty-illustration">
                     <i class="fas fa-history"></i>
@@ -293,6 +273,25 @@
                     <button class="modern-btn primary large" (click)="navigateToBooking()">
                         <i class="fas fa-plus"></i>
                         <span>Đặt phòng ngay</span>
+                    </button>
+                </div>
+            </div>
+            }
+
+            <!-- Search Empty State -->
+            @if (!loading() && bookings().length === 0 && isSearchMode()) {
+            <div class="empty-state">
+                <div class="empty-illustration">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="empty-content">
+                    <h3>Không tìm thấy kết quả</h3>
+                    <p>Không tìm thấy lịch sử mượn phòng nào phù hợp với từ khóa "<strong>{{ searchTerm()
+                            }}</strong>".<br>
+                        Hãy thử tìm kiếm với từ khóa khác hoặc xem tất cả lịch sử.</p>
+                    <button class="modern-btn secondary large" (click)="resetSearch()">
+                        <i class="fas fa-undo"></i>
+                        <span>Hiện tất cả</span>
                     </button>
                 </div>
             </div>

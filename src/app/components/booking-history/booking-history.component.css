@@ -209,7 +209,7 @@
   right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
-  background: #ef4444;
+  background: #94a3b8;
   color: white;
   border: none;
   border-radius: 50%;
@@ -220,6 +220,15 @@
   justify-content: center;
   cursor: pointer;
   font-size: 0.75rem;
+  transition: all 0.2s ease;
+  opacity: 0.7;
+}
+
+.clear-btn:hover {
+  background: #ef4444;
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .search-btn,
@@ -301,6 +310,16 @@
   background: linear-gradient(90deg, rgba(16, 185, 129, 0.05), white);
 }
 
+.status-card.search-result {
+  border-left-color: #667eea;
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), white);
+}
+
+.status-card.search-no-result {
+  border-left-color: #f59e0b;
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.05), white);
+}
+
 .status-content {
   display: flex;
   align-items: center;
@@ -321,6 +340,14 @@
 
 .status-card.info .status-content i {
   color: #10b981;
+}
+
+.status-card.search-result .status-content i {
+  color: #667eea;
+}
+
+.status-card.search-no-result .status-content i {
+  color: #f59e0b;
 }
 
 /* Results Header */

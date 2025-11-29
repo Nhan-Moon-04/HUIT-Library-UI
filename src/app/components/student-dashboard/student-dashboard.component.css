@@ -2120,23 +2120,21 @@
 
 /* Fix equal heights for all section cards */
 .content-grid-horizontal {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-items: stretch; /* Make all cards same height */
+  align-items: start;
 }
 
 .content-grid-horizontal .section-card {
-  flex: 1;
-  min-width: 300px;
-  min-height: 450px; /* Fixed minimum height */
   background: #fff;
   border-radius: 12px;
-  padding: 20px;
+  padding: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  height: 600px; /* Fixed height for equal sections */
+  overflow: hidden;
   position: relative;
 }
 
@@ -2145,9 +2143,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
+  padding: 20px 20px 15px 20px;
+  margin: 0;
   border-bottom: 2px solid #f0f0f0;
+  flex-shrink: 0;
 }
 
 .news-navigation {
@@ -2194,23 +2193,44 @@
 }
 
 /* News Section Improvements */
-.news-carousel {
-  flex: 1;
+.news-section {
   display: flex;
   flex-direction: column;
 }
 
-.news-item.featured {
+.news-carousel {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.news-item.featured {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.news-image {
+  position: relative;
+  height: 250px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.news-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .news-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 15px;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .news-content h4 {
@@ -2218,6 +2238,7 @@
   line-height: 1.4;
   color: #212529;
   font-weight: 600;
+  font-size: 16px;
 }
 
 .news-content p {
@@ -2225,21 +2246,22 @@
   margin-bottom: 15px;
   color: #6c757d;
   line-height: 1.5;
+  font-size: 14px;
 }
 
 /* Announcements Section Improvements */
 .announcements-section {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .announcements-list {
   flex: 1;
   overflow-y: auto;
-  padding-right: 5px;
+  padding: 0 5px;
   scrollbar-width: thin;
   scrollbar-color: #ccc transparent;
-  min-height: 350px; /* Set minimum height instead of max-height */
 }
 
 .announcements-list::-webkit-scrollbar {
@@ -2263,8 +2285,8 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 12px 15px;
+  margin-bottom: 8px;
   border-radius: 8px;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -2294,10 +2316,11 @@
 
 /* View All Button */
 .view-all-section {
-  margin-top: 15px;
-  padding-top: 15px;
+  padding: 15px 20px;
   border-top: 1px solid #dee2e6;
   text-align: center;
+  flex-shrink: 0;
+  margin-top: auto;
 }
 
 .view-all-btn {
@@ -2322,21 +2345,49 @@
 }
 
 /* Quick Access Section */
+.quick-access-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .quick-actions {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
+  overflow-y: auto;
+  padding: 0 5px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+.quick-actions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quick-actions::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.quick-actions::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.quick-actions::-webkit-scrollbar-thumb:hover {
+  background: #999;
 }
 
 .action-item {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 12px 15px;
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.3s ease;
   border: 1px solid transparent;
+  margin-bottom: 8px;
 }
 
 .action-item:hover {
@@ -2348,10 +2399,14 @@
 .action-icon {
   font-size: 20px;
   width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   margin-right: 15px;
   border-radius: 8px;
-  padding: 8px;
+  flex-shrink: 0;
   color: white;
 }
 
@@ -2433,33 +2488,40 @@
     border: 2px solid rgba(255, 152, 0, 0.3);
   }
 }
+
 @media (max-width: 992px) {
-  .content-grid-horizontal .section-card {
-    min-width: 280px;
-    min-height: 400px;
+  .content-grid-horizontal {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 
-  .announcements-list {
-    min-height: 300px; /* Use min-height instead of max-height */
+  .content-grid-horizontal .section-card {
+    height: auto;
+    min-height: 500px;
   }
 }
 
 @media (max-width: 768px) {
   .content-grid-horizontal {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .content-grid-horizontal .section-card {
-    min-height: 350px;
+    height: auto;
+    min-height: 450px;
   }
 
   .section-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
   }
 
   .news-navigation {
-    align-self: flex-end;
+    flex-shrink: 0;
+  }
+
+  .news-image {
+    height: 200px;
   }
 }

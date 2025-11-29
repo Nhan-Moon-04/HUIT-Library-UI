@@ -250,9 +250,14 @@
                         <span>Về danh sách</span>
                     </button>
                     @if (canExtend()) {
-                    <button class="action-btn primary">
+                    <button class="action-btn primary" (click)="confirmExtendBooking()" [disabled]="extendSubmitting()">
+                        @if (extendSubmitting()) {
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>Đang xử lý...</span>
+                        } @else {
                         <i class="fas fa-clock"></i>
-                        <span>Gia hạn</span>
+                        <span>Gia hạn (+2 giờ)</span>
+                        }
                     </button>
                     }
                     @if (canCancel()) {
@@ -352,6 +357,120 @@
                 Xác nhận hủy
                 }
             </button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Extend Booking Confirmation Modal -->
+@if (showExtendConfirmModal()) {
+<div class="modal-overlay" (click)="closeExtendConfirmModal()">
+    <div class="extend-confirm-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>
+                <i class="fas fa-clock"></i>
+                Xác nhận gia hạn phòng
+            </h3>
+            <button class="close-btn" (click)="closeExtendConfirmModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            @if (bookingDetail()) {
+            <div class="extend-confirm-content">
+                <div class="room-info">
+                    <div class="room-header">
+                        <i class="fas fa-door-open"></i>
+                        <h4>{{ bookingDetail()!.tenPhong }}</h4>
+                    </div>
+                    <span class="booking-id">#{{ bookingDetail()!.maDangKy }}</span>
+                </div>
+
+                <div class="time-info">
+                    <div class="time-row current">
+                        <span class="label">
+                            <i class="fas fa-clock"></i>
+                            Thời gian kết thúc hiện tại:
+                        </span>
+                        <span class="time">{{ formatDateTime(bookingDetail()!.thoiGianKetThuc) }}</span>
+                    </div>
+
+                    <div class="extend-arrow">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>+2 giờ</span>
+                    </div>
+
+                    <div class="time-row new">
+                        <span class="label">
+                            <i class="fas fa-clock"></i>
+                            Thời gian kết thúc mới:
+                        </span>
+                        <span class="time highlight">{{ getFormattedNewEndTime() }}</span>
+                    </div>
+                </div>
+
+                <div class="warning-notice">
+                    <div class="notice-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="notice-content">
+                        <h5>Lưu ý quan trọng</h5>
+                        <ul>
+                            <li>Mỗi đăng ký chỉ được gia hạn <strong>1 lần duy nhất</strong></li>
+                            <li>Thời gian gia hạn là <strong>2 giờ</strong> (không thể thay đổi)</li>
+                            <li>Sau khi gia hạn, bạn không thể gia hạn thêm lần nữa</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn secondary" (click)="closeExtendConfirmModal()" [disabled]="extendSubmitting()">
+                <i class="fas fa-times"></i>
+                Không, quay lại
+            </button>
+            <button class="btn primary" (click)="proceedWithExtend()" [disabled]="extendSubmitting()">
+                @if (extendSubmitting()) {
+                <i class="fas fa-spinner fa-spin"></i>
+                Đang xử lý...
+                } @else {
+                <i class="fas fa-check"></i>
+                Xác nhận gia hạn
+                }
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Notification Toast -->
+@if (showNotification()) {
+<div class="notification-overlay">
+    <div class="notification-toast" [ngClass]="'notification-' + notificationType()">
+        <div class="notification-header">
+            <div class="notification-icon">
+                @switch (notificationType()) {
+                @case ('success') {
+                <i class="fas fa-check-circle"></i>
+                }
+                @case ('error') {
+                <i class="fas fa-times-circle"></i>
+                }
+                @case ('warning') {
+                <i class="fas fa-exclamation-triangle"></i>
+                }
+                }
+            </div>
+            <h4>{{ notificationTitle() }}</h4>
+            <button class="notification-close" (click)="closeNotification()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notification-body">
+            <p>{{ notificationMessage() }}</p>
         </div>
     </div>
 </div>

@@ -8,6 +8,8 @@ import {
   BookingDetailResponse,
   CancelBookingPayload,
   CancelBookingResponse,
+  ExtendBookingPayload,
+  ExtendBookingResponse,
 } from '../../services/booking.service';
 import {
   ViolationService,
@@ -40,6 +42,17 @@ export class BookingDetailComponent implements OnInit {
   cancelReason = signal('');
   cancelNote = signal('');
   cancelSubmitting = signal(false);
+
+  // Extend state
+  showExtendConfirmModal = signal(false);
+  extendSubmitting = signal(false);
+  pendingExtendEndTime = signal<Date | null>(null);
+
+  // Notification state
+  showNotification = signal(false);
+  notificationType = signal<'success' | 'error' | 'warning'>('success');
+  notificationTitle = signal('');
+  notificationMessage = signal('');
 
   ngOnInit(): void {
     // Get booking ID from route parameters
@@ -235,14 +248,143 @@ export class BookingDetailComponent implements OnInit {
           // Reload booking detail to get updated status
           this.loadBookingDetail();
           this.closeCancelModal();
+          this.showSuccessNotification(
+            'Hủy đặt phòng thành công!',
+            'Phòng đã được hủy thành công.'
+          );
         } else {
-          alert('Không thể hủy đặt phòng: ' + response.message);
+          this.showErrorNotification(
+            'Không thể hủy đặt phòng',
+            response.message || 'Có lỗi xảy ra khi hủy đặt phòng.'
+          );
         }
         this.cancelSubmitting.set(false);
       },
       error: (err) => {
-        alert('Đã xảy ra lỗi khi hủy đặt phòng: ' + (err.error?.message || err.message));
+        const errorMessage = err.error?.message || err.message || 'Đã xảy ra lỗi khi hủy đặt phòng';
+        this.showErrorNotification('Lỗi hủy đặt phòng', errorMessage);
         this.cancelSubmitting.set(false);
+      },
+    });
+  }
+
+  // Extend booking functionality - auto extend 2 hours
+  confirmExtendBooking(): void {
+    const detail = this.bookingDetail();
+    if (!detail) return;
+
+    console.log('Current end time string:', detail.thoiGianKetThuc);
+
+    // Parse the date string properly
+    const currentEndTime = new Date(detail.thoiGianKetThuc);
+    console.log('Parsed current end time:', currentEndTime);
+    console.log('Current end time timestamp:', currentEndTime.getTime());
+
+    // Add 2 hours (2 * 60 * 60 * 1000 milliseconds)
+    const newEndTime = new Date(currentEndTime.getTime() + 2 * 60 * 60 * 1000);
+    console.log('New end time:', newEndTime);
+    console.log('New end time timestamp:', newEndTime.getTime());
+
+    this.pendingExtendEndTime.set(newEndTime);
+    this.showExtendConfirmModal.set(true);
+  }
+
+  closeExtendConfirmModal(): void {
+    this.showExtendConfirmModal.set(false);
+    this.pendingExtendEndTime.set(null);
+  }
+
+  proceedWithExtend(): void {
+    const newEndTime = this.pendingExtendEndTime();
+    if (newEndTime) {
+      this.submitExtendBooking(newEndTime);
+      this.closeExtendConfirmModal();
+    }
+  }
+
+  getFormattedNewEndTime(): string {
+    const newEndTime = this.pendingExtendEndTime();
+    if (!newEndTime) return '';
+
+    console.log('Formatting new end time:', newEndTime);
+
+    // Format as SQL datetime string that DateTimeUtils expects
+    const year = newEndTime.getFullYear();
+    const month = String(newEndTime.getMonth() + 1).padStart(2, '0');
+    const day = String(newEndTime.getDate()).padStart(2, '0');
+    const hours = String(newEndTime.getHours()).padStart(2, '0');
+    const minutes = String(newEndTime.getMinutes()).padStart(2, '0');
+    const seconds = String(newEndTime.getSeconds()).padStart(2, '0');
+
+    const sqlDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.000`;
+    console.log('SQL format datetime:', sqlDateTime);
+
+    return DateTimeUtils.formatDateTime(sqlDateTime);
+  }
+
+  // Notification methods
+  showSuccessNotification(title: string, message: string): void {
+    this.notificationType.set('success');
+    this.notificationTitle.set(title);
+    this.notificationMessage.set(message);
+    this.showNotification.set(true);
+
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+      this.closeNotification();
+    }, 5000);
+  }
+
+  showErrorNotification(title: string, message: string): void {
+    this.notificationType.set('error');
+    this.notificationTitle.set(title);
+    this.notificationMessage.set(message);
+    this.showNotification.set(true);
+  }
+
+  showWarningNotification(title: string, message: string): void {
+    this.notificationType.set('warning');
+    this.notificationTitle.set(title);
+    this.notificationMessage.set(message);
+    this.showNotification.set(true);
+  }
+
+  closeNotification(): void {
+    this.showNotification.set(false);
+  }
+
+  private submitExtendBooking(newEndTime: Date): void {
+    const detail = this.bookingDetail();
+    if (!detail) return;
+
+    this.extendSubmitting.set(true);
+
+    const payload: ExtendBookingPayload = {
+      maDangKy: detail.maDangKy,
+      newEndTime: newEndTime.toISOString(),
+    };
+
+    this.bookingService.extendBooking(payload).subscribe({
+      next: (response) => {
+        if (response.success) {
+          // Reload booking detail to get updated time
+          this.loadBookingDetail();
+          this.showSuccessNotification(
+            'Gia hạn thành công!',
+            response.message || 'Phòng đã được gia hạn thêm 2 giờ.'
+          );
+        } else {
+          this.showErrorNotification(
+            'Không thể gia hạn',
+            response.message || 'Có lỗi xảy ra khi gia hạn phòng.'
+          );
+        }
+        this.extendSubmitting.set(false);
+      },
+      error: (err) => {
+        const errorMessage = err.error?.message || err.message || 'Đã xảy ra lỗi khi gia hạn';
+        this.showErrorNotification('Lỗi gia hạn', errorMessage);
+        this.extendSubmitting.set(false);
       },
     });
   }

@@ -309,10 +309,9 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   navigateToHistory(): void {
     this.router.navigate(['/bookings/history']);
   }
-navigateToViolations() {
-  this.router.navigate(['/violations']);
-}
-
+  navigateToViolations() {
+    this.router.navigate(['/violations']);
+  }
 
   navigateToChat(): void {
     // Điều hướng tới trang chat
@@ -321,6 +320,10 @@ navigateToViolations() {
 
   navigateToRegulations(): void {
     this.router.navigate(['/regulations']);
+  }
+
+  navigateToMyViolations(): void {
+    this.router.navigate(['/my-violations']);
   }
 
   // News navigation methods
@@ -460,6 +463,29 @@ navigateToViolations() {
   navigateToIncidentReport(maDangKy: number): void {
     // Điều hướng đến trang xem biên bản vi phạm
     this.router.navigate(['/bookings/incident-report', maDangKy]);
+  }
+
+  // Quick extend functions
+  quickExtendBooking(maDangKy: number): void {
+    // Navigate to booking detail with auto-extend
+    this.router.navigate(['/booking/detail', maDangKy], {
+      queryParams: { autoExtend: 'true' },
+    });
+  }
+
+  quickExtendAll(): void {
+    // Extend all current bookings by 2 hours
+    const extendableBookings = this.currentBookings().filter((b) => b.canExtend);
+    if (extendableBookings.length === 0) {
+      alert('Không có phòng nào có thể gia hạn');
+      return;
+    }
+
+    if (confirm(`Bạn có muốn gia hạn ${extendableBookings.length} phòng thêm 2 giờ?`)) {
+      extendableBookings.forEach((booking) => {
+        this.quickExtendBooking(booking.maDangKy);
+      });
+    }
   }
 
   formatDateTime(dateTimeString: string): string {

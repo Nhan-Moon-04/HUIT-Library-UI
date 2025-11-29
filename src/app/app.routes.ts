@@ -167,6 +167,22 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'my-violations',
+    loadComponent: () =>
+      import('./components/my-violations/my-violations.component').then(
+        (m) => m.MyViolationsComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'my-violations/detail/:id',
+    loadComponent: () =>
+      import('./components/my-violation-detail/my-violation-detail.component').then(
+        (m) => m.MyViolationDetailComponent
+      ),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'room-search',
     loadComponent: () =>
       import('./components/room-search/room-search.component').then((m) => m.RoomSearchComponent),

@@ -1,0 +1,153 @@
+<!-- My Violations Page -->
+<div class="my-violations-page">
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="breadcrumb">
+                    <button class="back-btn" (click)="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <i class="fas fa-chevron-right separator"></i>
+                    <span class="current-page">Vi phạm của tôi</span>
+                </div>
+
+                <div class="page-title">
+                    <h1>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Vi phạm của tôi
+                    </h1>
+                    <p>Danh sách các vi phạm và trạng thái xử lý</p>
+                </div>
+
+                <div class="page-actions">
+                    <button class="action-btn secondary" (click)="refresh()" [disabled]="loading()">
+                        <i class="fas fa-refresh" [class.fa-spin]="loading()"></i>
+                        Làm mới
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="page-content">
+        <div class="container">
+
+            <!-- Stats Summary -->
+
+            <!-- Violations List -->
+            @if (!loading() && !error() && violations().length > 0) {
+            <div class="violations-section">
+                <div class="section-header">
+                    <h2>Danh sách vi phạm</h2>
+                </div>
+
+                <div class="violations-grid">
+                    @for (violation of violations(); track violation.maViPham) {
+                    <div class="violation-card" (click)="viewDetail(violation.maViPham)">
+                        <div class="violation-header">
+                            <div class="violation-info">
+                                <h3>{{ violation.tenViPham }}</h3>
+                                <span class="violation-id">#{{ violation.maViPham }}</span>
+                            </div>
+                            <div class="violation-status">
+                                <span class="status-badge" [ngClass]="getStatusClass(violation.trangThaiXuLy)"
+                                    [style.background-color]="getStatusColor(violation.trangThaiXuLy)">
+                                    <i class="fas" [ngClass]="getStatusIcon(violation.trangThaiXuLy)"></i>
+                                    {{ violation.trangThaiXuLy }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="violation-body">
+                            <div class="violation-description">
+                                <p>{{ violation.moTa }}</p>
+                            </div>
+
+                            <div class="violation-details">
+                                <div class="detail-row">
+                                    <i class="fas fa-door-open"></i>
+                                    <span>{{ violation.tenPhong }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>{{ formatDate(violation.ngayLap) }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{{ formatDate(violation.thoiGianViPham) }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="violation-footer">
+                            <button class="btn-detail"
+                                (click)="viewDetail(violation.maViPham); $event.stopPropagation()">
+                                <i class="fas fa-eye"></i>
+                                Xem chi tiết
+                            </button>
+                            <button class="btn-booking"
+                                (click)="goToBookingDetail(violation.maDangKy); $event.stopPropagation()">
+                                <i class="fas fa-file-alt"></i>
+                                Xem đặt phòng
+                            </button>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+            }
+
+            <!-- Empty State -->
+            @if (!loading() && !error() && violations().length === 0) {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Không có vi phạm nào</h3>
+                <p>Bạn chưa có vi phạm nào được ghi nhận trong hệ thống.</p>
+                <button class="btn-primary" (click)="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                    Về Dashboard
+                </button>
+            </div>
+            }
+
+            <!-- Loading State -->
+            @if (loading()) {
+            <div class="loading-state">
+                <div class="loading-content">
+                    <div class="spinner large"></div>
+                    <h3>Đang tải danh sách vi phạm...</h3>
+                    <p>Vui lòng đợi trong giây lát</p>
+                </div>
+            </div>
+            }
+
+            <!-- Error State -->
+            @if (error()) {
+            <div class="error-state">
+                <div class="error-content">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3>Không thể tải danh sách</h3>
+                    <p>{{ error() }}</p>
+                    <div class="error-actions">
+                        <button class="action-btn secondary" (click)="refresh()">
+                            <i class="fas fa-refresh"></i>
+                            Thử lại
+                        </button>
+                        <button class="action-btn primary" (click)="goBack()">
+                            <i class="fas fa-arrow-left"></i>
+                            Quay lại
+                        </button>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>

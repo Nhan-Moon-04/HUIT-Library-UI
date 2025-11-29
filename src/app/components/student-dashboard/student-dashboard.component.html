@@ -144,7 +144,6 @@
         PHÒNG ĐANG SỬ DỤNG
       </h3>
 
-      <span class="booking-count">{{ currentBookings().length }} phòng</span>
     </div>
 
     <div class="current-bookings-grid">
@@ -215,8 +214,8 @@
           }
 
           @if (booking.canExtend) {
-          <button class="btn-action secondary">
-            <i class="fas fa-plus-circle"></i>
+          <button class="btn-action extend" (click)="quickExtendBooking(booking.maDangKy)">
+            <i class="fas fa-clock"></i>
             Gia hạn
           </button>
           }
@@ -382,6 +381,13 @@
             <div class="action-content">
               <h5>Nội quy thư viện</h5>
               <p>Quy định sử dụng dịch vụ</p>
+            </div>
+          </div>
+          <div class="action-item" (click)="navigateToMyViolations()">
+            <div class="action-icon violations"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="action-content">
+              <h5>Xem vi phạm</h5>
+              <p>Danh sách vi phạm của tôi</p>
             </div>
           </div>
         </div>

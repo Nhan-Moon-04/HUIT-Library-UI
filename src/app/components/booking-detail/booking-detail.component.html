@@ -5,7 +5,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="breadcrumb">
-                    <button class="back-btn" (click)="router.navigate(['/booking/history'])">
+                    <button class="back-btn" (click)="goBack()">
                         <i class="fas fa-arrow-left"></i>
                         <span>Lịch sử mượn phòng</span>
                     </button>
@@ -63,6 +63,55 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Violations Card -->
+                @if (violations().length > 0) {
+                <div class="detail-card violation-card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Biên bản vi phạm ({{ violations().length }})</h3>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="violation-list">
+                            @for (violation of violations(); track violation.maViPham) {
+                            <div class="violation-item" (click)="viewViolationDetail(violation.maViPham)">
+                                <div class="violation-icon" [class]="getViolationStatusClass(violation.trangThaiXuLy)">
+                                    <i class="fas" [ngClass]="getViolationStatusIcon(violation.trangThaiXuLy)"></i>
+                                </div>
+                                <div class="violation-content">
+                                    <h5>{{ violation.tenViPham }}</h5>
+                                    @if (violation.moTaNgan) {
+                                    <p class="violation-description">{{ violation.moTaNgan }}</p>
+                                    }
+                                    <div class="violation-meta">
+                                        <span class="violation-date">
+                                            <i class="fas fa-calendar"></i>
+                                            {{ formatViolationDate(violation.ngayLap) }}
+                                        </span>
+                                        <span class="violation-status"
+                                            [class]="getViolationStatusClass(violation.trangThaiXuLy)">
+                                            {{ violation.trangThaiXuLy }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="violation-action">
+                                    <i class="fas fa-chevron-right"></i>
+                                </div>
+                            </div>
+                            }
+                        </div>
+
+                        @if (loadingViolations()) {
+                        <div class="loading-violations">
+                            <div class="spinner"></div>
+                            <span>Đang tải biên bản...</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+                }
 
                 <!-- Schedule Information Card -->
                 <div class="detail-card">
@@ -191,61 +240,14 @@
                 </div>
                 }
 
-                <!-- Violations Card -->
-                @if (violations().length > 0) {
-                <div class="detail-card violation-card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h3>Biên bản vi phạm ({{ violations().length }})</h3>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="violation-list">
-                            @for (violation of violations(); track violation.maViPham) {
-                            <div class="violation-item" (click)="viewViolationDetail(violation.maViPham)">
-                                <div class="violation-icon" [class]="getViolationStatusClass(violation.trangThaiXuLy)">
-                                    <i class="fas" [ngClass]="getViolationStatusIcon(violation.trangThaiXuLy)"></i>
-                                </div>
-                                <div class="violation-content">
-                                    <h5>{{ violation.tenViPham }}</h5>
-                                    @if (violation.moTaNgan) {
-                                    <p class="violation-description">{{ violation.moTaNgan }}</p>
-                                    }
-                                    <div class="violation-meta">
-                                        <span class="violation-date">
-                                            <i class="fas fa-calendar"></i>
-                                            {{ formatViolationDate(violation.ngayLap) }}
-                                        </span>
-                                        <span class="violation-status"
-                                            [class]="getViolationStatusClass(violation.trangThaiXuLy)">
-                                            {{ violation.trangThaiXuLy }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="violation-action">
-                                    <i class="fas fa-chevron-right"></i>
-                                </div>
-                            </div>
-                            }
-                        </div>
 
-                        @if (loadingViolations()) {
-                        <div class="loading-violations">
-                            <div class="spinner"></div>
-                            <span>Đang tải biên bản...</span>
-                        </div>
-                        }
-                    </div>
-                </div>
-                }
             </div>
 
             <!-- Action Buttons -->
             @if (canShowActions()) {
             <div class="action-section">
                 <div class="action-buttons">
-                    <button class="action-btn secondary" (click)="router.navigate(['/booking/history'])">
+                    <button class="action-btn secondary" (click)="goBack()">
                         <i class="fas fa-list"></i>
                         <span>Về danh sách</span>
                     </button>
@@ -301,7 +303,7 @@
                         <i class="fas fa-refresh"></i>
                         <span>Thử lại</span>
                     </button>
-                    <button class="action-btn primary" (click)="router.navigate(['/booking/history'])">
+                    <button class="action-btn primary" (click)="goBack()">
                         <i class="fas fa-arrow-left"></i>
                         <span>Quay lại</span>
                     </button>

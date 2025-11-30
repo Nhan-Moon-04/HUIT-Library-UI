@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
@@ -30,6 +30,7 @@ export class BookingDetailComponent implements OnInit {
   private violationService = inject(ViolationService);
   public router = inject(Router);
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
 
   bookingDetail = signal<BookingDetailData | null>(null);
   violations = signal<ViolationListItem[]>([]);
@@ -351,6 +352,15 @@ export class BookingDetailComponent implements OnInit {
 
   closeNotification(): void {
     this.showNotification.set(false);
+  }
+
+  goBack(): void {
+    // Use browser history when available, otherwise fallback to booking history route
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/booking/history']);
+    }
   }
 
   private submitExtendBooking(newEndTime: Date): void {

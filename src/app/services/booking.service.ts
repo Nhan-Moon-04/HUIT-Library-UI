@@ -145,6 +145,34 @@ export interface BookingDetailResponse {
   data: BookingDetail;
 }
 
+export interface RoomCapacityLimit {
+  maLoaiPhong: number;
+  tenLoaiPhong: string;
+  sucChuaToiDa: number;
+  soLuongToiThieu: number;
+  soLuongToiDa: number;
+  moTa: string;
+}
+
+export interface RoomStatusByType {
+  maLoaiPhong: number;
+  tenLoaiPhong: string;
+  tongSo: number;
+  soPhongTrong: number;
+  soPhongBan: number;
+  phanTramTrong: number;
+}
+
+export interface RoomStatusData {
+  tongSoPhong: number;
+  soPhongTrong: number;
+  soPhongBan: number;
+  phanTramPhongTrong: number;
+  phanTramPhongBan: number;
+  thoiGianKiemTra: string;
+  chiTietTheoLoaiPhong: RoomStatusByType[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class BookingService {
   private http = inject(HttpClient);
@@ -212,6 +240,18 @@ export class BookingService {
   getBookingDetail(maDangKy: number): Observable<BookingDetailResponse> {
     return this.http.get<BookingDetailResponse>(
       `${environment.appUrl}/api/v2/BookingView/details/${maDangKy}`
+    );
+  }
+
+  /** Get room capacity limits */
+  getRoomCapacityLimits(): Observable<RoomCapacityLimit[]> {
+    return this.http.get<RoomCapacityLimit[]>(`${environment.appUrl}/api/Room/capacity-limits`);
+  }
+
+  /** Get current room status (available / booked counts) */
+  getRoomStatus(): Observable<{ success: boolean; data: RoomStatusData; message?: string }> {
+    return this.http.get<{ success: boolean; data: RoomStatusData; message?: string }>(
+      `${environment.appUrl}/api/Room/status`
     );
   }
 }

@@ -24,10 +24,6 @@
                             <i class="fas" [ngClass]="getViolationStatusIcon(violationDetail()!.trangThaiXuLy)"></i>
                             <span>{{ violationDetail()!.trangThaiXuLy }}</span>
                         </div>
-                        <div class="severity-badge" [ngClass]="getSeverityClass()">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span>{{ getSeverity() }}</span>
-                        </div>
                     </div>
                 </div>
                 }
@@ -58,11 +54,6 @@
                             <div class="summary-row primary">
                                 <label>Loại vi phạm</label>
                                 <span class="value">{{ violationDetail()!.tenViPham }}</span>
-                            </div>
-                            <div class="summary-row">
-                                <label>Mức độ nghiêm trọng</label>
-                                <span class="value severity" [style.color]="getSeverityColor()">{{ getSeverity()
-                                    }}</span>
                             </div>
                         </div>
 

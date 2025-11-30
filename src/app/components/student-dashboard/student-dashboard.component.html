@@ -125,9 +125,9 @@
           <i class="fas fa-door-open"></i>
         </div>
         <div class="stat-content">
-          <h3>24</h3>
+          <h3>{{ roomStatus()?.soPhongTrong ?? 0 }}</h3>
           <p>Phòng có sẵn</p>
-          <small>Tổng: 30 phòng</small>
+          <small>Tổng: {{ roomStatus()?.tongSoPhong ?? 0 }} phòng</small>
         </div>
       </div>
     </div>

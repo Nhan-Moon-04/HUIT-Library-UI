@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BookingService, LoaiPhong } from '../../services/booking.service';
+import { BookingService, LoaiPhong, RoomCapacityLimit } from '../../services/booking.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -35,9 +35,11 @@ export class BookingRequestComponent implements OnInit {
   success = signal<string | null>(null);
   error = signal<string | null>(null);
   roomTypes = signal<LoaiPhong[]>([]);
+  capacityLimits = signal<RoomCapacityLimit[]>([]);
 
   ngOnInit(): void {
     this.loadRoomTypes();
+    this.loadCapacityLimits();
     this.setMinDate();
     this.setupFormListeners();
     // Set default time to 8:00
@@ -115,19 +117,24 @@ export class BookingRequestComponent implements OnInit {
     return selectedDateTime <= currentDateTime;
   }
 
-  // Get minimum capacity (50% of room capacity)
+  // Get minimum capacity from API capacity limits
   getMinCapacity(): number {
     const selectedRoomType = this.selectedRoomType();
     if (!selectedRoomType) return 1;
-    const capacity = Number(selectedRoomType.soLuongChoNgoi);
-    return Math.ceil(capacity / 2);
+
+    const limit = this.capacityLimits().find((l) => l.maLoaiPhong === selectedRoomType.maLoaiPhong);
+
+    return limit ? limit.soLuongToiThieu : 1;
   }
 
-  // Get maximum capacity (100% of room capacity)
+  // Get maximum capacity from API capacity limits
   getMaxCapacity(): number {
     const selectedRoomType = this.selectedRoomType();
     if (!selectedRoomType) return 50;
-    return Number(selectedRoomType.soLuongChoNgoi);
+
+    const limit = this.capacityLimits().find((l) => l.maLoaiPhong === selectedRoomType.maLoaiPhong);
+
+    return limit ? limit.soLuongToiDa : Number(selectedRoomType.soLuongChoNgoi);
   }
 
   // Check if current capacity is valid
@@ -153,12 +160,14 @@ export class BookingRequestComponent implements OnInit {
     const minCapacity = this.getMinCapacity();
     const maxCapacity = this.getMaxCapacity();
 
+    const limit = this.capacityLimits().find((l) => l.maLoaiPhong === selectedRoomType.maLoaiPhong);
+
     if (soLuong < minCapacity) {
-      return `Số lượng người tham gia phải ít nhất ${minCapacity} người (50% sức chứa phòng ${maxCapacity} người).`;
+      return limit?.moTa || `Số lượng người tham gia phải ít nhất ${minCapacity} người.`;
     }
 
     if (soLuong > maxCapacity) {
-      return `Số lượng người tham gia không được vượt quá ${maxCapacity} người (sức chứa tối đa của phòng).`;
+      return limit?.moTa || `Số lượng người tham gia không được vượt quá ${maxCapacity} người.`;
     }
 
     return '';
@@ -206,9 +215,13 @@ export class BookingRequestComponent implements OnInit {
     this.selectedRoomType.set(roomType);
     this.form.patchValue({ maLoaiPhong: roomType.maLoaiPhong });
 
+    // Get capacity limits from API
+    const limit = this.capacityLimits().find((l) => l.maLoaiPhong === roomType.maLoaiPhong);
+
+    const minCapacity = limit ? limit.soLuongToiThieu : 1;
+    const maxCapacity = limit ? limit.soLuongToiDa : Number(roomType.soLuongChoNgoi);
+
     // Reset capacity to minimum when room type changes
-    const capacity = Number(roomType.soLuongChoNgoi);
-    const minCapacity = Math.ceil(capacity / 2);
     this.form.patchValue({ soLuong: minCapacity });
 
     // Update capacity field validation
@@ -216,7 +229,7 @@ export class BookingRequestComponent implements OnInit {
     soLuongControl?.setValidators([
       Validators.required,
       Validators.min(minCapacity),
-      Validators.max(capacity),
+      Validators.max(maxCapacity),
     ]);
     soLuongControl?.updateValueAndValidity();
   }
@@ -251,6 +264,18 @@ export class BookingRequestComponent implements OnInit {
       },
       error: (err) => {
         this.error.set('Không thể tải danh sách loại phòng.');
+      },
+    });
+  }
+
+  loadCapacityLimits(): void {
+    this.bookingService.getRoomCapacityLimits().subscribe({
+      next: (limits) => {
+        this.capacityLimits.set(limits);
+      },
+      error: (err) => {
+        console.error('Không thể tải giới hạn số lượng người:', err);
+        // Không hiển thị error cho user vì đây không phải là critical error
       },
     });
   }

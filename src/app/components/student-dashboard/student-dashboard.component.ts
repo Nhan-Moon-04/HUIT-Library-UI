@@ -14,6 +14,7 @@ import {
   CurrentBooking,
   CurrentBookingsResponse,
 } from '../../services/booking.service';
+import { RoomStatusData } from '../../services/booking.service';
 
 @Component({
   selector: 'app-student-dashboard',
@@ -54,6 +55,8 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   activeSlideIndex = signal(0);
   carouselInterval: any;
   statisticsInterval: any;
+  // Room status
+  roomStatus = signal<RoomStatusData | null>(null);
 
   // Sample data for demo
   featuredNews = {
@@ -68,6 +71,7 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadLatestNotifications();
     this.loadStatistics();
+    this.loadRoomStatus();
     this.loadNews();
     this.loadCurrentBookings();
     this.recordVisit();
@@ -85,6 +89,19 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     }
     // Set offline khi rời khỏi trang
     this.setOnlineStatus(false);
+  }
+
+  loadRoomStatus(): void {
+    this.bookingService.getRoomStatus().subscribe({
+      next: (res) => {
+        if (res && res.success && res.data) {
+          this.roomStatus.set(res.data);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading room status:', err);
+      },
+    });
   }
 
   loadCurrentBookings(): void {

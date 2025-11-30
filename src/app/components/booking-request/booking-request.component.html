@@ -3,9 +3,9 @@
     <header class="booking-header">
         <div class="header-container">
             <button class="back-button" (click)="goBack()" aria-label="Quay lại">
-            <i class="fas fa-arrow-left"></i>
-            <span>Quay lại</span>
-        </button>
+                <i class="fas fa-arrow-left"></i>
+                <span>Quay lại</span>
+            </button>
 
             <div class="header-content">
                 <div class="header-title">
@@ -76,8 +76,8 @@
             <div class="alert-container" *ngIf="loading() || success() || error()">
                 <div class="alert alert-loading" *ngIf="loading()">
                     <div class="alert-icon">
-                <i class="fas fa-spinner fa-spin"></i>
-            </div>
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
                     <div class="alert-content">
                         <h4>Đang xử lý</h4>
                         <p>Vui lòng đợi trong giây lát...</p>
@@ -86,7 +86,7 @@
 
                 <div class="alert alert-success" *ngIf="success()">
                     <div class="alert-icon">
-                <i class="fas fa-check-circle"></i>
+                        <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="alert-content">
                         <h4>Thành công</h4>
@@ -145,11 +145,11 @@
                             <small class="text-muted">Khoảng cách 30 phút (08:00, 08:30, ...) - Thời lượng mặc định: 2
                                 giờ</small>
                             <div *ngIf="isDateTimeInPast()" class="text-danger mt-2">
-                <i class="fas fa-exclamation-circle"></i>
+                                <i class="fas fa-exclamation-circle"></i>
                                 Thời gian phải lớn hơn thời điểm hiện tại
                             </div>
-            </div>
-        </div>
+                        </div>
+                    </div>
 
                     <div class="step-actions mt-4">
                         <button type="button" class="btn btn-primary"
@@ -175,7 +175,7 @@
                                 <h3>{{ roomType.tenLoaiPhong }}</h3>
                                 <div class="room-specs">
                                     <div class="spec-item">
-                                            <i class="fas fa-users"></i>
+                                        <i class="fas fa-users"></i>
                                         <span>{{ roomType.soLuongChoNgoi }} chỗ</span>
                                     </div>
                                     <div class="spec-item">
@@ -193,7 +193,7 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                         </div>
-                                    </div>
+                    </div>
 
                     <div class="step-actions">
                         <button type="button" class="btn btn-back" (click)="previousStep()">
@@ -205,15 +205,15 @@
                             Tiếp tục
                             <i class="fas fa-arrow-right"></i>
                         </button>
-                                    </div>
-                                </div>
+                    </div>
+                </div>
 
                 <!-- Step 3: User Information -->
                 <div class="step-content" *ngIf="currentStep() === 3">
                     <div class="step-header">
                         <h2>Thông tin sử dụng</h2>
                         <p>Cung cấp thông tin chi tiết về mục đích sử dụng</p>
-                                    </div>
+                    </div>
 
                     <div class="info-form">
                         <div class="form-row">
@@ -264,22 +264,6 @@
                                     *ngIf="form.get('lyDo')?.invalid && form.get('lyDo')?.touched">
                                     <i class="fas fa-exclamation-triangle"></i>
                                     Vui lòng nhập mục đích sử dụng
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">
-                                    Số lượng người tham gia
-                                    <span class="required"
-                                        *ngIf="form.get('soLuong')?.hasError('required') && form.get('soLuong')?.touched">*</span>
-                                </label>
-                                <input type="number" formControlName="soLuong"
-                                    [class.error]="form.get('soLuong')?.invalid && form.get('soLuong')?.touched"
-                                    class="form-input" placeholder="Nhập số lượng người tham gia" min="1" max="50" />
-                                <div class="error-message"
-                                    *ngIf="form.get('soLuong')?.invalid && form.get('soLuong')?.touched">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    Số lượng người tham gia phải từ 1 đến 50
                                 </div>
                             </div>
 

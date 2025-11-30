@@ -79,31 +79,6 @@ export class ViolationDetailComponent implements OnInit {
     }
   }
 
-  getSeverity(): string {
-    const detail = this.violationDetail();
-    if (!detail) return 'Không xác định';
-
-    return this.violationService.getViolationSeverity(detail.tenViPham);
-  }
-
-  getSeverityColor(): string {
-    return this.violationService.getSeverityColor(this.getSeverity());
-  }
-
-  getSeverityClass(): string {
-    const severity = this.getSeverity();
-    switch (severity.toLowerCase()) {
-      case 'nghiêm trọng':
-        return 'severity-high';
-      case 'trung bình':
-        return 'severity-medium';
-      case 'nhẹ':
-        return 'severity-low';
-      default:
-        return 'severity-unknown';
-    }
-  }
-
   goBack(): void {
     const detail = this.violationDetail();
     if (detail?.maDangKy) {

@@ -73,12 +73,23 @@ export class AuthService {
       .pipe(finalize(() => this.isLoading.set(false)));
   }
 
-  // Thay đổi mật khẩu (placeholder) - payload: { currentPassword, newPassword }
+  // Thay đổi mật khẩu - API cần maCode, currentPassword, newPassword
   changePassword(payload: { currentPassword: string; newPassword: string }): Observable<any> {
     this.isLoading.set(true);
-    // Bạn sẽ gán endpoint thực tế sau; hiện tại gọi tới placeholder API
+
+    const user = this.currentUser();
+    if (!user) {
+      throw new Error('User not logged in');
+    }
+
+    const requestPayload = {
+      maCode: user.maNguoiDung.toString(), // Convert userId to string as maCode
+      currentPassword: payload.currentPassword,
+      newPassword: payload.newPassword,
+    };
+
     return this.http
-      .post<any>(`${environment.appUrl}/api/Auth/change-password`, payload)
+      .post<any>(`${environment.appUrl}/api/Auth/change-password`, requestPayload)
       .pipe(finalize(() => this.isLoading.set(false)));
   }
 

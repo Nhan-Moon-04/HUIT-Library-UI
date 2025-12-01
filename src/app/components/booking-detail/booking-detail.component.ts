@@ -355,12 +355,8 @@ export class BookingDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    // Use browser history when available, otherwise fallback to booking history route
-    if (window.history.length > 1) {
-      this.location.back();
-    } else {
-      this.router.navigate(['/booking/history']);
-    }
+    // Always navigate to booking history to avoid navigation issues
+    this.router.navigate(['/bookings/history']);
   }
 
   private submitExtendBooking(newEndTime: Date): void {

@@ -17,7 +17,7 @@
 .page-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 3rem 0;
+  padding: 2rem 0;
   position: relative;
   overflow: hidden;
 }
@@ -49,10 +49,10 @@
 }
 
 .icon-wrapper {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,19 +60,19 @@
 }
 
 .icon-wrapper i {
-  font-size: 28px;
+  font-size: 20px;
   color: white;
 }
 
 .title-text h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.3rem 0;
   letter-spacing: -0.025em;
 }
 
 .title-text p {
-  font-size: 1.1rem;
+  font-size: 1rem;
   opacity: 0.9;
   margin: 0;
   font-weight: 400;
@@ -445,7 +445,7 @@
 
 /* Card Header */
 .card-header {
-  padding: 0.75rem 1rem 0.5rem;
+  padding: 0.6rem 0.8rem 0.4rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -453,19 +453,19 @@
 
 .room-info {
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   align-items: center;
   flex: 1;
 }
 
 .status-indicator {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: white;
   flex-shrink: 0;
 }
@@ -495,14 +495,14 @@
 }
 
 .room-details h4 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  margin: 0 0 0.15rem 0;
+  margin: 0 0 0.1rem 0;
   color: #1a202c;
 }
 
 .room-type {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: #64748b;
   font-weight: 500;
 }
@@ -514,23 +514,23 @@
 }
 
 .booking-id > span {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #667eea;
   background: rgba(102, 126, 234, 0.1);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 15px;
 }
 
 .violation-badge {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   background: #f59e0b;
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.8rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
   font-weight: 700;
   animation: pulse-warning 2s infinite;
 }
@@ -566,22 +566,22 @@
 
 /* Card Body */
 .card-body {
-  padding: 0 1rem 0.75rem;
+  padding: 0 0.8rem 0.6rem;
 }
 
 .time-info {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .time-row {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
+  gap: 0.3rem;
+  font-size: 0.8rem;
   color: #475569;
   background: #f8fafc;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 5px;
 }
 
 .time-row i {
@@ -598,40 +598,40 @@
 .details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
 }
 
 .detail-item {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.8rem;
+  gap: 0.3rem;
+  font-size: 0.75rem;
   color: #475569;
 }
 
 .detail-item i {
   color: #667eea;
-  width: 14px;
-  font-size: 0.75rem;
+  width: 12px;
+  font-size: 0.7rem;
 }
 
 .detail-item.purpose {
   grid-column: 1 / -1;
   background: #f1f5f9;
-  padding: 0.4rem;
-  border-radius: 4px;
+  padding: 0.3rem;
+  border-radius: 3px;
 }
 
 .note-section,
 .violation-section {
   display: flex;
   align-items: flex-start;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  margin-bottom: 0.4rem;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  padding: 0.4rem;
+  border-radius: 5px;
+  margin-bottom: 0.3rem;
 }
 
 .note-section {
@@ -669,7 +669,7 @@
 
 /* Card Footer */
 .card-footer {
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 0.8rem;
   background: #f8fafc;
   border-top: 1px solid #e2e8f0;
   display: flex;
@@ -680,16 +680,16 @@
 .status-section {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.7rem;
 }
 
 .status-badge {
-  padding: 0.3rem 0.75rem;
-  border-radius: 16px;
-  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 14px;
+  font-size: 0.65rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 
 .status-badge.status-pending {
@@ -723,7 +723,7 @@
 }
 
 .date-info {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #64748b;
   font-weight: 500;
 }
@@ -732,14 +732,14 @@
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
   border: none;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   transition: all 0.2s ease;
 }
 
@@ -757,16 +757,16 @@
 /* Evaluation Button Styles */
 .evaluation-btn {
   border: none;
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.3rem;
   transition: all 0.2s ease;
-  min-width: 90px;
+  min-width: 80px;
   justify-content: center;
 }
 
@@ -2828,4 +2828,80 @@
 
 .history-item.has-unprocessed-violation .status-icon {
   box-shadow: 0 0 0 2px #f44336, 0 0 0 4px rgba(244, 67, 54, 0.2);
+}
+
+/* Mobile responsiveness for booking cards */
+@media (max-width: 768px) {
+  .page-header {
+    padding: 1.5rem 1rem;
+  }
+
+  .icon-wrapper {
+    width: 40px;
+    height: 40px;
+    margin-right: 0.6rem;
+  }
+
+  .page-title {
+    font-size: 1.6rem;
+  }
+
+  .filter-section {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .filter-buttons {
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.7rem;
+  }
+
+  .booking-cards {
+    gap: 0.6rem;
+    padding: 0 0.8rem 1rem;
+  }
+
+  .card-header {
+    padding: 0.5rem 0.7rem;
+  }
+
+  .card-body {
+    padding: 0 0.7rem 0.5rem;
+  }
+
+  .card-footer {
+    padding: 0.5rem 0.7rem;
+  }
+
+  .room-name {
+    font-size: 0.9rem;
+  }
+
+  .status-section {
+    gap: 0.5rem;
+  }
+
+  .view-detail-btn,
+  .evaluation-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    min-width: 70px;
+  }
+
+  .status-badge {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.6rem;
+  }
+
+  .details-grid {
+    gap: 0.3rem;
+  }
+
+  .detail-item {
+    font-size: 0.7rem;
+  }
 }

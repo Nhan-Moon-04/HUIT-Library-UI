@@ -38,9 +38,7 @@
                             [value]="searchTerm()" (input)="updateSearchTerm($any($event.target).value)"
                             (keypress)="onSearchKeyPress($event)">
                         @if (searchTerm().length > 0) {
-                        <button class="clear-btn" (click)="resetSearch()">
-                            <i class="fas fa-times"></i>
-                        </button>
+
                         }
                     </div>
                     <button class="search-btn" (click)="onSearch()" [disabled]="loading()">

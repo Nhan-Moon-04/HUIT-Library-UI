@@ -61,7 +61,7 @@
 
                         <div class="info-item">
                             <label>Vai trò</label>
-                            <p>{{ profile().maVaiTro || profile().vaiTro || '-' }}</p>
+                            <p>{{ getRoleName(profile().maVaiTro) }}</p>
                         </div>
 
                     </div>
@@ -72,23 +72,40 @@
                     <form [formGroup]="form" (ngSubmit)="saveProfile()">
 
                         <div class="form-row">
-                            <label>Họ và tên</label>
-                            <input formControlName="fullName" />
+                            <label>Họ và tên *</label>
+                            <input formControlName="fullName" [class.error]="isFieldInvalid('fullName')"
+                                placeholder="Nhập họ và tên" />
+                            <div *ngIf="isFieldInvalid('fullName')" class="error-message">
+                                {{ getFieldError('fullName') }}
+                            </div>
                         </div>
 
                         <div class="form-row">
-                            <label>Email</label>
-                            <input formControlName="email" type="email" />
+                            <label>Email *</label>
+                            <input formControlName="email" type="email" [class.error]="isFieldInvalid('email')"
+                                placeholder="Nhập địa chỉ email" />
+                            <div *ngIf="isFieldInvalid('email')" class="error-message">
+                                {{ getFieldError('email') }}
+                            </div>
                         </div>
 
                         <div class="form-row">
-                            <label>Số điện thoại</label>
-                            <input formControlName="phoneNumber" />
+                            <label>Số điện thoại *</label>
+                            <input formControlName="phoneNumber" [class.error]="isFieldInvalid('phoneNumber')"
+                                placeholder="Nhập số điện thoại (10-11 số)" />
+                            <div *ngIf="isFieldInvalid('phoneNumber')" class="error-message">
+                                {{ getFieldError('phoneNumber') }}
+                            </div>
                         </div>
 
                         <div class="form-actions">
-                            <button class="btn primary">Lưu</button>
-                            <button class="btn outline" type="button" (click)="cancelEdit()">Hủy</button>
+                            <button type="submit" class="btn primary" [disabled]="form.invalid || loading()">
+                                <span *ngIf="loading()">Đang lưu...</span>
+                                <span *ngIf="!loading()">Lưu thay đổi</span>
+                            </button>
+                            <button class="btn outline" type="button" (click)="cancelEdit()" [disabled]="loading()">
+                                Hủy bỏ
+                            </button>
                         </div>
                     </form>
                 </ng-template>

@@ -5,13 +5,14 @@ import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 
 export interface MessageData {
-  id: number;
-  chatSessionId: number;
-  senderId: number;
-  senderName: string;
-  recipientId: number;
-  message: string;
-  timestamp: string;
+  maTinNhan: number;
+  maPhienChat: number;
+  maNguoiGui: number | null;
+  tenNguoiGui: string;
+  noiDung: string;
+  thoiGianGui: string;
+  laBot: boolean;
+  messageType?: string;
 }
 
 @Injectable({
@@ -62,15 +63,11 @@ export class SignalRService {
       this.setupEventHandlers();
 
       await this.hubConnection.start();
-      console.log('SignalR Connected');
+      console.log('✅ SignalR Connected');
       this.connectionState.next(true);
 
-      // Join user group
-      const currentUser = this.auth.currentUser();
-      if (currentUser?.maNguoiDung) {
-        await this.hubConnection.invoke('JoinUserGroup', currentUser.maNguoiDung.toString());
-        console.log(`Joined user group: User_${currentUser.maNguoiDung}`);
-      }
+      // Note: Group joining is handled automatically by backend
+      // Backend joins users to appropriate groups based on JWT token
     } catch (error) {
       console.error('Error connecting to SignalR:', error);
       this.connectionState.next(false);
@@ -98,16 +95,10 @@ export class SignalRService {
     });
 
     this.hubConnection.onreconnected((connectionId?: string) => {
-      console.log('SignalR reconnected:', connectionId);
+      console.log('✅ SignalR reconnected:', connectionId);
       this.connectionState.next(true);
 
-      // Rejoin user group after reconnection
-      const currentUser = this.auth.currentUser();
-      if (currentUser?.maNguoiDung) {
-        this.hubConnection
-          ?.invoke('JoinUserGroup', currentUser.maNguoiDung.toString())
-          .catch((err: any) => console.error('Error rejoining user group:', err));
-      }
+      // Groups are automatically rejoined by backend on reconnection
     });
   }
 

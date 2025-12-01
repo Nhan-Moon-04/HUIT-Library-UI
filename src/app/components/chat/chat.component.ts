@@ -1,9 +1,20 @@
-import { Component, signal, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import {
+  Component,
+  signal,
+  inject,
+  effect,
+  ViewChild,
+  ElementRef,
+  OnDestroy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ChatService } from './chat.service';
 import { AuthService } from '../../services/auth.service';
+import { SignalRService, MessageData } from '../../services/signalr.service';
+import { Subscription } from 'rxjs';
 
 interface Message {
   maTinNhan: number | null;
@@ -49,10 +60,13 @@ interface MessageResponse {
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css'],
 })
-export class ChatComponent {
+export class ChatComponent implements OnDestroy {
   private chatService = inject(ChatService);
   public auth = inject(AuthService); // Make public for template access
   private router = inject(Router);
+  private signalRService = inject(SignalRService);
+  private cdr = inject(ChangeDetectorRef);
+  private messageSubscription?: Subscription;
 
   isOpen = signal(false);
   draft = signal('');
@@ -382,6 +396,9 @@ export class ChatComponent {
     // Initial load (works for anonymous or already-logged-in users)
     this.loadLatestSession();
 
+    // Setup SignalR subscription for real-time messages
+    this.setupSignalRSubscription();
+
     // React to login/logout changes so chat updates immediately without page reload
     effect(() => {
       const loggedIn = this.auth.isLoggedIn();
@@ -605,5 +622,92 @@ export class ChatComponent {
   // TrackBy function để tối ưu hiệu suất render
   trackByMessageId(index: number, message: Message): any {
     return message.maTinNhan || index;
+  }
+
+  // SignalR real-time messaging setup
+  private setupSignalRSubscription(): void {
+    console.log('🔧 Setting up SignalR subscription...');
+    this.messageSubscription = this.signalRService.messageReceived$.subscribe((messageData) => {
+      console.log('📨 SignalR message received:', messageData);
+      if (messageData) {
+        this.handleIncomingMessage(messageData);
+      }
+    });
+  }
+
+  private handleIncomingMessage(messageData: MessageData): void {
+    console.log('🔍 Handling incoming message:', messageData);
+
+    // Only handle messages for the current chat session
+    const currentSessionId = this.maPhienChat();
+    console.log(
+      '📋 Session check - Current:',
+      currentSessionId,
+      'Message:',
+      messageData.maPhienChat
+    );
+
+    if (!currentSessionId || messageData.maPhienChat !== currentSessionId) {
+      console.log('❌ Message ignored - session mismatch');
+      return;
+    }
+
+    // Don't add message if it's from current user (already added locally)
+    const currentUserId = this.auth.currentUser()?.maNguoiDung;
+    console.log('👤 User check - Current:', currentUserId, 'Sender:', messageData.maNguoiGui);
+
+    if (messageData.maNguoiGui === currentUserId && !messageData.laBot) {
+      console.log('⏭️ Message from current user - skipping');
+      return;
+    }
+
+    // Convert SignalR message to local Message format
+    const newMessage: Message = {
+      maTinNhan: messageData.maTinNhan,
+      maPhienChat: messageData.maPhienChat,
+      maNguoiGui: messageData.maNguoiGui,
+      noiDung: messageData.noiDung,
+      thoiGianGui: messageData.thoiGianGui,
+      laBot: messageData.laBot,
+    };
+
+    console.log('➕ Adding new message to UI:', newMessage);
+
+    // Add message to current messages
+    const currentMessages = this.messages();
+    console.log('📝 Current messages count:', currentMessages.length);
+
+    // Check if message already exists (prevent duplicates)
+    const messageExists = currentMessages.some(
+      (m) =>
+        m.maTinNhan === newMessage.maTinNhan ||
+        (m.noiDung === newMessage.noiDung &&
+          m.maNguoiGui === newMessage.maNguoiGui &&
+          Math.abs(
+            new Date(m.thoiGianGui || '').getTime() -
+              new Date(newMessage.thoiGianGui || '').getTime()
+          ) < 1000)
+    );
+
+    console.log('🔍 Duplicate check:', messageExists);
+
+    if (!messageExists) {
+      this.messages.set([...currentMessages, newMessage]);
+      this.cdr.detectChanges();
+      console.log('🔄 UI updated! New total:', [...currentMessages, newMessage].length);
+
+      // Auto-scroll to bottom
+      setTimeout(() => this.scrollToBottom(), 0);
+    } else {
+      console.log('⚠️ Duplicate message - not adding');
+    }
+
+    console.log('✅ Message processing complete');
+  }
+
+  ngOnDestroy(): void {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
   }
 }

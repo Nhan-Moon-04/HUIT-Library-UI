@@ -3,6 +3,7 @@ import {
   signal,
   inject,
   effect,
+  computed,
   ViewChild,
   ElementRef,
   OnDestroy,
@@ -73,6 +74,10 @@ export class ChatComponent implements OnDestroy {
   messages = signal<Message[]>([]);
   maPhienChat = signal<number>(0);
   isStaffMode = signal(false); // true = chat với nhân viên, false = chat với bot
+  unreadCount = signal(0); // Số tin nhắn chưa đọc
+  hasNewMessage = signal(false); // Có tin nhắn mới hay không
+  soundEnabled = signal(true); // Bật/tắt âm thanh thông báo
+  private notificationAudio?: HTMLAudioElement;
   chatSessions = signal<ChatSession[]>([]);
   allStaffSessions = signal<ChatSession[]>([]);
   showSessionList = signal(false);
@@ -84,8 +89,115 @@ export class ChatComponent implements OnDestroy {
 
   @ViewChild('chatBody') private chatBodyRef!: ElementRef<HTMLDivElement>;
 
+  constructor() {
+    // Khởi tạo âm thanh thông báo
+    this.initNotificationSound();
+
+    // Initial load (works for anonymous or already-logged-in users)
+    this.loadLatestSession();
+
+    // Setup SignalR subscription for real-time messages
+    this.setupSignalRSubscription();
+
+    // Auto-scroll when messages change
+    effect(() => {
+      // read messages signal to track changes
+      this.messages();
+      // only scroll automatically if panel is open or in page mode
+      if (this.isOpen() || this.isPageMode()) {
+        // scroll to bottom after DOM updates
+        setTimeout(() => this.scrollToBottom(), 100);
+      }
+    });
+
+    // When user opens the chat panel, ensure we scroll to the latest messages
+    effect(() => {
+      if (this.isOpen() || this.isPageMode()) {
+        // wait a tick so the chatBody ViewChild is available
+        setTimeout(() => this.scrollToBottom(), 200);
+      }
+    });
+
+    // React to login/logout changes so chat updates immediately without page reload
+    effect(() => {
+      const loggedIn = this.auth.isLoggedIn();
+      if (loggedIn) {
+        // user just logged in -> reload latest session & messages
+        if (this.isStaffMode()) {
+          this.loadStaffSessions();
+        } else {
+          this.loadLatestSession();
+        }
+      }
+    });
+  }
+
+  private initNotificationSound(): void {
+    try {
+      // Sử dụng Web Audio API tạo beep sound đơn giản
+      this.createSimpleBeep();
+    } catch (error) {
+      console.warn('Không thể khởi tạo âm thanh thông báo:', error);
+    }
+  }
+
+  private createSimpleBeep(): void {
+    // Tạo âm thanh beep đơn giản bằng Web Audio API
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+
+    this.notificationAudio = {
+      play: () => {
+        return new Promise<void>((resolve) => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800Hz
+          gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+          gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.05);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.3);
+
+          oscillator.onended = () => resolve();
+        });
+      },
+      volume: 0.3,
+      currentTime: 0,
+      preload: 'auto',
+    } as HTMLAudioElement;
+  }
+
+  private playNotificationSound(): void {
+    if (this.soundEnabled() && this.notificationAudio) {
+      try {
+        this.notificationAudio.currentTime = 0; // Reset về đầu
+        this.notificationAudio.play().catch((error) => {
+          console.warn('Không thể phát âm thanh thông báo:', error);
+        });
+      } catch (error) {
+        console.warn('Lỗi phát âm thanh:', error);
+      }
+    }
+  }
+
+  toggleSound(): void {
+    this.soundEnabled.update((enabled) => !enabled);
+    console.log('🔊 Sound notification:', this.soundEnabled() ? 'enabled' : 'disabled');
+  }
+
   toggle(): void {
-    this.isOpen.set(!this.isOpen());
+    const newState = !this.isOpen();
+    this.isOpen.set(newState);
+
+    if (newState) {
+      // Reset notification khi mở chat
+      this.unreadCount.set(0);
+      this.hasNewMessage.set(false);
+    }
   }
 
   toggleMode(): void {
@@ -99,7 +211,8 @@ export class ChatComponent implements OnDestroy {
     this.showSessionList.set(false);
 
     if (newMode) {
-      // Chuyển sang chat với nhân viên
+      // Chuyển sang chat với nhân viên - clear notification
+      this.clearNotifications();
       this.loadStaffSessions();
     } else {
       // Chuyển về chat với bot
@@ -256,6 +369,8 @@ export class ChatComponent implements OnDestroy {
               );
 
               this.messages.set(mapped);
+              // Scroll to bottom after loading staff messages
+              setTimeout(() => this.scrollToBottom(), 300);
             } else {
               this.messages.set([]);
             }
@@ -300,6 +415,8 @@ export class ChatComponent implements OnDestroy {
           this.messages.set(mapped);
           this.currentPage.set(res.data.page);
           this.hasMoreMessages.set(res.data.hasMore);
+          // Scroll to bottom after loading session messages
+          setTimeout(() => this.scrollToBottom(), 300);
         } else if (res && Array.isArray(res)) {
           // Fallback cho format cũ
           const mapped = res.map((m: any) => ({
@@ -391,55 +508,11 @@ export class ChatComponent implements OnDestroy {
     });
   }
 
-  // Auto-open after login
-  constructor() {
-    // Initial load (works for anonymous or already-logged-in users)
-    this.loadLatestSession();
-
-    // Setup SignalR subscription for real-time messages
-    this.setupSignalRSubscription();
-
-    // React to login/logout changes so chat updates immediately without page reload
-    effect(() => {
-      const loggedIn = this.auth.isLoggedIn();
-      if (loggedIn) {
-        // user just logged in -> reload latest session & messages
-        if (this.isStaffMode()) {
-          this.loadStaffSessions();
-        } else {
-          this.loadLatestSession();
-        }
-      } else {
-        // user logged out -> clear messages and reset session id
-        this.messages.set([]);
-        this.maPhienChat.set(0);
-        this.currentSession.set(null);
-        this.chatSessions.set([]);
-        this.isStaffMode.set(false); // Reset về bot mode
-        if (!this.isPageMode()) {
-          this.isOpen.set(false);
-        }
-      }
-    });
-
-    // Auto-scroll when messages change
-    effect(() => {
-      // read messages signal to track changes
-      this.messages();
-      // only scroll automatically if panel is open or in page mode
-      if (this.isOpen() || this.isPageMode()) {
-        // scroll to bottom after DOM updates
-        this.scrollToBottom();
-      }
-    });
-
-    // When user opens the chat panel, ensure we scroll to the latest messages
-    effect(() => {
-      if (this.isOpen() || this.isPageMode()) {
-        // wait a tick so the chatBody ViewChild is available
-        setTimeout(() => this.scrollToBottom(), 0);
-      }
-    });
+  // Cleanup references and complete subscriptions
+  ngOnDestroy(): void {
+    if (this.messageSubscription) {
+      this.messageSubscription.unsubscribe();
+    }
   }
 
   private loadLatestSession(): void {
@@ -471,6 +544,8 @@ export class ChatComponent implements OnDestroy {
               mapped.sort((a: any, b: any) => (a.maTinNhan || 0) - (b.maTinNhan || 0));
             }
             this.messages.set(mapped);
+            // Scroll to bottom after loading messages
+            setTimeout(() => this.scrollToBottom(), 300);
           } else if (res?.isNewSession && data.messages && data.messages.length === 0) {
             const serverMsg = res?.message || 'Xin chào! Tôi có thể giúp gì cho bạn?';
             this.messages.set([
@@ -482,6 +557,8 @@ export class ChatComponent implements OnDestroy {
                 laBot: true,
               },
             ]);
+            // Scroll to bottom after adding welcome message
+            setTimeout(() => this.scrollToBottom(), 300);
           }
 
           // Open if the session is active or user logged in or in page mode
@@ -638,26 +715,37 @@ export class ChatComponent implements OnDestroy {
   private handleIncomingMessage(messageData: MessageData): void {
     console.log('🔍 Handling incoming message:', messageData);
 
-    // Only handle messages for the current chat session
+    // Check if this is a staff message (session 12 - from WinForms)
+    const isStaffMessage = messageData.maPhienChat === 12;
     const currentSessionId = this.maPhienChat();
+    const currentUserId = this.auth.currentUser()?.maNguoiDung;
+
     console.log(
-      '📋 Session check - Current:',
+      '📋 Message analysis - Session:',
+      messageData.maPhienChat,
+      'Current:',
       currentSessionId,
-      'Message:',
-      messageData.maPhienChat
+      'IsStaff:',
+      isStaffMessage
     );
 
-    if (!currentSessionId || messageData.maPhienChat !== currentSessionId) {
-      console.log('❌ Message ignored - session mismatch');
+    // Skip if message from current user
+    if (messageData.maNguoiGui === currentUserId && !messageData.laBot) {
+      console.log('⏭️ Message from current user - skipping');
       return;
     }
 
-    // Don't add message if it's from current user (already added locally)
-    const currentUserId = this.auth.currentUser()?.maNguoiDung;
-    console.log('👤 User check - Current:', currentUserId, 'Sender:', messageData.maNguoiGui);
+    // ALWAYS add notification for staff messages (session 12), regardless of current mode
+    if (isStaffMessage && !this.isOpen()) {
+      this.unreadCount.update((count) => count + 1);
+      this.hasNewMessage.set(true);
+      this.playNotificationSound(); // Phát âm thanh thông báo
+      console.log('🔔 Staff message notification added! Unread count:', this.unreadCount());
+    }
 
-    if (messageData.maNguoiGui === currentUserId && !messageData.laBot) {
-      console.log('⏭️ Message from current user - skipping');
+    // Only add to UI if this message belongs to current session
+    if (!currentSessionId || messageData.maPhienChat !== currentSessionId) {
+      console.log('❌ Message not for current session - notification added but not showing in UI');
       return;
     }
 
@@ -693,6 +781,15 @@ export class ChatComponent implements OnDestroy {
 
     if (!messageExists) {
       this.messages.set([...currentMessages, newMessage]);
+
+      // Chỉ thêm notification nếu chat đang đóng và chưa được thêm ở trên
+      if (!this.isOpen() && !isStaffMessage) {
+        this.unreadCount.update((count) => count + 1);
+        this.hasNewMessage.set(true);
+        this.playNotificationSound(); // Phát âm thanh thông báo
+        console.log('🔔 UI message notification added, unread count:', this.unreadCount());
+      }
+
       this.cdr.detectChanges();
       console.log('🔄 UI updated! New total:', [...currentMessages, newMessage].length);
 
@@ -705,9 +802,14 @@ export class ChatComponent implements OnDestroy {
     console.log('✅ Message processing complete');
   }
 
-  ngOnDestroy(): void {
-    if (this.messageSubscription) {
-      this.messageSubscription.unsubscribe();
-    }
+  // Clear notification badge manually
+  clearNotifications(): void {
+    this.unreadCount.set(0);
+    this.hasNewMessage.set(false);
+  }
+
+  // Check if there are unread staff messages (for displaying on toggle)
+  hasUnreadStaffMessages(): boolean {
+    return this.hasNewMessage() && this.unreadCount() > 0;
   }
 }

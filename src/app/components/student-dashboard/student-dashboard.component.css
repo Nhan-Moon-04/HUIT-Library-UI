@@ -1584,8 +1584,7 @@
 .announcements-section {
   max-width: 1200px; /* hoặc 1140px, 1024px tùy ý */
   margin: 0 auto; /* căn giữa */
-  padding-left: 20px;
-  padding-right: 20px;
+
   box-sizing: border-box;
 }
 

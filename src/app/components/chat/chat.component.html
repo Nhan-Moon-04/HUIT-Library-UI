@@ -10,9 +10,12 @@
             <button [class.active]="!isStaffMode()" (click)="toggleMode()" class="btn-mode">
                 🤖 Chat Bot
             </button>
-            <button [class.active]="isStaffMode()" (click)="toggleMode()" class="btn-mode"
-                [disabled]="!auth.isLoggedIn()">
+            <button [class.active]="isStaffMode()" (click)="toggleMode()" class="btn-mode staff-btn"
+                [disabled]="!auth.isLoggedIn()" [class.has-notification]="hasUnreadStaffMessages() && !isStaffMode()">
                 👨‍💼 Chat Nhân viên
+                <span class="mode-badge" *ngIf="hasUnreadStaffMessages() && !isStaffMode()">
+                    {{ unreadCount() > 99 ? '99+' : unreadCount() }}
+                </span>
             </button>
         </div>
 
@@ -94,6 +97,12 @@
     <button class="chat-toggle" (click)="toggle()" aria-label="Chat">
         <span *ngIf="!isOpen()" class="dot">💬</span>
         <span *ngIf="isOpen()" class="close">✕</span>
+
+        <!-- Notification Badge -->
+        <div class="notification-badge" *ngIf="hasNewMessage() && !isOpen()">
+            <span class="badge-count" *ngIf="unreadCount() > 0">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+            <span class="badge-dot" *ngIf="unreadCount() === 0"></span>
+        </div>
     </button>
 
     <div class="chat-panel" *ngIf="isOpen()">
@@ -118,6 +127,13 @@
                 <button *ngIf="isStaffMode() && auth.isLoggedIn() && currentSession()" (click)="showMessageHistory()"
                     class="btn-history-mini">
                     📜
+                </button>
+
+                <!-- Sound toggle button -->
+                <button (click)="toggleSound()" class="btn-sound-mini"
+                    [title]="soundEnabled() ? 'Tắt âm thanh' : 'Bật âm thanh'">
+                    <span *ngIf="soundEnabled()">🔊</span>
+                    <span *ngIf="!soundEnabled()">🔇</span>
                 </button>
             </div>
         </div>
